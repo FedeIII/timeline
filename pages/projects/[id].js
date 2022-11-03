@@ -2,19 +2,23 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import Layout from '../../components/layout';
-import { getProjectIds, getProject } from '../../lib/projects';
 
-export async function getStaticPaths() {
-  const paths = getProjectIds();
+export async function getServerSideProps({ params }) {
+  let project;
 
-  return {
-    paths,
-    fallback: false,
-  };
-}
-
-export async function getStaticProps({ params }) {
-  const project = getProject(params.id);
+  try {
+    const response = await fetch(`http://localhost:8080/projects/${params.id}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    project = await response.json();
+  } catch (error) {
+    console.log(error);
+    project = {};
+  }
 
   return {
     props: project,

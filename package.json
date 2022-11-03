@@ -1,5 +1,9 @@
 {
+  "name": "timeline",
+  "version": "0.0.0",
   "private": true,
+  "description": "Timeline App",
+  "author": "Federico Perez <fedelll@gmail.com>",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
