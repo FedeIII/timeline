@@ -1,24 +1,22 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { gql } from "@apollo/client";
 
 import Layout from '../../components/layout';
+import client from "../../apollo-client";
+import { getAllProjectIds, getProject } from '../../queries/projectQueries';
 
-export async function getServerSideProps({ params }) {
-  let project;
+export async function getStaticPaths() {
+  const paths = await getAllProjectIds();
 
-  try {
-    const response = await fetch(`http://localhost:8080/projects/${params.id}`, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    project = await response.json();
-  } catch (error) {
-    console.log(error);
-    project = {};
-  }
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params }) {
+  const project = await getProject(params.id);
 
   return {
     props: project,
@@ -27,7 +25,6 @@ export async function getServerSideProps({ params }) {
 
 export default function Post(props) {
   const { id, title, date } = props;
-  console.log('props', props);
 
   return (
     <Layout>

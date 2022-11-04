@@ -10,6 +10,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.1",
+    "graphql": "^16.6.0",
     "gray-matter": "^4.0.3",
     "next": "latest",
     "react": "18.2.0",

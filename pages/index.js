@@ -3,28 +3,13 @@ import Link from 'next/link';
 
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.scss';
+import { getAllProjects } from '../queries/projectQueries';
 
-export async function getServerSideProps() {
-  let projects;
-
-  try {
-    const response = await fetch('http://localhost:8080/projects', {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    projects = await response.json();
-  } catch (error) {
-    console.log(error);
-    projects = [];
-  }
+export async function getStaticProps() {
+  const projects = await getAllProjects();
 
   return {
-    props: {
-      projects,
-    },
+    props: { projects },
   };
 }
 
