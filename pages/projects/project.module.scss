@@ -1,4 +1,4 @@
-.header {
+.headerSection {
   display: flex;
   justify-content: flex-start;
   margin-top: 16px;
@@ -35,15 +35,41 @@
 .tags {
   list-style: none;
   margin: 0;
+  display: flex;
+  flex-direction: row;
 
   & li {
     font-size: 0.7em;
     background-color: lightgray;
     border-radius: 20px;
     padding: 2px 16px;
+    margin-right: 8px;
   }
 }
 
-.timeline {}
+.timelineSection {
+  height: 200px;
+}
 
-.events {}
+.timelineTitle {
+
+}
+
+.timeline {
+  padding: 32px 0 0;
+}
+
+.eventsSection {
+
+}
+
+.eventsTitle {
+
+}
+
+.events {
+  list-style: none;
+  margin: 0;
+  border: 1px solid lightgray;
+  padding: 32px;
+}
