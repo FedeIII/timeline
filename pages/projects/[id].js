@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { gql } from "@apollo/client";
 
 import Layout from '../../components/layout';
-import client from "../../apollo-client";
 import { getAllProjectIds, getProject } from '../../queries/projectQueries';
+import styles from './project.module.scss';
 
 export async function getStaticPaths() {
   const paths = await getAllProjectIds();
@@ -24,19 +23,31 @@ export async function getStaticProps({ params }) {
 }
 
 export default function Post(props) {
-  const { id, title, date } = props;
+  const { title, description, date, tags = [] } = props;
 
   return (
     <Layout>
       <Head>
         <title>{title}</title>
       </Head>
-      <h1>{title}</h1>
-      <h2>id: {id}</h2>
-      <h2>date: {date}</h2>
-      <h2>
-        <Link href="/">Back to home</Link>
-      </h2>
+      <section className={styles.header}>
+        <h1 className={styles.title}>{title}</h1>
+        <div className={styles.info}>
+          <div className={styles.description}>{description}</div>
+          <div className={styles.otherInfo}>
+            <span className={styles.date}>{date}</span>
+            <ul className={styles.tags}>
+              {tags.map(tag => <li key={tag.label}>{tag.label}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section className={styles.timeline}>
+        Timeline here
+      </section>
+      <section className={styles.events}>
+        Events here
+      </section>
     </Layout>
   )
 }

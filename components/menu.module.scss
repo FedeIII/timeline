@@ -1,0 +1,19 @@
+.profileLink {
+  margin: 8px;
+}
+
+.menuItems {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0;
+
+  & li {
+    margin: 0 8px;
+  }
+}
+
+.settings {
+  margin-top: 4px;
+}

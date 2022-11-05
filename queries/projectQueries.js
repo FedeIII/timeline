@@ -47,6 +47,9 @@ export async function getProject(id) {
           id
           title
           date
+          description
+          tags { label, type }
+          events { imgUrl, title, description, date, type }
         }
       }
     `,
