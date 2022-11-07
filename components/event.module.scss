@@ -37,16 +37,8 @@ $knob-size: 1.5rem;
   background-color: lightgray;
 }
 
-.startProjectKnob {
-  left: 0;
-}
-
-.promptLabel {}
-
-.promptKnob {}
-
-.startLabel {}
-
-.endProjectKnob {
-  right: 0;
+.eventTitle {
+  font-size: 0.8em;
+  position: absolute;
+  top: -$knob-size;
 }

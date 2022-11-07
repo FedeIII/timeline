@@ -16,7 +16,7 @@ function useDistancePercentage(duration, start, date) {
   }, [duration, start, date]);
 }
 
-function useDynamicWidthStyle(title) {
+function useLabelWidthStyles(title) {
   return useMemo(() => {
     const width = title.length / 2;
 
@@ -28,37 +28,31 @@ function useDynamicWidthStyle(title) {
   }, [title]);
 }
 
+function useKnobStyles(noKnob) {
+  if (noKnob) return {
+    border: 'none',
+    backgroundColor: 'transparent',
+  };
+}
+
 export default function Event(props) {
   const { type } = props;
 
-  if (type == 'START_PROJECT') return <StartProjectEvent {...props} />
+  if (type == 'START_PROJECT') return <PromptEvent {...props} />
   if (type == 'PROMPT') return <PromptEvent {...props} />
-  if (type == 'START') return <StartEvent {...props} />
-  if (type == 'END_PROJECT') return <EndProjectEvent {...props} />
-}
-
-function StartProjectEvent(props) {
-  const { imgUrl, title, description, date, type, timelineDuration } = props;
-
-  const dynamicStyle = useDynamicWidthStyle(title);
-
-  return (
-    <div className={`${styles.eventKnob} ${styles.startProjectKnob}`}>
-      <div className={`${styles.eventLabel} ${styles.startProjectLabel}`} style={dynamicStyle}>
-        {title}
-      </div>
-    </div >
-  );
+  if (type == 'START') return <DurationEvent {...props} />
+  if (type == 'END_PROJECT') return <PromptEvent {...props} />
 }
 
 function PromptEvent(props) {
-  const { imgUrl, title, description, date, type, timelineDuration, projectStart } = props;
+  const { imgUrl, title, description, date, type, timelineDuration, projectStart, noKnob } = props;
 
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
-  const dynamicStyle = useDynamicWidthStyle(title);
+  const dynamicStyle = useLabelWidthStyles(title);
+  const knobStyles = useKnobStyles(noKnob);
 
   return (
-    <div className={styles.eventKnob} style={{ left: `${leftPosition}%` }} >
+    <div className={styles.eventKnob} style={{ left: `${leftPosition}%`, ...knobStyles }} >
       <div className={styles.eventLabel} style={dynamicStyle}>
         {title}
       </div>
@@ -66,31 +60,35 @@ function PromptEvent(props) {
   );
 }
 
-function StartEvent(props) {
-  const { imgUrl, title, description, date, type, timelineDuration, projectStart } = props;
+function DurationEvent(props) {
+  const { imgUrl, title, description, date, type, timelineDuration, projectStart, middle, end } = props;
 
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
-  const dynamicStyle = useDynamicWidthStyle(title);
+  const dynamicStyle = useLabelWidthStyles(title);
+  const eventDurationPercentage = useDistancePercentage(timelineDuration, date, end.date);
+
+  const lineStyles = { left: `${leftPosition}%`, width: `${eventDurationPercentage}%` };
 
   return (
-    <div className={styles.eventKnob} style={{ left: `${leftPosition}%` }} >
-      <div className={styles.eventLabel} style={dynamicStyle}>
-        {title}
+    <>
+      <div className={styles.eventKnob} style={lineStyles} >
+        <div className={styles.eventTitle}>{title}</div>
+        <div className={styles.eventLabel} style={dynamicStyle}>
+          {title}
+        </div>
       </div>
-    </div>
-  );
-}
-
-function EndProjectEvent(props) {
-  const { imgUrl, title, description, date, type, timelineDuration } = props;
-
-  const dynamicStyle = useDynamicWidthStyle(title);
-
-  return (
-    <div className={`${styles.eventKnob} ${styles.endProjectKnob}`}>
-      <div className={styles.eventLabel} style={dynamicStyle}>
-        {title}
-      </div>
-    </div>
+      {middle.map(middleEvent => <PromptEvent
+        {...middleEvent}
+        noKnob
+        timelineDuration={timelineDuration}
+        projectStart={projectStart}
+      />)}
+      <PromptEvent
+        {...end}
+        noKnob
+        timelineDuration={timelineDuration}
+        projectStart={projectStart}
+      />
+    </>
   );
 }
