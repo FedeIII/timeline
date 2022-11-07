@@ -78,6 +78,7 @@ function DurationEvent(props) {
         </div>
       </div>
       {middle.map(middleEvent => <PromptEvent
+        key={middleEvent.id}
         {...middleEvent}
         noKnob
         timelineDuration={timelineDuration}

@@ -49,7 +49,7 @@ export async function getProject(id) {
           date
           description
           tags { label, type }
-          events { imgUrl, title, description, date, type }
+          events { id, imgUrl, title, description, date, type }
         }
       }
     `,

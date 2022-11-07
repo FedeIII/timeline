@@ -31,7 +31,7 @@ export default function Timeline(props) {
       <div className={styles.line} />
       {events.map(event =>
         <Event
-          key={`${event.title}-${event.date}`}
+          key={event.id}
           {...event}
           timelineDuration={timelineDuration}
           projectStart={projectStart}
