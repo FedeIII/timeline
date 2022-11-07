@@ -1,33 +1,52 @@
-.event {
-  display: flex;
-  padding: 16px 0;
-  margin-bottom: 32px;
+$knob-size: 1.5rem;
+
+.eventLabel {
+  text-align: center;
+  height: 2rem;
   border: 1px solid lightgray;
+  border-right: none;
+  transform: rotate(-45deg);
+  font-size: 0.8em;
+  padding: 4px 5px 5px;
+  background-color: white;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    right: -0.75rem;
+    top: 0.23rem;
+    transform: rotate(-45deg);
+    width: 1.34rem;
+    height: 1.34rem;
+    border: 1px solid lightgray;
+    border-top: none;
+    border-left: none;
+    background-color: white;
+    z-index: -1;
+  }
 }
 
-.eventImage {
-  margin: 0 8px 0 16px;
-}
-
-.eventInfo {
-  position: relative;
-  width: 100%;
-  padding: 0 16px;
-}
-
-.eventTitle {
-  margin: 8px 0;
-  padding-left: 16px;
-}
-
-.eventDescription {
-  margin-bottom: 32px;
-}
-
-.eventDate {
-  font-size: 0.7em;
-  color: gray;
+.eventKnob {
   position: absolute;
-  bottom: 0;
-  right: 32px;
+  top: 33%;
+  margin-top: - $knob-size / 2;
+  width: $knob-size;
+  height: $knob-size;
+  border: 1px solid gray;
+  background-color: lightgray;
+}
+
+.startProjectKnob {
+  left: 0;
+}
+
+.promptLabel {}
+
+.promptKnob {}
+
+.startLabel {}
+
+.endProjectKnob {
+  right: 0;
 }

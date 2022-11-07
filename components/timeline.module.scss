@@ -1,0 +1,13 @@
+.timelineContainer {
+  position: relative;
+  min-height: 200px;
+}
+
+.line {
+  position: absolute;
+  width: 100%;
+  border-radius: 5px;
+  padding: 2px;
+  background-color: gray;
+  top: 33%;
+}

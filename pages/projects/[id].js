@@ -1,7 +1,8 @@
 import Head from 'next/head';
 
 import Layout from '../../components/layout';
-import Event from '../../components/event';
+import EventCard from '../../components/eventCard';
+import Timeline from '../../components/timeline';
 import { getAllProjectIds, getProject } from '../../queries/projectQueries';
 import styles from './project.module.scss';
 
@@ -14,16 +15,44 @@ export async function getStaticPaths() {
   };
 }
 
+function groupEvents(events) {
+  return events.reduce((groupedEvents, currentEvent) => {
+    if (currentEvent.type == 'MIDDLE') {
+      const startEventIndex = groupedEvents.findIndex(
+        otherEvent => otherEvent.type == 'START' && otherEvent.title == currentEvent.title,
+      );
+
+      const startEvent = groupedEvents[startEventIndex];
+      startEvent.middle = startEvent.middle || [];
+      startEvent.middle.push(currentEvent);
+    } else if (currentEvent.type == 'END') {
+      const startEventIndex = groupedEvents.findIndex(
+        otherEvent => otherEvent.type == 'START' && otherEvent.title == currentEvent.title,
+      );
+
+      const startEvent = groupedEvents[startEventIndex];
+      startEvent.end = currentEvent;
+    } else {
+      groupedEvents.push({ ...currentEvent });
+    }
+
+    return groupedEvents;
+  }, []);
+}
+
 export async function getStaticProps({ params }) {
   const project = await getProject(params.id);
 
   return {
-    props: project,
+    props: {
+      ...project,
+      groupedEvents: groupEvents(project.events),
+    },
   };
 }
 
 export default function Post(props) {
-  const { title, description, date, tags = [], events = [] } = props;
+  const { title, description, date, tags = [], events = [], groupedEvents = [] } = props;
 
   return (
     <Layout>
@@ -44,12 +73,14 @@ export default function Post(props) {
       </section>
       <section className={styles.timelineSection}>
         <h2 className={styles.timelineTitle}>Timeline</h2>
-        <div className={styles.timeline}><hr /></div>
+        <div className={styles.timeline}>
+          <Timeline events={groupedEvents} />
+        </div>
       </section>
       <section className={styles.eventsSection}>
         <h2 className={styles.eventsTitle}>Events</h2>
         <ul className={styles.events}>
-          {events.map(event => <Event {...event} key={`${title}-${date}`} />)}
+          {events.map(event => <EventCard {...event} key={`${title}-${date}`} />)}
         </ul>
       </section>
     </Layout>
