@@ -61,7 +61,7 @@ function PromptEvent(props) {
 }
 
 function DurationEvent(props) {
-  const { imgUrl, title, description, date, type, timelineDuration, projectStart, middle, end } = props;
+  const { imgUrl, title, description, date, type, topic, timelineDuration, projectStart, middle, end } = props;
 
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
@@ -72,7 +72,7 @@ function DurationEvent(props) {
   return (
     <>
       <div className={styles.eventKnob} style={lineStyles} >
-        <div className={styles.eventTitle}>{title}</div>
+        <div className={styles.eventTopic}>{topic}</div>
         <div className={styles.eventLabel} style={dynamicStyle}>
           {title}
         </div>

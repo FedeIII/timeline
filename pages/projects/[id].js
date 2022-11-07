@@ -19,15 +19,15 @@ function groupEvents(events) {
   return events.reduce((groupedEvents, currentEvent) => {
     if (currentEvent.type == 'MIDDLE') {
       const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.title == currentEvent.title,
+        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
       );
-
+      
       const startEvent = groupedEvents[startEventIndex];
       startEvent.middle = startEvent.middle || [];
       startEvent.middle.push(currentEvent);
     } else if (currentEvent.type == 'END') {
       const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.title == currentEvent.title,
+        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
       );
 
       const startEvent = groupedEvents[startEventIndex];
