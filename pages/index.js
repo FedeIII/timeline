@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.scss';
-import { getAllProjects } from '../queries/projectQueries';
+import { getAllProjects } from '../request/projectRequests';
 
 export async function getStaticProps() {
   const projects = await getAllProjects();

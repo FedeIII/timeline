@@ -27,6 +27,16 @@ $knob-size: 1.5rem;
   }
 }
 
+.eventLabelInput {
+  width: 100%;
+  border: none;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
 .eventKnob {
   position: absolute;
   top: 33%;
