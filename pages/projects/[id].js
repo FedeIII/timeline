@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { request } from 'graphql-request';
 
 import Layout from '../../components/layout';
-import EventCard from '../../components/eventCard';
+import EventList from '../../components/eventList';
 import Timeline from '../../components/timeline';
 import { getAllProjectIds, getProject, setEventTitle } from '../../requests/projectRequests';
 import styles from './project.module.scss';
@@ -126,13 +126,13 @@ export default function Post(props) {
       <section className={styles.timelineSection}>
         <h2 className={styles.timelineTitle}>Timeline</h2>
         <div className={styles.timeline}>
-          <Timeline events={groupedEvents} editEventTitle={editEventTitle} />
+          <Timeline events={groupedEvents} />
         </div>
       </section>
       <section className={styles.eventsSection}>
         <h2 className={styles.eventsTitle}>Events</h2>
         <ul className={styles.events}>
-          {events.map(event => <EventCard {...event} key={event.id} />)}
+          <EventList events={events} editEventTitle={editEventTitle} />
         </ul>
       </section>
     </Layout>

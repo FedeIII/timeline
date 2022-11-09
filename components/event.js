@@ -2,7 +2,6 @@ import Image from 'next/image';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict'
 import { useMemo } from 'react';
 
-
 import styles from './event.module.scss';
 
 function useDistancePercentage(duration, start, date) {
@@ -46,7 +45,7 @@ export default function Event(props) {
 }
 
 function PromptEvent(props) {
-  const { id, imgUrl, title, description, date, type, register, timelineDuration, projectStart, noKnob } = props;
+  const { id, imgUrl, title, description, date, type, timelineDuration, projectStart, noKnob } = props;
 
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
@@ -55,18 +54,14 @@ function PromptEvent(props) {
   return (
     <div className={styles.eventKnob} style={{ left: `${leftPosition}%`, ...knobStyles }} >
       <div className={styles.eventLabel} style={dynamicStyle}>
-        <input
-          defaultValue={title}
-          {...register(`${id}-title`)}
-          className={styles.eventLabelInput}
-        />
+        {title}
       </div>
     </div>
   );
 }
 
 function DurationEvent(props) {
-  const { id, imgUrl, title, description, date, type, topic, register, timelineDuration, projectStart, middle, end } = props;
+  const { id, imgUrl, title, description, date, type, topic, timelineDuration, projectStart, middle, end } = props;
 
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
@@ -79,25 +74,19 @@ function DurationEvent(props) {
       <div className={styles.eventKnob} style={lineStyles} >
         <div className={styles.eventTopic}>{topic}</div>
         <div className={styles.eventLabel} style={dynamicStyle}>
-          <input
-            defaultValue={title}
-            {...register(`${id}-title`)}
-            className={styles.eventLabelInput}
-          />
+          {title}
         </div>
       </div>
       {middle.map(middleEvent => <PromptEvent
         key={middleEvent.id}
         {...middleEvent}
         noKnob
-        register={register}
         timelineDuration={timelineDuration}
         projectStart={projectStart}
       />)}
       <PromptEvent
         {...end}
         noKnob
-        register={register}
         timelineDuration={timelineDuration}
         projectStart={projectStart}
       />
