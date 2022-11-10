@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { request } from 'graphql-request';
 
 import Layout from '../../components/layout';
@@ -81,6 +81,7 @@ export default function Post(props) {
   // const { id, title, description, date, tags = [], events = [], groupedEvents = [] } = props;
   const { id } = props;
 
+  const { mutate } = useSWRConfig()
   const { data, error } = useSWR(
     `{
       getProject(id: "${id}") {
@@ -97,8 +98,22 @@ export default function Post(props) {
 
   const project = useGetProject(data);
   const editEventTitle = useCallback(
-    (eventId, title) => setEventTitle(id, eventId, title),
-    [setEventTitle, id],
+    (eventId, title) => {
+      // setEventTitle(id, eventId, title);
+      mutate(
+        setEventTitle(id, eventId, title),
+        {
+          revalidate: true, populateCache: true, optimisticData: {
+            ...project,
+            events: project.events.map(event => {
+              if (event.id == eventId) return { ...event, title };
+              return event;
+            }),
+          }
+        },
+      );
+    },
+    [project, mutate, setEventTitle, id],
   );
 
   if (error) return <div>failed to load</div>

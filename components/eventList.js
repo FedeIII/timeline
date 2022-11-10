@@ -14,7 +14,7 @@ export default function EventList(props) {
 
     const fieldTouched = Object.keys(touchedFields)[0];
     const eventId = fieldTouched.split('-')[0];
-    console.log('submitting')
+    console.log('submitting');
     editEventTitle(eventId, data[fieldTouched]);
   }), [handleSubmit, touchedFields, reset]);
 

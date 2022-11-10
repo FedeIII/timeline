@@ -60,12 +60,16 @@ export async function getProject(id) {
 }
 
 export async function setEventTitle(projectId, eventId, title) {
-  console.log(projectId, eventId, title);
   const { data } = await client.mutate({
     mutation: gql`
       mutation EditEventTitle($projectId: String!, $eventId: String!, $title: String!) {
         editEventTitle(projectId: $projectId, eventId: $eventId, title: $title) {
           id
+          title
+          date
+          description
+          tags { label, type }
+          events { id, imgUrl, title, description, date, type, topic }
         }
       }
     `,
