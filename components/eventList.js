@@ -27,12 +27,14 @@ export default function EventList(props) {
 
     console.log('submitting', updatedEventId, updateData);
 
-    editEvent(updatedEventId, updateData);
+    if (updatedEventId && Object.keys(updateData).length > 0) {
+      editEvent(updatedEventId, updateData);
+    }
   }), [handleSubmit, setSubmitted, editEvent]);
 
   useEffect(() => {
     if (submitted) {
-      reset({}, { keepValues: true });
+      reset({});
       setSubmitted(false);
     }
 

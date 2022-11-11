@@ -1,9 +1,14 @@
 import classNames from 'classnames';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState, createRef } from 'react';
+import { useCallback, useEffect, useRef, useState, createRef, useLayoutEffect } from 'react';
 
 import styles from './eventCard.module.scss';
 import OutsideAlerter from './HOCs/outsideAlerter';
+
+function textareaCallback(textareaNode) {
+  textareaNode.target.style.height = '';
+  textareaNode.target.style.height = textareaNode.target.scrollHeight + 'px';
+}
 
 export default function EventCard(props) {
   const { id, imgUrl, title, description, date, register, submit } = props;
@@ -45,13 +50,21 @@ export default function EventCard(props) {
             className={styles.eventTitleInput}
             disabled={!isEditMode}
           />
-          <textarea
-            defaultValue={description}
-            {...register(`${id}-description`)}
-            className={styles.eventCardDescription}
+          <div className={styles.eventCardDescriptionContainer}>
+            <textarea
+              onInput={textareaCallback}
+              defaultValue={description}
+              {...register(`${id}-description`)}
+              className={styles.eventCardDescription}
+              disabled={!isEditMode}
+            />
+          </div>
+          <input
+            defaultValue={date}
+            {...register(`${id}-date`)}
+            className={styles.eventCardDate}
             disabled={!isEditMode}
           />
-          <div className={styles.eventCardDate}>{date}</div>
         </div>
       </li>
     </OutsideAlerter>
