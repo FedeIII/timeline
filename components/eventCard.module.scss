@@ -56,6 +56,21 @@
 
 .eventCardDescription {
   margin-bottom: 32px;
+  width: 100%;
+  line-height: 1.6;
+  font-size: 18px;
+  font-family: inherit;
+  border: none;
+  outline: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
+  }
 }
 
 .eventCardDate {
@@ -64,4 +79,5 @@
   position: absolute;
   bottom: 0;
   right: 32px;
+
 }

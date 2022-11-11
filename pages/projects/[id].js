@@ -5,7 +5,7 @@ import { request } from 'graphql-request';
 import Layout from '../../components/layout';
 import EventList from '../../components/eventList';
 import Timeline from '../../components/timeline';
-import { getAllProjectIds, getProject, setEventTitle } from '../../requests/projectRequests';
+import { getAllProjectIds, getProject, setEvent } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import { useCallback, useMemo } from 'react';
 
@@ -97,23 +97,23 @@ export default function Post(props) {
   );
 
   const project = useGetProject(data);
-  const editEventTitle = useCallback(
-    (eventId, title) => {
+  const editEvent = useCallback(
+    (eventId, eventProps) => {
       // setEventTitle(id, eventId, title);
       mutate(
-        setEventTitle(id, eventId, title),
+        setEvent(id, eventId, eventProps),
         {
           revalidate: true, populateCache: true, optimisticData: {
             ...project,
             events: project.events.map(event => {
-              if (event.id == eventId) return { ...event, title };
+              if (event.id == eventId) return { ...event, ...eventProps };
               return event;
             }),
           }
         },
       );
     },
-    [project, mutate, setEventTitle, id],
+    [project, mutate, setEvent, id],
   );
 
   if (error) return <div>failed to load</div>
@@ -147,7 +147,7 @@ export default function Post(props) {
       <section className={styles.eventsSection}>
         <h2 className={styles.eventsTitle}>Events</h2>
         <ul className={styles.events}>
-          <EventList events={events} editEventTitle={editEventTitle} />
+          <EventList events={events} editEvent={editEvent} />
         </ul>
       </section>
     </Layout>

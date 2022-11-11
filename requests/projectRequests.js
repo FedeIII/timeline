@@ -59,11 +59,11 @@ export async function getProject(id) {
   return data.getProject;
 }
 
-export async function setEventTitle(projectId, eventId, title) {
+export async function setEvent(projectId, eventId, eventProps) {
   const { data } = await client.mutate({
     mutation: gql`
-      mutation EditEventTitle($projectId: String!, $eventId: String!, $title: String!) {
-        editEventTitle(projectId: $projectId, eventId: $eventId, title: $title) {
+      mutation EditEvent($projectId: String!, $eventId: String!, $eventProps: EventInput!) {
+        editEvent(projectId: $projectId, eventId: $eventId, eventProps: $eventProps) {
           id
           title
           date
@@ -73,7 +73,7 @@ export async function setEventTitle(projectId, eventId, title) {
         }
       }
     `,
-    variables: { projectId, eventId, title },
+    variables: { projectId, eventId, eventProps },
   });
 
   return data;

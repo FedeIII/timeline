@@ -6,7 +6,7 @@ import styles from './eventCard.module.scss';
 import OutsideAlerter from './HOCs/outsideAlerter';
 
 export default function EventCard(props) {
-  const { id, imgUrl, title, description, date, register } = props;
+  const { id, imgUrl, title, description, date, register, submit } = props;
 
   const [isExitingEditMode, setExitingEditMode] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
@@ -17,11 +17,12 @@ export default function EventCard(props) {
   });
 
   useEffect(() => {
-      setEditMode(isExitingEditMode);
+    setEditMode(isExitingEditMode);
   }, [setEditMode, isExitingEditMode]);
 
   const onClickOutside = useCallback(() => {
     setExitingEditMode(false);
+    submit();
   }, [setExitingEditMode]);
 
   const onCardClick = useCallback(() => setExitingEditMode(true), [setExitingEditMode]);
@@ -44,7 +45,12 @@ export default function EventCard(props) {
             className={styles.eventTitleInput}
             disabled={!isEditMode}
           />
-          <div className={styles.eventCardDescription}>{description}</div>
+          <textarea
+            defaultValue={description}
+            {...register(`${id}-description`)}
+            className={styles.eventCardDescription}
+            disabled={!isEditMode}
+          />
           <div className={styles.eventCardDate}>{date}</div>
         </div>
       </li>

@@ -1,22 +1,34 @@
 import { useEffect, useCallback, useState } from 'react';
-import { useForm, useFormState } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import EventCard from './eventCard';
 
 export default function EventList(props) {
-  const { events, editEventTitle } = props;
+  const { events, editEvent } = props;
 
-  const [ submitted, setSubmitted ] = useState(false);
-  const { register, handleSubmit, control, reset } = useForm();
-  const { touchedFields } = useFormState({ control });
+  const [submitted, setSubmitted] = useState(false);
+  const { register, handleSubmit, reset } = useForm();
   const submit = useCallback(handleSubmit(data => {
     setSubmitted(true);
 
-    const fieldTouched = Object.keys(touchedFields)[0];
-    const eventId = fieldTouched.split('-')[0];
-    console.log('submitting');
-    editEventTitle(eventId, data[fieldTouched]);
-  }), [handleSubmit, touchedFields, reset]);
+    let updatedEventId, updateData = {};
+
+    Object.entries(data).forEach(([fieldName, fieldValue]) => {
+      const [eventId, fieldType] = fieldName.split('-');
+      if (typeof fieldValue !== 'undefined') {
+        if (!updatedEventId) updatedEventId = eventId;
+        if (updatedEventId != eventId) {
+          console.error('Trying to update multiple events');
+          return;
+        }
+        updateData[fieldType] = fieldValue;
+      }
+    });
+
+    console.log('submitting', updatedEventId, updateData);
+
+    editEvent(updatedEventId, updateData);
+  }), [handleSubmit, setSubmitted, editEvent]);
 
   useEffect(() => {
     if (submitted) {
@@ -27,12 +39,13 @@ export default function EventList(props) {
   }, [reset, submitted, setSubmitted]);
 
   return (
-    <form onBlur={submit}>
+    <form>
       {events.map(event =>
         <EventCard
           key={event.id}
           {...event}
           register={register}
+          submit={submit}
         />)}
     </form>
   );
