@@ -3,9 +3,9 @@ import useSWR, { useSWRConfig } from 'swr';
 import { request } from 'graphql-request';
 
 import Layout from '../../components/layout';
-import EventList from '../../components/eventList';
+import EventCard from '../../components/eventCard';
 import Timeline from '../../components/timeline';
-import { getAllProjectIds, getProject, setEvent } from '../../requests/projectRequests';
+import { getAllProjectIds, setEvent } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import { useCallback, useMemo } from 'react';
 
@@ -147,7 +147,12 @@ export default function Post(props) {
       <section className={styles.eventsSection}>
         <h2 className={styles.eventsTitle}>Events</h2>
         <ul className={styles.events}>
-          <EventList events={events} editEvent={editEvent} />
+          {events.map(event =>
+            <EventCard
+              key={event.id}
+              {...event}
+              editEvent={editEvent}
+            />)}
         </ul>
       </section>
     </Layout>

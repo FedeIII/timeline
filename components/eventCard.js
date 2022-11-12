@@ -1,9 +1,8 @@
 import classNames from 'classnames';
 import Image from 'next/image';
-import { useCallback, useEffect, useRef, useState, createRef, useLayoutEffect } from 'react';
 
 import styles from './eventCard.module.scss';
-import OutsideAlerter from './HOCs/outsideAlerter';
+import TogglableForm from './HOCs/togglableForm';
 
 function textareaCallback(textareaNode) {
   textareaNode.target.style.height = '';
@@ -11,62 +10,70 @@ function textareaCallback(textareaNode) {
 }
 
 export default function EventCard(props) {
-  const { id, imgUrl, title, description, date, register, submit } = props;
+  const { id, imgUrl, title, description, date, editEvent } = props;
 
-  const [isExitingEditMode, setExitingEditMode] = useState(false);
-  const [isEditMode, setEditMode] = useState(false);
+  const onFormEdit = data => {
+    let updateData = {};
 
-  const eventCardStyles = classNames({
-    [styles.eventCard]: true,
-    [styles.eventCardHover]: !isExitingEditMode,
-  });
+    Object.entries(data).forEach(([fieldName, fieldValue]) => {
+      if (typeof fieldValue !== 'undefined') {
+        updateData[fieldName] = fieldValue;
+      }
+    });
 
-  useEffect(() => {
-    setEditMode(isExitingEditMode);
-  }, [setEditMode, isExitingEditMode]);
+    console.log('submitting', id, updateData);
 
-  const onClickOutside = useCallback(() => {
-    setExitingEditMode(false);
-    submit();
-  }, [setExitingEditMode]);
-
-  const onCardClick = useCallback(() => setExitingEditMode(true), [setExitingEditMode]);
+    if (Object.keys(updateData).length > 0) {
+      editEvent(id, updateData);
+    }
+  }
 
   return (
-    <OutsideAlerter onClickOutside={onClickOutside} enabled={isEditMode}>
-      <li className={eventCardStyles} onClick={onCardClick}>
-        {imgUrl && <Image
-          priority
-          src={imgUrl}
-          className={styles.eventCardImage}
-          height={256}
-          width={256}
-          alt={title}
-        />}
-        <div className={styles.eventCardInfo}>
-          <input
-            defaultValue={title}
-            {...register(`${id}-title`)}
-            className={styles.eventTitleInput}
-            disabled={!isEditMode}
-          />
-          <div className={styles.eventCardDescriptionContainer}>
-            <textarea
-              onInput={textareaCallback}
-              defaultValue={description}
-              {...register(`${id}-description`)}
-              className={styles.eventCardDescription}
-              disabled={!isEditMode}
-            />
-          </div>
-          <input
-            defaultValue={date}
-            {...register(`${id}-date`)}
-            className={styles.eventCardDate}
-            disabled={!isEditMode}
-          />
-        </div>
-      </li>
-    </OutsideAlerter>
+    <TogglableForm onFormEdit={onFormEdit}>
+      {props => {
+        const { isExitingEditMode, isEditMode, register } = props;
+
+        const eventCardStyles = classNames({
+          [styles.eventCard]: true,
+          [styles.eventCardHover]: !isExitingEditMode,
+        });
+
+        return (
+          <li className={eventCardStyles}>
+            {imgUrl && <Image
+              priority
+              src={imgUrl}
+              className={styles.eventCardImage}
+              height={256}
+              width={256}
+              alt={title}
+            />}
+            <div className={styles.eventCardInfo}>
+              <input
+                defaultValue={title}
+                {...register('title')}
+                className={styles.eventTitleInput}
+                disabled={!isEditMode}
+              />
+              <div className={styles.eventCardDescriptionContainer}>
+                <textarea
+                  onInput={textareaCallback}
+                  defaultValue={description}
+                  {...register('description')}
+                  className={styles.eventCardDescription}
+                  disabled={!isEditMode}
+                />
+              </div>
+              <input
+                defaultValue={date}
+                {...register('date')}
+                className={styles.eventCardDate}
+                disabled={!isEditMode}
+              />
+            </div>
+          </li>
+        );
+      }}
+    </TogglableForm>
   );
 }
