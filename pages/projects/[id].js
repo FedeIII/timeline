@@ -5,7 +5,8 @@ import { request } from 'graphql-request';
 import Layout from '../../components/layout';
 import EventCard from '../../components/eventCard';
 import Timeline from '../../components/timeline';
-import { getAllProjectIds, setEvent } from '../../requests/projectRequests';
+import ProjectHeader from '../../components/projectHeader';
+import { getAllProjectIds, setEvent, setProject } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import { useCallback, useMemo } from 'react';
 
@@ -97,24 +98,33 @@ export default function Post(props) {
   );
 
   const project = useGetProject(data);
-  const editEvent = useCallback(
-    (eventId, eventProps) => {
-      // setEventTitle(id, eventId, title);
-      mutate(
-        setEvent(id, eventId, eventProps),
-        {
-          revalidate: true, populateCache: true, optimisticData: {
-            ...project,
-            events: project.events.map(event => {
-              if (event.id == eventId) return { ...event, ...eventProps };
-              return event;
-            }),
-          }
-        },
-      );
-    },
-    [project, mutate, setEvent, id],
-  );
+  const editEvent = useCallback((eventId, eventProps) => {
+    // setEventTitle(id, eventId, title);
+    mutate(
+      setEvent(id, eventId, eventProps),
+      {
+        revalidate: true, populateCache: true, optimisticData: {
+          ...project,
+          events: project.events.map(event => {
+            if (event.id == eventId) return { ...event, ...eventProps };
+            return event;
+          }),
+        }
+      },
+    );
+  }, [project, mutate, setEvent, id]);
+
+  const editProject = useCallback((id, projectProps) => {
+    mutate(
+      setProject(id, projectProps),
+      {
+        revalidate: true, populateCache: true, optimisticData: {
+          ...project,
+          ...projectProps,
+        }
+      },
+    );
+  }, [project, mutate, setProject, id]);
 
   if (error) return <div>failed to load</div>
   if (!project) return <div>loading...</div>
@@ -127,16 +137,7 @@ export default function Post(props) {
         <title>{title}</title>
       </Head>
       <section className={styles.headerSection}>
-        <h1 className={styles.title}>{title}</h1>
-        <div className={styles.info}>
-          <div className={styles.description}>{description}</div>
-          <div className={styles.otherInfo}>
-            <span className={styles.date}>{date}</span>
-            <ul className={styles.tags}>
-              {tags.map(tag => <li key={tag.label}>{tag.label}</li>)}
-            </ul>
-          </div>
-        </div>
+        <ProjectHeader {...project} editProject={editProject} />
       </section>
       <section className={styles.timelineSection}>
         <h2 className={styles.timelineTitle}>Timeline</h2>

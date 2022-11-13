@@ -1,0 +1,91 @@
+.projectHeader {
+  display: flex;
+  justify-content: flex-start;
+  
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.projectHeaderHover {
+  &:hover {
+    background-color: lightgray;
+  }
+}
+
+.title {
+  flex-basis: 50%;
+  margin: 32px 64px 32px 16px;
+  padding: 8px 8px 8px 64px;
+  border: 1px solid lightgray;
+  height: 4.5rem;
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
+  }
+}
+
+.info {
+  flex-basis: 50%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 32px;
+}
+
+.descriptionContainer {
+  flex-grow: 2;
+  margin-bottom: 8px;
+}
+
+.description {
+  font-family: inherit;
+  line-height: 1.6;
+  font-size: 18px;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
+  }
+}
+
+.otherInfo {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.date {
+  font-size: 0.7em;
+  color: gray;
+  border: none;
+  outline: none;
+
+  &:focus {
+    outline: none;
+    color: gray;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
+    color: gray;
+  }
+}

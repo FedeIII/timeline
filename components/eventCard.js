@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import Image from 'next/image';
+import { useCallback } from 'react';
 
 import styles from './eventCard.module.scss';
 import TogglableForm from './HOCs/togglableForm';
@@ -12,7 +12,7 @@ function textareaCallback(textareaNode) {
 export default function EventCard(props) {
   const { id, imgUrl, title, description, date, editEvent } = props;
 
-  const onFormEdit = data => {
+  const onFormEdit = useCallback(data => {
     let updateData = {};
 
     Object.entries(data).forEach(([fieldName, fieldValue]) => {
@@ -26,20 +26,15 @@ export default function EventCard(props) {
     if (Object.keys(updateData).length > 0) {
       editEvent(id, updateData);
     }
-  }
+  }, [id, editEvent]);
 
   return (
-    <TogglableForm onFormEdit={onFormEdit}>
+    <TogglableForm onFormEdit={onFormEdit} className={styles.eventCard}>
       {props => {
-        const { isExitingEditMode, isEditMode, register } = props;
-
-        const eventCardStyles = classNames({
-          [styles.eventCard]: true,
-          [styles.eventCardHover]: !isExitingEditMode,
-        });
+        const { topLevelStyles, isEditMode, register } = props;
 
         return (
-          <li className={eventCardStyles}>
+          <li className={topLevelStyles}>
             {imgUrl && <Image
               priority
               src={imgUrl}

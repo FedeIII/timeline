@@ -59,6 +59,26 @@ export async function getProject(id) {
   return data.getProject;
 }
 
+export async function setProject(id, projectProps) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation EditProject($id: String!, $input: ProjectInput!) {
+        editProject(id: $id, input: $input) {
+          id
+          title
+          date
+          description
+          tags { label, type }
+          events { id, imgUrl, title, description, date, type, topic }
+        }
+      }
+    `,
+    variables: { id, input: projectProps },
+  });
+
+  return data;
+}
+
 export async function setEvent(projectId, eventId, eventProps) {
   const { data } = await client.mutate({
     mutation: gql`
