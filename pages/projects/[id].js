@@ -142,7 +142,7 @@ export default function Post(props) {
       <section className={styles.timelineSection}>
         <h2 className={styles.timelineTitle}>Timeline</h2>
         <div className={styles.timeline}>
-          <Timeline events={groupedEvents} />
+          <Timeline events={groupedEvents} projectId={id} />
         </div>
       </section>
       <section className={styles.eventsSection}>

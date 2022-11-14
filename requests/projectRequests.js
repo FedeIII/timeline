@@ -98,3 +98,18 @@ export async function setEvent(projectId, eventId, eventProps) {
 
   return data;
 }
+
+export async function addEvent(projectId, event) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation AddEvent($projectId: String!, $event: EventInput!) {
+        addEvent(projectId: $projectId, event: $event) {
+          id
+        }
+      }
+    `,
+    variables: { projectId, event },
+  });
+
+  return data;
+}
