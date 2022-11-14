@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
+import ProjectContext from '../contexts/projectContext';
 
 import styles from './eventCard.module.scss';
 import TogglableForm from './HOCs/togglableForm';
@@ -10,7 +11,9 @@ function textareaCallback(textareaNode) {
 }
 
 export default function EventCard(props) {
-  const { id, imgUrl, title, description, date, editEvent } = props;
+  const { id, imgUrl, title, description, date } = props;
+
+  const { editEvent } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
     let updateData = {};

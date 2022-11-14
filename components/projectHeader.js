@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 
 import TogglableForm from './HOCs/togglableForm';
 import styles from './projectHeader.module.scss';
 import { EditableTags, Tags } from './tags';
+import ProjectContext from '../contexts/projectContext';
 
 function textareaCallback(textareaNode) {
   textareaNode.target.style.height = '';
@@ -10,7 +11,9 @@ function textareaCallback(textareaNode) {
 }
 
 export default function ProjectHeader(props) {
-  const { id, title, description, date, tags, editProject } = props;
+  const { id, title, description, date, tags } = props;
+
+  const { editProject } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
     let updateData = {};
@@ -67,7 +70,7 @@ export default function ProjectHeader(props) {
                 {isEditMode ?
                   <EditableTags tags={tags} register={register} />
                   :
-                  <Tags tags={tags} />  
+                  <Tags tags={tags} />
                 }
               </div>
             </div>

@@ -1,13 +1,13 @@
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import addDays from 'date-fns/addDays';
 import format from 'date-fns/format';
-import { useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback, useContext } from 'react';
 
 import Event from './event';
 import styles from './timeline.module.scss';
 import TogglableForm from './HOCs/togglableForm';
 import CanvasEvents from '../utils/canvasEvents';
-import { addEvent } from '../requests/projectRequests';
+import ProjectContext from '../contexts/projectContext';
 
 function useTimelineDuration(events) {
   return useMemo(() => {
@@ -25,7 +25,9 @@ function useTimelineDuration(events) {
   }, events);
 }
 
-function useTimelineListeners({ startDate, projectId, projectDays, createEvent }) {
+function useTimelineListeners({ startDate, projectId, projectDays }) {
+  const { createEvent } = useContext(ProjectContext);
+
   useEffect(() => {
     const canvas = document.getElementById('timeline');
     const context = canvas.getContext("2d");
@@ -108,7 +110,6 @@ export default function Timeline(props) {
     projectId,
     startDate: events[0].date,
     projectDays: timelineDuration,
-    createEvent: addEvent,
   });
 
   const onFormEdit = useCallback(data => {
