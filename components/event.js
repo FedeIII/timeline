@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict'
-import { useMemo } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 
 import styles from './event.module.scss';
+import ProjectContext from '../contexts/projectContext';
 
 function useDistancePercentage(duration, start, date) {
   return useMemo(() => {
@@ -50,12 +51,32 @@ function PromptEvent(props) {
   const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
   const knobStyles = useKnobStyles(noKnob);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const { deleteEvent } = useContext(ProjectContext);
+
+  const onKnobClick = useCallback(() => {
+    setModalOpen(!modalOpen);
+  }, [setModalOpen, modalOpen]);
+
+  const onDeleteClick = useCallback(() => {
+    deleteEvent(id);
+  }, [deleteEvent, id]);
 
   return (
-    <div className={styles.eventKnob} style={{ left: `${leftPosition}%`, ...knobStyles }} >
+    <div
+      className={styles.eventKnob}
+      style={{ left: `${leftPosition}%`, ...knobStyles }}
+      onClick={onKnobClick}
+    >
       <div className={styles.eventLabel} style={dynamicStyle}>
         {title}
       </div>
+      {modalOpen && (
+        <div className={styles.eventModal} onClick={onDeleteClick} >
+          <span className={styles.deleteEvent}>x</span>
+        </div>
+      )}
     </div>
   );
 }

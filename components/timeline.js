@@ -1,6 +1,8 @@
+import { v4 as uuid } from 'uuid';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import addDays from 'date-fns/addDays';
 import format from 'date-fns/format';
+import add from 'date-fns/add'
 import { useEffect, useMemo, useCallback, useContext } from 'react';
 
 import Event from './event';
@@ -9,20 +11,40 @@ import TogglableForm from './HOCs/togglableForm';
 import CanvasEvents from '../utils/canvasEvents';
 import ProjectContext from '../contexts/projectContext';
 
-function useTimelineDuration(events) {
+function useTimelineDuration(firstEvent, lastEvent) {
   return useMemo(() => {
-    const firstEvent = events[0];
-    let lastEvent = events[events.length - 1];
-    if (lastEvent.end) lastEvent = lastEvent.end;
+    const today = format(new Date(), 'yyyy-MM-dd');
+    let startDate = (firstEvent && firstEvent.date)
+      || today;
 
-    const distance = formatDistanceStrict(
-      new Date(firstEvent.date),
-      new Date(lastEvent.date),
+    const aMonthAfterStartDate = format(add(new Date(startDate), { months: 1 }), 'yyyy-MM-dd');
+    let endDate = (lastEvent && lastEvent.end && lastEvent.end.date)
+      || (lastEvent && lastEvent.date)
+      || aMonthAfterStartDate;
+
+    let distance = formatDistanceStrict(
+      new Date(startDate),
+      new Date(endDate),
       { unit: 'day' }
     );
 
-    return Number(distance.split(' ')[0]);
-  }, events);
+    if (distance < 21) {
+      endDate = aMonthAfterStartDate;
+    }
+
+    endDate = format(add(new Date(endDate), { days: 7 }), 'yyyy-MM-dd');
+
+
+    distance = formatDistanceStrict(
+      new Date(startDate),
+      new Date(endDate),
+      { unit: 'day' }
+    );
+
+    const timelineDuration = Number(distance.split(' ')[0]);
+
+    return [timelineDuration, startDate, endDate]
+  }, [firstEvent, lastEvent]);
 }
 
 function useTimelineListeners({ startDate, projectId, projectDays }) {
@@ -69,23 +91,34 @@ function useTimelineListeners({ startDate, projectId, projectDays }) {
       this.addRegionEventListener("mousedown", function () {
         var mousePos = events.getMousePos();
         message = `select at ${mousePos.x}`;
+        console.log('mousedown');
       });
 
+      let hasExecuted = false;
+
       this.addRegionEventListener("mouseup", function () {
-        var mousePos = events.getMousePos();
-        message = `deselect at ${mousePos.x}`;
+        if (!hasExecuted) {
+          setTimeout(() => {
+            hasExecuted = false;
+          }, 500);
 
-        const eventDays = projectDays * mousePos.x / canvas.width;
+          var mousePos = events.getMousePos();
+          message = `deselect at ${mousePos.x}`;
+          console.log('mouseup');
 
-        const eventDate = addDays(new Date(startDate), eventDays);
-        const eventDateFormatted = format(eventDate, 'yyyy-MM-dd');
+          const eventDays = projectDays * mousePos.x / canvas.width;
 
-        createEvent(projectId, {
-          id: eventDateFormatted,
-          title: eventDateFormatted,
-          date: eventDateFormatted,
-          type: 'PROMPT',
-        });
+          const eventDate = addDays(new Date(startDate), eventDays);
+          const eventDateFormatted = format(eventDate, 'yyyy-MM-dd');
+
+          createEvent({
+            id: uuid(),
+            title: eventDateFormatted,
+            date: eventDateFormatted,
+            type: 'PROMPT',
+          });
+          hasExecuted = true;
+        }
       });
 
       this.closeRegion();
@@ -94,21 +127,22 @@ function useTimelineListeners({ startDate, projectId, projectDays }) {
     });
 
     return () => {
-      this.removeRegionEventListener("mousedown");
-      this.removeRegionEventListener("mouseup");
+      events.removeRegionEventListener("mousedown");
+      events.removeRegionEventListener("mouseup");
     };
   }, []);
 }
 
 export default function Timeline(props) {
-  const { events, projectId } = props;
+  const { events, projectId, projectStart } = props;
 
-  const timelineDuration = useTimelineDuration(events);
-  const projectStart = events[0].date;
+  const firstEvent = events[0];
+  const lastEvent = events[events.length - 1];
+  const [timelineDuration, startDate, endDate] = useTimelineDuration(firstEvent, lastEvent);
 
   useTimelineListeners({
     projectId,
-    startDate: events[0].date,
+    startDate: projectStart,
     projectDays: timelineDuration,
   });
 
@@ -123,8 +157,11 @@ export default function Timeline(props) {
 
         return (
           <div className={topLevelStyles}>
+            <span className={styles.startDate}>{startDate}</span>
+            <span className={styles.endDate}>{endDate}</span>
+
             <canvas id="timeline" width="100%" height="200" className={styles.canvasLine}></canvas>
-            {/* <div className={styles.line} /> */}
+
             {
               events.map(event =>
                 <Event

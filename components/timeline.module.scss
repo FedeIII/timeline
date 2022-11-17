@@ -12,7 +12,23 @@
   top: 33%;
 }
 
-.canvasLine{
+.canvasLine {
   // width: 100%;
   // height: 200px;
+}
+
+.startDate {
+  font-size: 10px;
+  position: absolute;
+  left: -50px;
+  top: 20px;
+  transform: rotate(45deg);
+}
+
+.endDate {
+  font-size: 10px;
+  position: absolute;
+  right: 0;
+  top: 20px;
+  transform: rotate(45deg);
 }

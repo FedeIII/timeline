@@ -35,10 +35,34 @@ $knob-size: 1.5rem;
   height: $knob-size;
   border: 1px solid gray;
   background-color: lightgray;
+  cursor: pointer;
+  transition: left 0.5s ease-out;
 }
 
 .eventTopic {
   font-size: 0.8em;
   position: absolute;
   top: -$knob-size;
+}
+
+.eventModal {
+  position: absolute;
+  font-size: 12px;
+  border: 1px solid black;
+  background-color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  top: -40px;
+  left: -4px;
+  line-height: 28px;
+  text-align: center;
+}
+
+.deleteEvent {
+  font-weight: bold;
+
+  &:hover {
+    color: red;
+  }
 }

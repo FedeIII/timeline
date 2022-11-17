@@ -8,9 +8,11 @@ import Timeline from '../../components/timeline';
 import ProjectHeader from '../../components/projectHeader';
 import {
   getAllProjectIds,
-  setEvent,
+  getProject as getProjectRequest,
+  setEvent as setEventRequest,
   setProject as setProjectRequest,
-  addEvent,
+  addEvent as addEventRequest,
+  deleteEvent as deleteEventRequest,
 } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -84,7 +86,7 @@ function useGroupEvents(projectData) {
 
 function useProject(id) {
   const [project, setProject] = useState(null);
-  const { mutate } = useSWRConfig()
+  // const { mutate } = useSWRConfig()
   let error;
 
   const response = useSWR(`{
@@ -101,6 +103,7 @@ function useProject(id) {
   );
 
   const data = response.data;
+  const mutate = response.mutate;
   error = response.error;
 
   useEffect(() => {
@@ -111,75 +114,83 @@ function useProject(id) {
     }
   }, [data, project, useGroupEvents, setProject]);
 
-  const editEvent = useCallback((eventId, eventProps) => {
-    // setEventTitle(id, eventId, title);
-    let newProject = {
-      ...project,
-      events: project.events.map(event => {
-        if (event.id == eventId) return { ...event, ...eventProps };
-        return event;
-      }),
-    };
+  async function editEvent(eventId, eventProps) {
+    mutate(data => {
+      let newProject = {
+        ...data.getProject,
+        events: data.getProject.events.map(event => {
+          if (event.id == eventId) return { ...event, ...eventProps };
+          return event;
+        })
+      };
 
-    newProject = useGroupEvents(newProject);
-
-    mutate(
-      setEvent(id, eventId, eventProps),
-      {
-        revalidate: true, populateCache: true, optimisticData: newProject,
-      },
-    );
-
-    setProject(newProject);
-  }, [project, mutate, setEvent, id, setProject, useGroupEvents]);
-
-  const editProject = useCallback((id, projectProps) => {
-    let newProject = {
-      ...project,
-      ...projectProps,
-    };
-
-    if (newProject.events) {
       newProject = useGroupEvents(newProject);
-    }
+      setProject(newProject);
+    });
 
-    mutate(
-      setProjectRequest(id, projectProps),
-      {
-        revalidate: true, populateCache: true, optimisticData: newProject,
-      },
-    );
+    setEventRequest(id, eventId, eventProps);
+  }
 
-    setProject(newProject);
-  }, [project, mutate, setProjectRequest, id, setProject, useGroupEvents]);
+  async function editProject(id, projectProps) {
+    mutate(data => {
+      let newProject = {
+        ...data.getProject,
+        ...projectProps,
+      };
 
-  const createEvent = useCallback((projectId, event) => {
-    let newProject = { ...project };
-    newProject.events.push(event);
-    newProject.events = newProject.events.sort(
-      (event1, event2) => event1.date > event2.date ? 1 : -1,
-    );
+      if (newProject.events) {
+        newProject = useGroupEvents(newProject);
+      }
 
-    newProject = useGroupEvents(newProject);
+      setProject(newProject);
+    });
 
-    mutate(
-      addEvent(id, event),
-      {
-        revalidate: true, populateCache: true, optimisticData: newProject,
-      },
-    );
+    setProjectRequest(id, projectProps);
+  }
 
-    setProject(newProject);
-  }, [project, useGroupEvents, mutate, id, addEvent, setProject]);
+  async function createEvent(event) {
+    mutate(data => {
+      let newProject = { ...data.getProject };
+      newProject.events.push(event);
+      newProject.events = newProject.events.sort(
+        (event1, event2) => event1.date > event2.date ? 1 : -1,
+      );
 
-  return [project, error, editProject, editEvent, createEvent]
+      newProject = useGroupEvents(newProject);
+
+      setProject(newProject);
+    });
+
+    addEventRequest(id, event);
+  }
+
+  async function deleteEvent(eventId) {
+    mutate(data => {
+      let newProject = { ...data.getProject };
+      newProject.events = newProject.events.filter(event => event.id != eventId);
+      newProject = useGroupEvents(newProject);
+
+      setProject(newProject);
+    });
+
+    deleteEventRequest(id, eventId);
+  }
+
+  return [project, error, editProject, editEvent, createEvent, deleteEvent]
 }
 
 export default function Post(props) {
   // const { id, title, description, date, tags = [], events = [], groupedEvents = [] } = props;
   const { id } = props;
 
-  const [project, error, editProject, editEvent, createEvent] = useProject(id);
+  const [
+    project,
+    error,
+    editProject,
+    editEvent,
+    createEvent,
+    deleteEvent,
+  ] = useProject(id);
 
   if (error) return <div>failed to load</div>
   if (!project) return <div>loading...</div>
@@ -188,7 +199,13 @@ export default function Post(props) {
 
   return (
     <Layout>
-      <ProjectContext.Provider value={{ project, editProject, editEvent, createEvent }}>
+      <ProjectContext.Provider value={{
+        project,
+        editProject,
+        editEvent,
+        createEvent,
+        deleteEvent,
+      }}>
         <Head>
           <title>{title}</title>
         </Head>
@@ -198,7 +215,7 @@ export default function Post(props) {
         <section className={styles.timelineSection}>
           <h2 className={styles.timelineTitle}>Timeline</h2>
           <div className={styles.timeline}>
-            <Timeline events={groupedEvents} projectId={id} />
+            <Timeline events={groupedEvents} projectId={id} projectStart={date} />
           </div>
         </section>
         <section className={styles.eventsSection}>

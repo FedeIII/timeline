@@ -105,10 +105,30 @@ export async function addEvent(projectId, event) {
       mutation AddEvent($projectId: String!, $event: EventInput!) {
         addEvent(projectId: $projectId, event: $event) {
           id
+          title
+          date
+          description
+          tags { label, type }
+          events { id, imgUrl, title, description, date, type, topic }
         }
       }
     `,
     variables: { projectId, event },
+  });
+
+  return data;
+}
+
+export async function deleteEvent(projectId, eventId) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation DeleteEvent($projectId: String!, $eventId: String!) {
+        deleteEvent(projectId: $projectId, eventId: $eventId) {
+          id
+        }
+      }
+    `,
+    variables: { projectId, eventId },
   });
 
   return data;
