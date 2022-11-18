@@ -1,18 +1,9 @@
 .eventCard {
+  position: relative;
   display: flex;
   padding: 16px 0;
   margin-bottom: 32px;
   border: 1px solid lightgray;
-
-  &:hover {
-    background-color: transparent;
-  }
-}
-
-.eventCardHover {
-  &:hover {
-    background-color: lightgray;
-  }
 }
 
 .eventCardImage {
@@ -97,5 +88,25 @@
 
   &:disabled {
     background-color: transparent;
+  }
+}
+
+.deleteEvent {
+  position: absolute;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  text-align: center;
+  font-weight: bold;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: coral;
+    color: red;
   }
 }

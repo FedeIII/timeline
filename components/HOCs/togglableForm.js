@@ -38,8 +38,8 @@ export default function TogglableForm(props) {
   }, [reset, submitted, setSubmitted]);
 
   const topLevelStyles = classNames({
-    [className]: true,
     [utilStyles.formHover]: !isExitingEditMode,
+    [className]: true,
   });
 
   return (

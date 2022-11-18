@@ -13,7 +13,7 @@ function textareaCallback(textareaNode) {
 export default function EventCard(props) {
   const { id, imgUrl, title, description, date } = props;
 
-  const { editEvent } = useContext(ProjectContext);
+  const { editEvent, deleteEvent } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
     let updateData = {};
@@ -31,6 +31,8 @@ export default function EventCard(props) {
     }
   }, [id, editEvent]);
 
+  const onDeleteClick = useCallback(() => deleteEvent(id), []);
+
   return (
     <TogglableForm onFormEdit={onFormEdit} className={styles.eventCard}>
       {props => {
@@ -38,6 +40,7 @@ export default function EventCard(props) {
 
         return (
           <li className={topLevelStyles}>
+            {isEditMode && <span onClick={onDeleteClick} className={styles.deleteEvent}>x</span>}
             {imgUrl && <Image
               priority
               src={imgUrl}
