@@ -13,6 +13,7 @@ import {
   setProject as setProjectRequest,
   addEvent as addEventRequest,
   deleteEvent as deleteEventRequest,
+  groupProjectEvents,
 } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -29,41 +30,7 @@ export async function getStaticPaths() {
   };
 }
 
-function groupEvents(events) {
-  return events.reduce((groupedEvents, currentEvent) => {
-    if (currentEvent.type == 'MIDDLE') {
-      const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
-      );
-
-      const startEvent = groupedEvents[startEventIndex];
-      startEvent.middle = startEvent.middle || [];
-      startEvent.middle.push(currentEvent);
-    } else if (currentEvent.type == 'END') {
-      const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
-      );
-
-      const startEvent = groupedEvents[startEventIndex];
-      startEvent.end = currentEvent;
-    } else {
-      groupedEvents.push({ ...currentEvent });
-    }
-
-    return groupedEvents;
-  }, []);
-}
-
 export async function getStaticProps({ params }) {
-  // const project = await getProject(params.id);
-
-  // return {
-  //   props: {
-  //     ...project,
-  //     groupedEvents: groupEvents(project.events),
-  //   },
-  // };
-
   return {
     props: {
       id: params.id,
@@ -71,112 +38,72 @@ export async function getStaticProps({ params }) {
   };
 }
 
-function useGroupEvents(projectData) {
-  let project = null;
-
-  if (projectData) {
-    project = {
-      ...projectData,
-      groupedEvents: groupEvents(projectData.events) || [],
-    };
-  }
-
-  return project;
-}
-
 function useProject(id) {
   const [project, setProject] = useState(null);
-  // const { mutate } = useSWRConfig()
-  let error;
-
-  const response = useSWR(`{
-    getProject(id: "${id}") {
-      id
-      title
-      date
-      description
-      tags { label, type }
-      events { id, imgUrl, title, description, date, type, topic }
-    }
-  }`,
-    fetcher,
-  );
-
-  const data = response.data;
-  const mutate = response.mutate;
-  error = response.error;
 
   useEffect(() => {
-    if (!project && data) {
-      const projectData = useGroupEvents(data.getProject);
+    async function requestProject() {
+      const project = await getProjectRequest(id);
 
-      setProject(projectData);
+      setProject(project);
     }
-  }, [data, project, useGroupEvents, setProject]);
+
+    requestProject();
+  }, [id]);
 
   async function editEvent(eventId, eventProps) {
-    mutate(data => {
-      let newProject = {
-        ...data.getProject,
-        events: data.getProject.events.map(event => {
-          if (event.id == eventId) return { ...event, ...eventProps };
-          return event;
-        })
-      };
+    let localProject = {
+      ...project,
+      events: project.events.map(event => {
+        if (event.id == eventId) return { ...event, ...eventProps };
+        return event;
+      })
+    };
+    localProject = groupProjectEvents(localProject);
+    setProject(localProject);
 
-      newProject = useGroupEvents(newProject);
-      setProject(newProject);
-    });
-
-    setEventRequest(id, eventId, eventProps);
+    const remoteProject = await setEventRequest(id, eventId, eventProps);
+    setProject(remoteProject);
   }
 
   async function editProject(id, projectProps) {
-    mutate(data => {
-      let newProject = {
-        ...data.getProject,
-        ...projectProps,
-      };
+    let localProject = {
+      ...project,
+      ...projectProps,
+    };
+    localProject = groupProjectEvents(localProject);
+    setProject(localProject);
 
-      if (newProject.events) {
-        newProject = useGroupEvents(newProject);
-      }
-
-      setProject(newProject);
-    });
-
-    setProjectRequest(id, projectProps);
+    const remoteProject = await setProjectRequest(id, projectProps);
+    setProject(remoteProject);
   }
 
   async function createEvent(event) {
-    mutate(data => {
-      let newProject = { ...data.getProject };
-      newProject.events.push(event);
-      newProject.events = newProject.events.sort(
-        (event1, event2) => event1.date > event2.date ? 1 : -1,
-      );
+    let localProject = {
+      ...project,
+      events: [...project.events, event],
+    };
+    localProject.events = localProject.events.sort(
+      (event1, event2) => event1.date > event2.date ? 1 : -1,
+    );
+    localProject = groupProjectEvents(localProject);
+    setProject(localProject);
 
-      newProject = useGroupEvents(newProject);
-
-      setProject(newProject);
-    });
-
-    addEventRequest(id, event);
+    const remoteProject = await addEventRequest(id, event);
+    setProject(remoteProject);
   }
 
   async function deleteEvent(eventId) {
-    mutate(data => {
-      let newProject = { ...data.getProject };
-      newProject.events = newProject.events.filter(event => event.id != eventId);
-      newProject = useGroupEvents(newProject);
+    let localProject = { ...project };
+    localProject.events = localProject.events.filter(event => event.id != eventId);
+    localProject = groupProjectEvents(localProject);
+    setProject(localProject);
 
-      setProject(newProject);
-    });
-
-    deleteEventRequest(id, eventId);
+    const remoteProject = await deleteEventRequest(id, eventId);
+    setProject(remoteProject);
   }
 
-  return [project, error, editProject, editEvent, createEvent, deleteEvent]
+  return [project, editProject, editEvent, createEvent, deleteEvent]
 }
 
 export default function Post(props) {
@@ -185,14 +112,12 @@ export default function Post(props) {
 
   const [
     project,
-    error,
     editProject,
     editEvent,
     createEvent,
     deleteEvent,
   ] = useProject(id);
 
-  if (error) return <div>failed to load</div>
   if (!project) return <div>loading...</div>
 
   const { title, description, date, tags = [], events = [], groupedEvents = [] } = project;

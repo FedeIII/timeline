@@ -16,14 +16,16 @@ export default function ProjectHeader(props) {
   const { editProject } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
-    let updateData = {};
+    let updateData = { tags: [] };
 
     Object.entries(data).forEach(([fieldName, fieldValue]) => {
       if (typeof fieldValue !== 'undefined') {
         if (fieldName.indexOf('tag') === 0) {
           const tagIndex = fieldName.split('-')[1];
-          updateData.tags = updateData.tags || tags;
-          updateData.tags[tagIndex].label = fieldValue;
+          updateData.tags.push({
+            type: tags[tagIndex].type,
+            label: fieldValue,
+          });
         } else {
           updateData[fieldName] = fieldValue;
         }

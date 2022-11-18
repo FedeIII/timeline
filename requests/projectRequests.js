@@ -1,6 +1,53 @@
 import { gql } from "@apollo/client";
 import client from "../apollo-client";
 
+const ProjectOutput = `
+  id
+  title
+  date
+  description
+  tags { label, type }
+  events { id, imgUrl, title, description, date, type, topic }
+`;
+
+function groupEvents(events = []) {
+  return events.reduce((groupedEvents, currentEvent) => {
+    if (currentEvent.type == 'MIDDLE') {
+      const startEventIndex = groupedEvents.findIndex(
+        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
+      );
+
+      const startEvent = groupedEvents[startEventIndex];
+      startEvent.middle = startEvent.middle || [];
+      startEvent.middle.push(currentEvent);
+    } else if (currentEvent.type == 'END') {
+      const startEventIndex = groupedEvents.findIndex(
+        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
+      );
+
+      const startEvent = groupedEvents[startEventIndex];
+      startEvent.end = currentEvent;
+    } else {
+      groupedEvents.push({ ...currentEvent });
+    }
+
+    return groupedEvents;
+  }, []);
+}
+
+export function groupProjectEvents(projectData) {
+  let project = null;
+
+  if (projectData) {
+    project = {
+      ...projectData,
+      groupedEvents: groupEvents(projectData.events) || [],
+    };
+  }
+
+  return project;
+}
+
 export async function getAllProjects() {
   const { data } = await client.query({
     query: gql`
@@ -44,19 +91,16 @@ export async function getProject(id) {
     query: gql`
       query GetProject($id: String!) {
         getProject(id: $id) {
-          id
-          title
-          date
-          description
-          tags { label, type }
-          events { id, imgUrl, title, description, date, type, topic }
+          ${ProjectOutput}
         }
       }
     `,
     variables: { id },
   });
 
-  return data.getProject;
+  const project = groupProjectEvents(data.getProject);
+
+  return project;
 }
 
 export async function setProject(id, projectProps) {
@@ -64,19 +108,16 @@ export async function setProject(id, projectProps) {
     mutation: gql`
       mutation EditProject($id: String!, $input: ProjectInput!) {
         editProject(id: $id, input: $input) {
-          id
-          title
-          date
-          description
-          tags { label, type }
-          events { id, imgUrl, title, description, date, type, topic }
+          ${ProjectOutput}
         }
       }
     `,
     variables: { id, input: projectProps },
   });
 
-  return data;
+  const project = groupProjectEvents(data.editProject);
+
+  return project;
 }
 
 export async function setEvent(projectId, eventId, eventProps) {
@@ -84,19 +125,16 @@ export async function setEvent(projectId, eventId, eventProps) {
     mutation: gql`
       mutation EditEvent($projectId: String!, $eventId: String!, $eventProps: EventInput!) {
         editEvent(projectId: $projectId, eventId: $eventId, eventProps: $eventProps) {
-          id
-          title
-          date
-          description
-          tags { label, type }
-          events { id, imgUrl, title, description, date, type, topic }
+          ${ProjectOutput}
         }
       }
     `,
     variables: { projectId, eventId, eventProps },
   });
 
-  return data;
+  const project = groupProjectEvents(data.editEvent);
+
+  return project;
 }
 
 export async function addEvent(projectId, event) {
@@ -104,19 +142,16 @@ export async function addEvent(projectId, event) {
     mutation: gql`
       mutation AddEvent($projectId: String!, $event: EventInput!) {
         addEvent(projectId: $projectId, event: $event) {
-          id
-          title
-          date
-          description
-          tags { label, type }
-          events { id, imgUrl, title, description, date, type, topic }
+          ${ProjectOutput}
         }
       }
     `,
     variables: { projectId, event },
   });
 
-  return data;
+  const project = groupProjectEvents(data.addEvent);
+
+  return project;
 }
 
 export async function deleteEvent(projectId, eventId) {
@@ -124,12 +159,14 @@ export async function deleteEvent(projectId, eventId) {
     mutation: gql`
       mutation DeleteEvent($projectId: String!, $eventId: String!) {
         deleteEvent(projectId: $projectId, eventId: $eventId) {
-          id
+          ${ProjectOutput}
         }
       }
     `,
     variables: { projectId, eventId },
   });
 
-  return data;
+  const project = groupProjectEvents(data.deleteEvent);
+
+  return project;
 }

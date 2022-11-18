@@ -123,7 +123,7 @@ function useTimelineListeners({ startDate, projectId, projectDays }) {
 
       this.closeRegion();
 
-      CanvasEvents.writeMessage(context, message);
+      // CanvasEvents.writeMessage(context, message);
     });
 
     return () => {
