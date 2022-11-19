@@ -5,7 +5,7 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import styles from './event.module.scss';
 import ProjectContext from '../contexts/projectContext';
 
-function useDistancePercentage(duration, start, date) {
+function useDistancePercentage(percentageInterval, start, date) {
   return useMemo(() => {
     const startDistance = formatDistanceStrict(
       new Date(start),
@@ -13,8 +13,8 @@ function useDistancePercentage(duration, start, date) {
       { unit: 'day' }
     ).split(' ')[0];
 
-    return startDistance / duration * 100;
-  }, [duration, start, date]);
+    return startDistance * percentageInterval / 100;
+  }, [percentageInterval, start, date]);
 }
 
 function useLabelWidthStyles(title) {
@@ -46,9 +46,9 @@ export default function Event(props) {
 }
 
 function PromptEvent(props) {
-  const { id, imgUrl, title, description, date, type, timelineDuration, projectStart, noKnob } = props;
+  const { id, imgUrl, title, description, date, type, percentageInterval, projectStart, noKnob } = props;
 
-  const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
+  const leftPosition = useDistancePercentage(percentageInterval, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
   const knobStyles = useKnobStyles(noKnob);
   const [modalOpen, setModalOpen] = useState(false);
@@ -82,11 +82,11 @@ function PromptEvent(props) {
 }
 
 function DurationEvent(props) {
-  const { id, imgUrl, title, description, date, type, topic, timelineDuration, projectStart, middle, end } = props;
+  const { id, imgUrl, title, description, date, type, topic, percentageInterval, projectStart, middle, end } = props;
 
-  const leftPosition = useDistancePercentage(timelineDuration, projectStart, date);
+  const leftPosition = useDistancePercentage(percentageInterval, projectStart, date);
   const dynamicStyle = useLabelWidthStyles(title);
-  const eventDurationPercentage = useDistancePercentage(timelineDuration, date, end.date);
+  const eventDurationPercentage = useDistancePercentage(percentageInterval, date, end.date);
 
   const lineStyles = { left: `${leftPosition}%`, width: `${eventDurationPercentage}%` };
 
@@ -102,13 +102,13 @@ function DurationEvent(props) {
         key={middleEvent.id}
         {...middleEvent}
         noKnob
-        timelineDuration={timelineDuration}
+        percentageInterval={percentageInterval}
         projectStart={projectStart}
       />)}
       <PromptEvent
         {...end}
         noKnob
-        timelineDuration={timelineDuration}
+        percentageInterval={percentageInterval}
         projectStart={projectStart}
       />
     </>

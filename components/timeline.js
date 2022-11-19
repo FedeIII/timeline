@@ -10,6 +10,8 @@ import styles from './timeline.module.scss';
 import TogglableForm from './HOCs/togglableForm';
 import CanvasEvents from '../utils/canvasEvents';
 import ProjectContext from '../contexts/projectContext';
+import classNames from 'classnames';
+import { compareAsc } from 'date-fns';
 
 function useTimelineDuration(firstEvent, lastEvent) {
   return useMemo(() => {
@@ -47,7 +49,7 @@ function useTimelineDuration(firstEvent, lastEvent) {
   }, [firstEvent, lastEvent]);
 }
 
-function useTimelineListeners({ startDate, projectId, projectDays }) {
+function useTimelineListeners({ startDate, percentageInterval }) {
   const { createEvent } = useContext(ProjectContext);
 
   useEffect(() => {
@@ -106,7 +108,9 @@ function useTimelineListeners({ startDate, projectId, projectDays }) {
           message = `deselect at ${mousePos.x}`;
           console.log('mouseup');
 
-          const eventDays = projectDays * mousePos.x / canvas.width;
+          const percentageClicked = mousePos.x / canvas.width;
+          const eventDays = Math.round(percentageClicked * 100 / percentageInterval);
+          // const eventDays = projectDays * mousePos.x / canvas.width;
 
           const eventDate = addDays(new Date(startDate), eventDays);
           const eventDateFormatted = format(eventDate, 'yyyy-MM-dd');
@@ -133,6 +137,40 @@ function useTimelineListeners({ startDate, projectId, projectDays }) {
   }, []);
 }
 
+function useDates(startDate, endDate, lengthInDays) {
+  // const dayInterval = lengthInDays / 16;
+  const dayInterval = 1;
+  const dates = [startDate];
+  let lastDate = startDate;
+  let done = false
+  while (!done) {
+    const newDate = format(add(new Date(lastDate), { days: dayInterval }), 'yyyy-MM-dd');
+    dates.push(newDate);
+    lastDate = newDate;
+    if (compareAsc(new Date(endDate), new Date(lastDate)) < 0) {
+      done = true;
+    }
+  }
+
+  dates.push(endDate);
+
+  const percentageInterval = 100 / dates.length;
+
+  return [dates, percentageInterval];
+}
+
+function DateLabel(props) {
+  const { date, index, percentageInterval } = props;
+
+  const dynamicStyle = {
+    left: `calc(${percentageInterval * index}% - 15px)`,
+  }
+
+  return (
+    <span className={styles.date} style={dynamicStyle}>{date}</span>
+  );
+}
+
 export default function Timeline(props) {
   const { events, projectId, projectStart } = props;
 
@@ -140,10 +178,11 @@ export default function Timeline(props) {
   const lastEvent = events[events.length - 1];
   const [timelineDuration, startDate, endDate] = useTimelineDuration(firstEvent, lastEvent);
 
+  const [dates, percentageInterval] = useDates(startDate, endDate, timelineDuration);
+
   useTimelineListeners({
-    projectId,
     startDate: projectStart,
-    projectDays: timelineDuration,
+    percentageInterval: percentageInterval,
   });
 
   const onFormEdit = useCallback(data => {
@@ -157,8 +196,12 @@ export default function Timeline(props) {
 
         return (
           <div className={topLevelStyles}>
-            <span className={styles.startDate}>{startDate}</span>
-            <span className={styles.endDate}>{endDate}</span>
+            {dates.map((date, index) => <DateLabel
+              date={date}
+              index={index}
+              percentageInterval={percentageInterval}
+              key={index}
+            />)}
 
             <canvas id="timeline" width="100%" height="200" className={styles.canvasLine}></canvas>
 
@@ -167,7 +210,7 @@ export default function Timeline(props) {
                 <Event
                   key={event.id}
                   {...event}
-                  timelineDuration={timelineDuration}
+                  percentageInterval={percentageInterval}
                   projectStart={projectStart}
                 />
               )
