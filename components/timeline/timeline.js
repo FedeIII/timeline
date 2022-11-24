@@ -7,9 +7,9 @@ import { useEffect, useMemo, useCallback, useContext } from 'react';
 
 import Event from './event';
 import styles from './timeline.module.scss';
-import TogglableForm from './HOCs/togglableForm';
-import CanvasEvents from '../utils/canvasEvents';
-import ProjectContext from '../contexts/projectContext';
+import TogglableForm from '../HOCs/togglableForm';
+import CanvasEvents from '../../utils/canvasEvents';
+import ProjectContext from '../../contexts/projectContext';
 import classNames from 'classnames';
 import { compareAsc } from 'date-fns';
 

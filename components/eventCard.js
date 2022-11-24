@@ -15,21 +15,24 @@ export default function EventCard(props) {
 
   const { editEvent, deleteEvent } = useContext(ProjectContext);
 
-  const onFormEdit = useCallback(data => {
-    let updateData = {};
+  const onFormEdit = useCallback(
+    data => {
+      let updateData = {};
 
-    Object.entries(data).forEach(([fieldName, fieldValue]) => {
-      if (typeof fieldValue !== 'undefined') {
-        updateData[fieldName] = fieldValue;
+      Object.entries(data).forEach(([fieldName, fieldValue]) => {
+        if (typeof fieldValue !== 'undefined') {
+          updateData[fieldName] = fieldValue;
+        }
+      });
+
+      console.log('submitting', id, updateData);
+
+      if (Object.keys(updateData).length > 0) {
+        editEvent(id, updateData);
       }
-    });
-
-    console.log('submitting', id, updateData);
-
-    if (Object.keys(updateData).length > 0) {
-      editEvent(id, updateData);
-    }
-  }, [id, editEvent]);
+    },
+    [id, editEvent]
+  );
 
   const onDeleteClick = useCallback(() => deleteEvent(id), []);
 
@@ -40,15 +43,21 @@ export default function EventCard(props) {
 
         return (
           <li className={topLevelStyles}>
-            {isEditMode && <span onClick={onDeleteClick} className={styles.deleteEvent}>x</span>}
-            {imgUrl && <Image
-              priority
-              src={imgUrl}
-              className={styles.eventCardImage}
-              height={256}
-              width={256}
-              alt={title}
-            />}
+            {isEditMode && (
+              <span onClick={onDeleteClick} className={styles.deleteEvent}>
+                x
+              </span>
+            )}
+            {imgUrl && (
+              <Image
+                priority
+                src={imgUrl}
+                className={styles.eventCardImage}
+                height={256}
+                width={256}
+                alt={title}
+              />
+            )}
             <div className={styles.eventCardInfo}>
               <input
                 defaultValue={title}

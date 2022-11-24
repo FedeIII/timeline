@@ -2,13 +2,12 @@
   margin-top: 16px;
 }
 
-.timelineSection {}
+.timelineSection {
+  width: 100%;
+  overflow-x: scroll;
+}
 
 .timelineTitle {}
-
-.timeline {
-  padding: 0;
-}
 
 .eventsSection {}
 

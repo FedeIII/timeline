@@ -4,7 +4,6 @@ import client from "../apollo-client";
 const ProjectOutput = `
   id
   title
-  date
   description
   tags { label, type }
   events { id, imgUrl, title, description, date, type, topic }
@@ -55,7 +54,6 @@ export async function getAllProjects() {
         getAllProjects {
           id
           title
-          date
         }
       }
     `,

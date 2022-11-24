@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useForm } from 'react-hook-form';
 
 import OutsideAlerter from './outsideAlerter';
 import utilStyles from '../../styles/utils.module.scss';
-import classNames from "classnames";
+import classNames from 'classnames';
 
 export default function TogglableForm(props) {
   const { children, onFormEdit, className } = props;
@@ -11,12 +11,16 @@ export default function TogglableForm(props) {
   const [isExitingEditMode, setExitingEditMode] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { register, handleSubmit, reset } = useForm();
+  const useFormProps = useForm();
+  const { handleSubmit, reset } = useFormProps;
 
-  const submit = useCallback(handleSubmit(data => {
-    setSubmitted(true);
-    onFormEdit(data);
-  }), [handleSubmit, setSubmitted, onFormEdit]);
+  const submit = useCallback(
+    handleSubmit(data => {
+      setSubmitted(true);
+      onFormEdit(data);
+    }),
+    [handleSubmit, setSubmitted, onFormEdit]
+  );
 
   useEffect(() => {
     setEditMode(isExitingEditMode);
@@ -27,14 +31,16 @@ export default function TogglableForm(props) {
     submit();
   }, [setExitingEditMode]);
 
-  const onFormClick = useCallback(() => setExitingEditMode(true), [setExitingEditMode]);
+  const onFormClick = useCallback(
+    () => setExitingEditMode(true),
+    [setExitingEditMode]
+  );
 
   useEffect(() => {
     if (submitted) {
       reset({});
       setSubmitted(false);
     }
-
   }, [reset, submitted, setSubmitted]);
 
   const topLevelStyles = classNames({
@@ -48,7 +54,7 @@ export default function TogglableForm(props) {
         {children({
           topLevelStyles,
           isEditMode,
-          register,
+          ...useFormProps,
         })}
       </form>
     </OutsideAlerter>

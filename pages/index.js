@@ -30,15 +30,11 @@ export default function Home(props) {
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Projects</h2>
         <ul className={utilStyles.list}>
-          {projects.map(({ id, date, title }) => (
+          {projects.map(({ id, title }) => (
             <li className={utilStyles.listItem} key={id}>
               <Link href={`/projects/${id}`}>
                 {title}
               </Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                {date}
-              </small>
             </li>
           ))}
         </ul>

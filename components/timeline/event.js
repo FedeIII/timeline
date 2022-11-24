@@ -3,7 +3,7 @@ import formatDistanceStrict from 'date-fns/formatDistanceStrict'
 import { useCallback, useContext, useMemo, useState } from 'react';
 
 import styles from './event.module.scss';
-import ProjectContext from '../contexts/projectContext';
+import ProjectContext from '../../contexts/projectContext';
 
 function useDistancePercentage(percentageInterval, start, date) {
   return useMemo(() => {
