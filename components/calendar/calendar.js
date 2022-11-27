@@ -1,23 +1,39 @@
 import { compareAsc } from 'date-fns';
 import add from 'date-fns/add';
+import format from 'date-fns/format';
 import DayCell from './dayCell';
 import styles from './calendar.module.scss';
 import { useCallback, useContext, useMemo } from 'react';
 import TogglableForm from '../HOCs/togglableForm';
 import ProjectContext from '../../contexts/projectContext';
 
-function useDays(firstEvent = {}, lastEvent = {}) {
+function useDays(events = []) {
   return useMemo(() => {
+    const firstEvent = events[0];
+    const lastEvent = events[events.length - 1];
     const firstDate = firstEvent.date;
     const lastDate = lastEvent.date;
 
+    let isOngoingEvent = false;
     const days = [];
     let previousDate = new Date(firstDate);
-    days.push(previousDate);
+    days.push({
+      date: previousDate,
+      isOngoingEvent: false,
+      eventsAtDay: [firstEvent],
+    });
 
     function addDate() {
       const newDate = add(new Date(previousDate), { days: 1 });
-      days.push(newDate);
+
+      const eventsAtDay = getEventsAtDay(newDate, events);
+      const event = (eventsAtDay && eventsAtDay[0]) || {};
+      const { type } = event;
+
+      if (type === 'START') isOngoingEvent = true;
+      if (type === 'END') isOngoingEvent = false;
+
+      days.push({ date: newDate, isOngoingEvent, eventsAtDay });
       previousDate = newDate;
 
       return newDate;
@@ -37,25 +53,27 @@ function useDays(firstEvent = {}, lastEvent = {}) {
     }
 
     return days;
-  }, [firstEvent.date, lastEvent.date]);
+  }, [events]);
+}
+
+function getEventsAtDay(day, events) {
+  const eventsAtDay = events.filter(
+    event => format(day, 'yyyy-MM-dd') === event.date
+  );
+
+  if (eventsAtDay.length > 0) return eventsAtDay;
+  else return null;
 }
 
 export default function Calendar(props) {
   const { events, projectId } = props;
 
-  const days = useDays(events[0], events[events.length - 1]);
+  const days = useDays(events);
 
   const { editEvent } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
     let eventsToUpdate = {};
-
-    var a = {
-      '61a7fc34-3295-4d94-9b5d-d0775daf1c01#title': 'Start project',
-      '0e4c5bf7-5495-4eab-a35d-0d3cfbfa3f7e#title': 'Background start',
-      '0dh3ac34-4f95-0k94-lk5d-d079kdy51c01#title': 'Varnish',
-      'lanf7c34-39h5-7jdg-0ghj-d070sjgf1c01#title': 'End of the Project',
-    };
 
     Object.entries(data).forEach(([fieldName, fieldValue]) => {
       if (typeof fieldValue !== 'undefined') {
@@ -78,18 +96,22 @@ export default function Calendar(props) {
         const { topLevelStyles, isEditMode, register, control } = props;
 
         return (
-          <div className={topLevelStyles}>
-            {days.map(day => (
-              <DayCell
-                day={day}
-                events={events}
-                register={register}
-                control={control}
-                isEditMode={isEditMode}
-                key={day}
-              />
-            ))}
-          </div>
+          <>
+            <hr className={styles.line} />
+            <div className={topLevelStyles}>
+              {days.map(({ date, isOngoingEvent, eventsAtDay }) => (
+                <DayCell
+                  day={date}
+                  isOngoingEvent={isOngoingEvent}
+                  eventsAtDay={eventsAtDay}
+                  register={register}
+                  control={control}
+                  isEditMode={isEditMode}
+                  key={date}
+                />
+              ))}
+            </div>
+          </>
         );
       }}
     </TogglableForm>

@@ -1,7 +1,18 @@
 .calendarContainer {
+  position: relative;
   overflow-x: scroll;
   text-align: center;
   white-space: nowrap;
+}
+
+.line {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 1;
 }
 
 .headerRow {
@@ -18,26 +29,28 @@ $cell-height: 120px;
 
 .cell {
   display: inline-grid;
-  border: 1px solid lightgray;
 }
 
 .cellHeader {
   display: inline-block;
-  width: 100%;
+  width: calc(100% - 20px);
+  margin: 0 10px;
   border-bottom: 1px solid lightgray;
 }
 
-.cellBody {
-  padding: 0 8px 8px;
-  width: $cell-width;
-  height: $cell-height;
+.event {
+  display: block;
+  position: relative;
+  border: 1px solid lightgray;
+  width: 66%;
+  height: 66%;
+  padding: 4px 8px;
 }
 
-.eventTitleInput {
-  display: block;
+.eventInput {
+  width: 100%;
   font-size: 10px;
   text-align: left;
-  width: 100%;
   border: none;
   background: none;
   box-shadow: none;
@@ -50,5 +63,75 @@ $cell-height: 120px;
 
   &:disabled {
     background-color: transparent;
+  }
+}
+
+.cellBody {
+  width: $cell-width;
+  height: $cell-height;
+  padding: 25px 8px 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+
+  &.start {
+    justify-content: flex-end;
+    padding-right: 0;
+
+    & .event {
+      border-right: none;
+      width: 83%;
+
+      & .eventInput {
+        border: 1px solid lightgray;
+        padding: 4px 8px;
+        height: 100%;
+      }
+    }
+  }
+
+  &.middle {
+    padding-left: 0;
+    padding-right: 0;
+
+    & .event {
+      border-left: none;
+      border-right: none;
+      width: 100%;
+
+      & .eventInput {
+        border: 1px solid lightgray;
+        padding: 4px 8px;
+        height: 100%;
+      }
+    }
+  }
+
+  &.end {
+    justify-content: flex-start;
+    padding-left: 0;
+
+    & .event {
+      border-left: none;
+      width: 83%;
+
+      & .eventInput {
+        border: 1px solid lightgray;
+        padding: 4px 8px;
+        height: 100%;
+      }
+    }
+  }
+
+  &.ongoing {
+    padding-left: 0;
+    padding-right: 0;
+
+    & .event {
+      border-left: none;
+      border-right: none;
+      width: 100%;
+    }
   }
 }

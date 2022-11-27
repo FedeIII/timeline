@@ -1,39 +1,48 @@
 import format from 'date-fns/format';
-import { useMemo } from 'react';
 import styles from './calendar.module.scss';
 
-function useEventsAtDay(day, events) {
-  return useMemo(() => {
-    const eventsAtDay = events.filter(
-      event => format(day, 'yyyy-MM-dd') === event.date
-    );
-
-    if (eventsAtDay.length > 0) return eventsAtDay;
-    else return null;
-  }, [day, events]);
-}
-
 export default function DayCell(props) {
-  const { day, events, register, isEditMode } = props;
-
-  const eventsAtDay = useEventsAtDay(day, events);
-
-  const cellBodyStyle = eventsAtDay ? {} : { width: '50px', height: '50px' };
+  const { day, eventsAtDay, register, isEditMode, isOngoingEvent } = props;
   const event = (eventsAtDay && eventsAtDay[0]) || {};
-  const { title, id } = event;
+  const { title, type, id } = event;
+
+  let cellBodyClass = styles.cellBody;
+
+  let cellBodyStyle = { width: '50px' };
+  if (eventsAtDay) {
+    cellBodyStyle = {};
+  }
+
+  if (type === 'START') {
+    cellBodyClass += ' ' + styles.start;
+  } else if (type === 'MIDDLE') {
+    cellBodyClass += ' ' + styles.middle;
+  } else if (type === 'END') {
+    cellBodyClass += ' ' + styles.end;
+  } else if (!eventsAtDay && isOngoingEvent) {
+    cellBodyClass += ' ' + styles.ongoing;
+    cellBodyStyle = { width: '72px' };
+  }
+
+  const shouldShowEvent = isOngoingEvent || eventsAtDay;
 
   return (
     <div className={styles.cell}>
-      <div className={styles.cellHeader}>{format(day, 'EE')}</div>
-      <div className={styles.cellBody} style={cellBodyStyle}>
-        <span>{format(day, 'd')}</span>
-        {eventsAtDay && (
-          <textarea
-            defaultValue={title}
-            {...register(`${id}#title`)}
-            className={styles.eventTitleInput}
-            disabled={!isEditMode}
-          />
+      <div className={styles.cellHeader}>
+        {format(day, 'EE')} <span>{format(day, 'd')}</span>
+      </div>
+      <div className={cellBodyClass} style={cellBodyStyle}>
+        {shouldShowEvent && (
+          <div className={styles.event}>
+            {eventsAtDay && (
+              <textarea
+                defaultValue={title}
+                {...register(`${id}#title`)}
+                className={styles.eventInput}
+                disabled={!isEditMode}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>
