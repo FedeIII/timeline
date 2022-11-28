@@ -26,6 +26,18 @@
 
 .cell {
   display: inline-grid;
+
+  &:hover {
+    background-color: lightgray;
+    cursor: pointer;
+  }
+
+  &[disabled] {
+    &:hover {
+      background-color: initial;
+      cursor: initial;
+    }
+  }
 }
 
 .cellHeader {

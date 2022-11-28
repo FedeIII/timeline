@@ -7,12 +7,18 @@ import { useCallback, useContext, useMemo } from 'react';
 import TogglableForm from '../HOCs/togglableForm';
 import ProjectContext from '../../contexts/projectContext';
 
+const MIN_NUMBER_OF_DAYS = 28;
+const MIN_DAYS_AFTER_START = 7;
+
 function useDays(events = []) {
   return useMemo(() => {
     const firstEvent = events[0];
     const lastEvent = events[events.length - 1];
-    const firstDate = firstEvent.date;
-    const lastDate = lastEvent.date;
+    const firstDate =
+      (firstEvent && firstEvent.date) || format(new Date(), 'yyyy-MM-dd');
+    const lastDate =
+      (lastEvent && lastEvent.date) ||
+      format(add(new Date(), { days: MIN_DAYS_AFTER_START }), 'yyyy-MM-dd');
 
     let isOngoingEvent = false;
     const days = [];
@@ -20,7 +26,7 @@ function useDays(events = []) {
     days.push({
       date: previousDate,
       isOngoingEvent: false,
-      eventsAtDay: [firstEvent],
+      eventsAtDay: firstEvent ? [firstEvent] : null,
     });
 
     function addDate() {
@@ -48,7 +54,10 @@ function useDays(events = []) {
       }
     }
 
-    for (let index = 1; index <= 7; index++) {
+    let minNumberOfExtraDays = MIN_NUMBER_OF_DAYS - days.length;
+    if (minNumberOfExtraDays < 0) minNumberOfExtraDays = MIN_NUMBER_OF_DAYS;
+
+    for (let index = 1; index <= minNumberOfExtraDays; index++) {
       addDate();
     }
 

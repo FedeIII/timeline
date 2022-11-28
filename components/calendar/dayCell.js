@@ -1,4 +1,7 @@
+import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
+import { useCallback, useContext } from 'react';
+import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
 
 function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent) {
@@ -28,14 +31,38 @@ export default function DayCell(props) {
 
   const cellBodyClass = useCellBodyClass(type, eventsAtDay, isOngoingEvent);
 
+  const { createEvent } = useContext(ProjectContext);
+
+  const onCellSelect = useCallback(() => {
+    if (isEditMode) {
+      const date = format(day, 'yyyy-MM-dd');
+      createEvent({
+        id: uuid(),
+        title: date,
+        date,
+        type: 'PROMPT',
+      });
+    }
+  }, [isEditMode, createEvent]);
+
+  const onEventSelect = useCallback(
+    e => {
+      if (isEditMode) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
+    [isEditMode]
+  );
+
   return (
-    <div className={styles.cell}>
+    <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
       <div className={styles.cellHeader}>
         {format(day, 'EE')} <span>{format(day, 'd')}</span>
       </div>
       <div className={cellBodyClass}>
         {shouldShowEvent && (
-          <div className={styles.event}>
+          <div className={styles.event} onClick={onEventSelect}>
             {eventsAtDay && (
               <textarea
                 defaultValue={title}
