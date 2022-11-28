@@ -1,25 +1,30 @@
 import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
+import OutsideAlerter from '../HOCs/outsideAlerter';
 
-function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent) {
-  let cellBodyClass = styles.cellBody;
+function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
+  return useMemo(() => {
+    let cellBodyClass = styles.cellBody;
 
-  if (eventType === 'START') {
-    cellBodyClass += ' ' + styles.start;
-  } else if (eventType === 'MIDDLE') {
-    cellBodyClass += ' ' + styles.middle;
-  } else if (eventType === 'END') {
-    cellBodyClass += ' ' + styles.end;
-  } else if (eventsAtDay) {
-    cellBodyClass += ' ' + styles.withEvent;
-  } else if (isOngoingEvent) {
-    cellBodyClass += ' ' + styles.ongoing;
-  }
+    if (eventType === 'START') {
+      cellBodyClass += ' ' + styles.start;
+    } else if (eventType === 'MIDDLE') {
+      cellBodyClass += ' ' + styles.middle;
+    } else if (eventType === 'END') {
+      cellBodyClass += ' ' + styles.end;
+    } else if (eventsAtDay) {
+      cellBodyClass += ' ' + styles.withEvent;
+    } else if (isOngoingEvent) {
+      cellBodyClass += ' ' + styles.ongoing;
+    }
 
-  return cellBodyClass;
+    if (isSelected) cellBodyClass += ' ' + styles.selected;
+
+    return cellBodyClass;
+  }, [eventType, eventsAtDay, isOngoingEvent, isSelected]);
 }
 
 export default function DayCell(props) {
@@ -29,9 +34,22 @@ export default function DayCell(props) {
 
   const shouldShowEvent = isOngoingEvent || eventsAtDay;
 
-  const cellBodyClass = useCellBodyClass(type, eventsAtDay, isOngoingEvent);
+  const [isSelected, setIsSelected] = useState(false);
 
-  const { createEvent } = useContext(ProjectContext);
+  useEffect(() => {
+    if (!eventsAtDay) {
+      setIsSelected(false);
+    }
+  }, [eventsAtDay, setIsSelected]);
+
+  const cellBodyClass = useCellBodyClass(
+    type,
+    eventsAtDay,
+    isOngoingEvent,
+    isSelected
+  );
+
+  const { createEvent, deleteEvent } = useContext(ProjectContext);
 
   const onCellSelect = useCallback(() => {
     if (isEditMode) {
@@ -47,13 +65,26 @@ export default function DayCell(props) {
 
   const onEventSelect = useCallback(
     e => {
-      if (isEditMode) {
+      if (isEditMode && eventsAtDay && eventsAtDay.length) {
         e.stopPropagation();
         e.preventDefault();
+
+        setIsSelected(true);
       }
     },
-    [isEditMode]
+    [isEditMode, eventsAtDay, setIsSelected]
   );
+
+  const onClickOutsideEvent = useCallback(() => {
+    setIsSelected(false);
+    console.log('clicked outside of', id);
+  }, [isSelected, setIsSelected]);
+
+  const onDeleteClick = useCallback(() => {
+    deleteEvent(id);
+    setIsSelected(false);
+    console.log('deleted', id);
+  }, [deleteEvent, id, setIsSelected]);
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
@@ -62,7 +93,12 @@ export default function DayCell(props) {
       </div>
       <div className={cellBodyClass}>
         {shouldShowEvent && (
-          <div className={styles.event} onClick={onEventSelect}>
+          <OutsideAlerter
+            onClickOutside={onClickOutsideEvent}
+            enabled={isEditMode}
+            className={styles.event}
+            onClick={onEventSelect}
+          >
             {eventsAtDay && (
               <textarea
                 defaultValue={title}
@@ -71,7 +107,14 @@ export default function DayCell(props) {
                 disabled={!isEditMode}
               />
             )}
-          </div>
+            {isSelected && (
+              <div className={styles.editMenu}>
+                <span onClick={onDeleteClick} className={styles.deleteEvent}>
+                  x
+                </span>
+              </div>
+            )}
+          </OutsideAlerter>
         )}
       </div>
     </div>

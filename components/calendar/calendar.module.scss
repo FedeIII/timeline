@@ -48,12 +48,12 @@
 }
 
 .event {
-  display: block;
+  display: flex;
   position: relative;
   border: 1px solid gray;
   background-color: lightgray;
   width: 83%;
-  height: 66%;
+  height: 83%;
   padding: 4px 8px;
 }
 
@@ -81,6 +81,7 @@
 $cell-width: 120px;
 $cell-width-no-event: 50px;
 $cell-width-ongoing: 72px;
+$cell-width-selected: 240px;
 $cell-height: 120px;
 
 .cellBody {
@@ -156,5 +157,46 @@ $cell-height: 120px;
       border-right: none;
       width: 100%;
     }
+  }
+
+  &.selected {
+    width: $cell-width-selected;
+
+    & .event {
+      border: 1px solid gray;
+      transform: scale(1.1);
+      z-index: 1;
+
+      & .eventInput {
+        flex-grow: 1;
+        width: inherit;
+      }
+    }
+  }
+}
+
+.editMenu {
+  flex-grow: 1;
+  width: inherit;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.deleteEvent {
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+
+  &:hover {
+    background-color: coral;
+    color: red;
   }
 }

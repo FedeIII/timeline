@@ -7,13 +7,20 @@
   overflow-x: scroll;
   position: relative;
 
+  &,
+  & * {
+    transition: all 0.3s ease-out;
+  }
 }
 
-.timelineTitle {}
+.timelineTitle {
+}
 
-.eventsSection {}
+.eventsSection {
+}
 
-.eventsTitle {}
+.eventsTitle {
+}
 
 .events {
   list-style: none;

@@ -116,7 +116,7 @@ export default function Calendar(props) {
                   register={register}
                   control={control}
                   isEditMode={isEditMode}
-                  key={date}
+                  key={format(date, 'yyyy-MM-dd')}
                 />
               ))}
             </div>
