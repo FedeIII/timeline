@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -30,7 +31,7 @@ function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
 export default function DayCell(props) {
   const { day, eventsAtDay, register, isEditMode, isOngoingEvent } = props;
   const event = (eventsAtDay && eventsAtDay[0]) || {};
-  const { title, type, id } = event;
+  const { title, type, id, imgUrl, topic } = event;
 
   const shouldShowEvent = isOngoingEvent || eventsAtDay;
 
@@ -77,13 +78,11 @@ export default function DayCell(props) {
 
   const onClickOutsideEvent = useCallback(() => {
     setIsSelected(false);
-    console.log('clicked outside of', id);
   }, [isSelected, setIsSelected]);
 
   const onDeleteClick = useCallback(() => {
     deleteEvent(id);
     setIsSelected(false);
-    console.log('deleted', id);
   }, [deleteEvent, id, setIsSelected]);
 
   return (
@@ -113,6 +112,33 @@ export default function DayCell(props) {
                   x
                 </span>
               </div>
+            )}
+            {isSelected && imgUrl && (
+              <Image
+                priority
+                src={imgUrl}
+                className={styles.image}
+                height={128}
+                width={128}
+                alt={title}
+              />
+            )}
+            {isSelected && (
+              <input
+                defaultValue={topic}
+                {...register(`${id}#topic`)}
+                className={styles.topic}
+              />
+            )}
+            {isSelected && (
+              <select {...register(`${id}#type`)} className={styles.type} defaultValue={type}>
+                <option value='START_PROJECT'>Start Project</option>
+                <option value='PROMPT'>Prompt</option>
+                <option value='START'>Start</option>
+                <option value='MIDDLE'>Middle</option>
+                <option value='END'>End</option>
+                <option value='END_PROJECT'>End Project</option>
+              </select>
             )}
           </OutsideAlerter>
         )}

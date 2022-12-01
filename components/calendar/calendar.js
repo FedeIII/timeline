@@ -7,6 +7,7 @@ import { useCallback, useContext, useMemo } from 'react';
 import TogglableForm from '../HOCs/togglableForm';
 import ProjectContext from '../../contexts/projectContext';
 
+const DAYS_BEFORE_START = 7;
 const MIN_NUMBER_OF_DAYS = 28;
 const MIN_DAYS_AFTER_START = 7;
 
@@ -61,6 +62,11 @@ function useDays(events = []) {
       addDate();
     }
 
+    for (let index = 1; index <= DAYS_BEFORE_START; index++) {
+      const newDate = add(new Date(days[0].date), { days: -1 });
+      days.unshift({ date: newDate, isOngoingEvent: false, eventsAtDay: null });
+    }
+
     return days;
   }, [events]);
 }
@@ -89,7 +95,8 @@ export default function Calendar(props) {
         const [eventId, eventProp] = fieldName.split(/#(.*)/s);
 
         eventsToUpdate[eventId] = eventsToUpdate[eventId] || {};
-        eventsToUpdate[eventId][eventProp] = fieldValue;
+        const value = fieldValue === '' ? null : fieldValue;
+        eventsToUpdate[eventId][eventProp] = value;
       }
     });
 
