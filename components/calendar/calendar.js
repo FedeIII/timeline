@@ -21,6 +21,7 @@ function useDays(events = []) {
       (lastEvent && lastEvent.date) ||
       format(add(new Date(), { days: MIN_DAYS_AFTER_START }), 'yyyy-MM-dd');
 
+    // add starting date
     let isOngoingEvent = false;
     const days = [];
     let previousDate = new Date(firstDate);
@@ -46,6 +47,7 @@ function useDays(events = []) {
       return newDate;
     }
 
+    // add dates until last event
     let done = false;
     while (!done) {
       const newDate = addDate();
@@ -55,13 +57,14 @@ function useDays(events = []) {
       }
     }
 
+    // add dates until minimum amount of dates
     let minNumberOfExtraDays = MIN_NUMBER_OF_DAYS - days.length;
     if (minNumberOfExtraDays < 0) minNumberOfExtraDays = MIN_NUMBER_OF_DAYS;
-
     for (let index = 1; index <= minNumberOfExtraDays; index++) {
       addDate();
     }
 
+    // add days before the start
     for (let index = 1; index <= DAYS_BEFORE_START; index++) {
       const newDate = add(new Date(days[0].date), { days: -1 });
       days.unshift({ date: newDate, isOngoingEvent: false, eventsAtDay: null });

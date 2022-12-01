@@ -6,6 +6,29 @@ import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
 import OutsideAlerter from '../HOCs/outsideAlerter';
 
+function ImageInput(props) {
+  const { title, type, id, imgUrl, topic, register } = props;
+
+  if (imgUrl)
+    return (
+      <Image
+        priority
+        src={imgUrl}
+        className={styles.image}
+        height={128}
+        width={128}
+        alt={title}
+      />
+    );
+
+  return (
+    <div className={styles.noImage}>
+      <span className={styles.imgUrlTag}>Image URL:</span>
+      <input {...register(`${id}#imgUrl`)} className={styles.imgUrlInput} />
+    </div>
+  );
+}
+
 function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
   return useMemo(() => {
     let cellBodyClass = styles.cellBody;
@@ -113,16 +136,7 @@ export default function DayCell(props) {
                 </span>
               </div>
             )}
-            {isSelected && imgUrl && (
-              <Image
-                priority
-                src={imgUrl}
-                className={styles.image}
-                height={128}
-                width={128}
-                alt={title}
-              />
-            )}
+            {isSelected && <ImageInput {...event} register={register} />}
             {isSelected && (
               <input
                 defaultValue={topic}
@@ -131,13 +145,17 @@ export default function DayCell(props) {
               />
             )}
             {isSelected && (
-              <select {...register(`${id}#type`)} className={styles.type} defaultValue={type}>
-                <option value='START_PROJECT'>Start Project</option>
-                <option value='PROMPT'>Prompt</option>
-                <option value='START'>Start</option>
-                <option value='MIDDLE'>Middle</option>
-                <option value='END'>End</option>
-                <option value='END_PROJECT'>End Project</option>
+              <select
+                {...register(`${id}#type`)}
+                className={styles.type}
+                defaultValue={type}
+              >
+                <option value="START_PROJECT">Start Project</option>
+                <option value="PROMPT">Prompt</option>
+                <option value="START">Start</option>
+                <option value="MIDDLE">Middle</option>
+                <option value="END">End</option>
+                <option value="END_PROJECT">End Project</option>
               </select>
             )}
           </OutsideAlerter>
