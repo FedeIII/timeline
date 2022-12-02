@@ -1,7 +1,6 @@
-import Image from 'next/image';
 import { useCallback, useContext } from 'react';
 import ProjectContext from '../contexts/projectContext';
-
+import ProjectImage from './projectImage';
 import styles from './eventCard.module.scss';
 import TogglableForm from './HOCs/togglableForm';
 
@@ -49,12 +48,9 @@ export default function EventCard(props) {
               </span>
             )}
             {imgUrl && (
-              <Image
-                priority
-                src={imgUrl}
+              <ProjectImage
                 className={styles.eventCardImage}
-                height={256}
-                width={256}
+                imgUrl={imgUrl}
                 alt={title}
               />
             )}

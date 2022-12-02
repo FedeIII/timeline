@@ -1,22 +1,19 @@
-import Image from 'next/image';
 import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
 import OutsideAlerter from '../HOCs/outsideAlerter';
+import ProjectImage from '../projectImage';
 
 function ImageInput(props) {
-  const { title, type, id, imgUrl, topic, register } = props;
+  const { title, id, imgUrl, register } = props;
 
   if (imgUrl)
     return (
-      <Image
-        priority
-        src={imgUrl}
-        className={styles.image}
-        height={128}
-        width={128}
+      <ProjectImage
+        className={styles.calendarImage}
+        imgUrl={imgUrl}
         alt={title}
       />
     );

@@ -1,18 +1,18 @@
 .eventCard {
   position: relative;
   display: flex;
-  padding: 16px 0;
+  padding: 16px;
   margin-bottom: 32px;
   border: 1px solid lightgray;
 }
 
 .eventCardImage {
-  margin: 0 8px 0 16px;
+  flex-basis: 25%;
 }
 
 .eventCardInfo {
   position: relative;
-  width: 100%;
+  flex-grow: 1;
   padding: 0 16px;
   display: flex;
   flex-direction: column;
