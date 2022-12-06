@@ -1,12 +1,12 @@
-import Head from "next/head";
-import useSWR, { useSWRConfig } from "swr";
-import { request } from "graphql-request";
+import Head from 'next/head';
+import useSWR, { useSWRConfig } from 'swr';
+import { request } from 'graphql-request';
 
-import Layout from "../../components/layout";
-import EventCard from "../../components/eventCard";
-import Timeline from "../../components/timeline/timeline";
-import Calendar from "../../components/calendar/calendar";
-import ProjectHeader from "../../components/projectHeader";
+import Layout from '../../components/layout';
+import EventCard from '../../components/eventCard';
+import Timeline from '../../components/timeline/timeline';
+import Calendar from '../../components/calendar/calendar';
+import ProjectHeader from '../../components/projectHeader';
 import {
   getAllProjectIds,
   getProject as getProjectRequest,
@@ -15,10 +15,10 @@ import {
   addEvent as addEventRequest,
   deleteEvent as deleteEventRequest,
   groupProjectEvents,
-} from "../../requests/projectRequests";
-import styles from "./project.module.scss";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import ProjectContext from "../../contexts/projectContext";
+} from '../../requests/projectRequests';
+import styles from './project.module.scss';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import ProjectContext from '../../contexts/projectContext';
 
 export async function getStaticPaths() {
   const paths = await getAllProjectIds();
@@ -53,7 +53,7 @@ function useProject(id) {
   async function editEvent(eventId, eventProps) {
     let localProject = {
       ...project,
-      events: project.events.map((event) => {
+      events: project.events.map(event => {
         if (event.id == eventId) return { ...event, ...eventProps };
         return event;
       }),
@@ -95,7 +95,7 @@ function useProject(id) {
   async function deleteEvent(eventId) {
     let localProject = { ...project };
     localProject.events = localProject.events.filter(
-      (event) => event.id != eventId
+      event => event.id != eventId
     );
     localProject = groupProjectEvents(localProject);
     setProject(localProject);
@@ -126,8 +126,10 @@ export default function Post(props) {
 
   const projectDate = events[0] && events[0].date;
 
+  const images = events.map(event => event.imgUrl).filter(i => i);
+
   return (
-    <Layout>
+    <Layout images={images}>
       <ProjectContext.Provider
         value={{
           project,
@@ -141,7 +143,7 @@ export default function Post(props) {
           <title>{title}</title>
         </Head>
         <section className={styles.headerSection}>
-          <ProjectHeader {...project} date={projectDate}/>
+          <ProjectHeader {...project} date={projectDate} />
         </section>
         <section className={styles.timelineSection}>
           <h2 className={styles.timelineTitle}>Timeline</h2>
@@ -151,7 +153,7 @@ export default function Post(props) {
         <section className={styles.eventsSection}>
           <h2 className={styles.eventsTitle}>Events</h2>
           <ul className={styles.events}>
-            {events.map((event) => (
+            {events.map(event => (
               <EventCard key={event.id} {...event} />
             ))}
           </ul>

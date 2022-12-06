@@ -1,6 +1,7 @@
 .imageContainer {
   display: flex;
   background-color: black;
+  cursor: pointer;
 
   > div {
     position: unset !important;
