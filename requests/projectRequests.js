@@ -6,7 +6,7 @@ const ProjectOutput = `
   title
   description
   tags { label, type }
-  events { id, imgUrl, title, description, date, type, topic }
+  events { id, imgUrl, videoUrl, title, description, date, type, topic }
 `;
 
 function groupEvents(events = []) {

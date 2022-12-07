@@ -5,6 +5,22 @@ import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
 import OutsideAlerter from '../HOCs/outsideAlerter';
 import ProjectImage from '../projectImage';
+import ProjectVideo from '../projectVideo';
+
+function Media(props) {
+  const { imgUrl, videoUrl } = props;
+
+  if (videoUrl)
+    return (
+      <ProjectVideo
+        className={styles.calendarVideo}
+        videoWidth="100%"
+        videoHeight="100%"
+        {...props}
+      />
+    );
+  else return <ImageInput {...props} />;
+}
 
 function ImageInput(props) {
   const { title, id, imgUrl, register } = props;
@@ -133,7 +149,7 @@ export default function DayCell(props) {
                 </span>
               </div>
             )}
-            {isSelected && <ImageInput {...event} register={register} />}
+            {isSelected && <Media {...event} register={register} />}
             {isSelected && (
               <input
                 defaultValue={topic}

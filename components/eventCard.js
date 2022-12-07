@@ -1,6 +1,7 @@
 import { useCallback, useContext } from 'react';
 import ProjectContext from '../contexts/projectContext';
 import ProjectImage from './projectImage';
+import ProjectVideo from './projectVideo';
 import styles from './eventCard.module.scss';
 import TogglableForm from './HOCs/togglableForm';
 
@@ -9,8 +10,22 @@ function textareaCallback(textareaNode) {
   textareaNode.target.style.height = textareaNode.target.scrollHeight + 'px';
 }
 
+function Media(props) {
+  const { title, videoUrl, imgUrl } = props;
+
+  if (videoUrl) return <ProjectVideo title={title} videoUrl={videoUrl} />;
+  else if (imgUrl)
+    return (
+      <ProjectImage
+        className={styles.eventCardImage}
+        imgUrl={imgUrl}
+        alt={title}
+      />
+    );
+}
+
 export default function EventCard(props) {
-  const { id, imgUrl, title, description, date } = props;
+  const { id, imgUrl, videoUrl, title, description, date } = props;
 
   const { editEvent, deleteEvent } = useContext(ProjectContext);
 
@@ -47,13 +62,7 @@ export default function EventCard(props) {
                 x
               </span>
             )}
-            {imgUrl && (
-              <ProjectImage
-                className={styles.eventCardImage}
-                imgUrl={imgUrl}
-                alt={title}
-              />
-            )}
+            <Media title={title} videoUrl={videoUrl} imgUrl={imgUrl} />
             <div className={styles.eventCardInfo}>
               <input
                 defaultValue={title}

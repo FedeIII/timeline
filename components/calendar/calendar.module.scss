@@ -211,6 +211,10 @@ $cell-height-selected: 240px;
   }
 }
 
+.calendarVideo {
+  grid-area: img;
+}
+
 .calendarImage {
   grid-area: img;
 }
