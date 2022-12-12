@@ -1,0 +1,23 @@
+.timelines {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.days {
+  width: 100%;
+  position: relative;
+  overflow-x: scroll;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.line {
+  position: absolute;
+  width: 100%;
+  top: 102px;
+  height: 4px;
+  background: black;
+  border-radius: 100px;
+  z-index: 1;
+}

@@ -1,5 +1,5 @@
-import { gql } from "@apollo/client";
-import client from "../apollo-client";
+import { gql } from '@apollo/client';
+import client from '../apollo-client';
 
 const ProjectOutput = `
   id
@@ -13,7 +13,8 @@ function groupEvents(events = []) {
   return events.reduce((groupedEvents, currentEvent) => {
     if (currentEvent.type == 'MIDDLE') {
       const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
+        otherEvent =>
+          otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic
       );
 
       const startEvent = groupedEvents[startEventIndex];
@@ -21,7 +22,8 @@ function groupEvents(events = []) {
       startEvent.middle.push(currentEvent);
     } else if (currentEvent.type == 'END') {
       const startEventIndex = groupedEvents.findIndex(
-        otherEvent => otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic,
+        otherEvent =>
+          otherEvent.type == 'START' && otherEvent.topic == currentEvent.topic
       );
 
       const startEvent = groupedEvents[startEventIndex];
@@ -52,8 +54,7 @@ export async function getAllProjects() {
     query: gql`
       query GetAllProjects {
         getAllProjects {
-          id
-          title
+          ${ProjectOutput}
         }
       }
     `,
@@ -76,8 +77,8 @@ export async function getAllProjectIds() {
   const paths = data.getAllProjects.map(project => {
     return {
       params: {
-        id: project.id
-      }
+        id: project.id,
+      },
     };
   });
 

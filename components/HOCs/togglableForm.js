@@ -6,7 +6,7 @@ import utilStyles from '../../styles/utils.module.scss';
 import classNames from 'classnames';
 
 export default function TogglableForm(props) {
-  const { children, onFormEdit, className } = props;
+  const { children, onFormEdit = () => {}, className } = props;
 
   const [isExitingEditMode, setExitingEditMode] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
@@ -31,10 +31,9 @@ export default function TogglableForm(props) {
     submit();
   }, [setExitingEditMode]);
 
-  const onFormClick = useCallback(
-    () => setExitingEditMode(true),
-    [setExitingEditMode]
-  );
+  const onFormClick = useCallback(() => {
+    setExitingEditMode(true);
+  }, [setExitingEditMode]);
 
   useEffect(() => {
     if (submitted) {

@@ -42,7 +42,7 @@ function ImageInput(props) {
   );
 }
 
-function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
+function useCellBodyClass(eventType, eventId, isOngoingEvent, isSelected) {
   return useMemo(() => {
     let cellBodyClass = styles.cellBody;
 
@@ -52,7 +52,7 @@ function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
       cellBodyClass += ' ' + styles.middle;
     } else if (eventType === 'END') {
       cellBodyClass += ' ' + styles.end;
-    } else if (eventsAtDay) {
+    } else if (eventId) {
       cellBodyClass += ' ' + styles.withEvent;
     } else if (isOngoingEvent) {
       cellBodyClass += ' ' + styles.ongoing;
@@ -61,55 +61,56 @@ function useCellBodyClass(eventType, eventsAtDay, isOngoingEvent, isSelected) {
     if (isSelected) cellBodyClass += ' ' + styles.selected;
 
     return cellBodyClass;
-  }, [eventType, eventsAtDay, isOngoingEvent, isSelected]);
+  }, [eventType, eventId, isOngoingEvent, isSelected]);
 }
 
 export default function DayCell(props) {
-  const { day, eventsAtDay, register, isEditMode, isOngoingEvent } = props;
+  const {
+    date,
+    eventsAtDay,
+    register = () => {},
+    isEditMode,
+    isOngoingEvent,
+    disabled,
+  } = props;
   const event = (eventsAtDay && eventsAtDay[0]) || {};
   const { title, type, id, imgUrl, topic } = event;
 
-  const shouldShowEvent = isOngoingEvent || eventsAtDay;
+  const shouldShowEvent = isOngoingEvent || id;
 
   const [isSelected, setIsSelected] = useState(false);
 
   useEffect(() => {
-    if (!eventsAtDay) {
+    if (!id) {
       setIsSelected(false);
     }
-  }, [eventsAtDay, setIsSelected]);
+  }, [id, setIsSelected]);
 
-  const cellBodyClass = useCellBodyClass(
-    type,
-    eventsAtDay,
-    isOngoingEvent,
-    isSelected
-  );
+  const cellBodyClass = useCellBodyClass(type, id, isOngoingEvent, isSelected);
 
-  const { createEvent, deleteEvent } = useContext(ProjectContext);
+  const projectContext = useContext(ProjectContext);
 
   const onCellSelect = useCallback(() => {
     if (isEditMode) {
-      const date = format(day, 'yyyy-MM-dd');
-      createEvent({
+      projectContext.createEvent({
         id: uuid(),
         title: date,
         date,
         type: 'PROMPT',
       });
     }
-  }, [isEditMode, createEvent]);
+  }, [isEditMode, projectContext && projectContext.createEvent]);
 
   const onEventSelect = useCallback(
     e => {
-      if (isEditMode && eventsAtDay && eventsAtDay.length) {
+      if (isEditMode && id) {
         e.stopPropagation();
         e.preventDefault();
 
         setIsSelected(true);
       }
     },
-    [isEditMode, eventsAtDay, setIsSelected]
+    [isEditMode, id, setIsSelected]
   );
 
   const onClickOutsideEvent = useCallback(() => {
@@ -117,14 +118,15 @@ export default function DayCell(props) {
   }, [isSelected, setIsSelected]);
 
   const onDeleteClick = useCallback(() => {
-    deleteEvent(id);
+    projectContext.deleteEvent(id);
     setIsSelected(false);
-  }, [deleteEvent, id, setIsSelected]);
+  }, [projectContext && projectContext.deleteEvent, id, setIsSelected]);
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
       <div className={styles.cellHeader}>
-        {format(day, 'EE')} <span>{format(day, 'd')}</span>
+        {format(new Date(date), 'EE')}{' '}
+        <span>{format(new Date(date), 'd')}</span>
       </div>
       <div className={cellBodyClass}>
         {shouldShowEvent && (
@@ -134,14 +136,15 @@ export default function DayCell(props) {
             className={styles.event}
             onClick={onEventSelect}
           >
-            {eventsAtDay && (
+            {id && (
               <textarea
                 defaultValue={title}
                 {...register(`${id}#title`)}
                 className={styles.eventInput}
-                disabled={!isEditMode}
+                disabled={disabled || !isEditMode}
               />
             )}
+
             {isSelected && (
               <div className={styles.editMenu}>
                 <span onClick={onDeleteClick} className={styles.deleteEvent}>
@@ -149,19 +152,24 @@ export default function DayCell(props) {
                 </span>
               </div>
             )}
+
             {isSelected && <Media {...event} register={register} />}
+
             {isSelected && (
               <input
                 defaultValue={topic}
                 {...register(`${id}#topic`)}
                 className={styles.topic}
+                disabled={disabled || !isEditMode}
               />
             )}
+
             {isSelected && (
               <select
                 {...register(`${id}#type`)}
                 className={styles.type}
                 defaultValue={type}
+                disabled={disabled || !isEditMode}
               >
                 <option value="START_PROJECT">Start Project</option>
                 <option value="PROMPT">Prompt</option>

@@ -22,7 +22,7 @@ function useGallery() {
 }
 
 export default function Layout(props) {
-  const { children, images, home } = props;
+  const { children, images = [], home } = props;
 
   const [isGalleryOpen, openGallery, closeGallery] = useGallery();
 

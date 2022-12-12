@@ -5,20 +5,12 @@ import { request } from 'graphql-request';
 import Layout from '../../components/layout';
 import EventCard from '../../components/eventCard';
 import Timeline from '../../components/timeline/timeline';
-import Calendar from '../../components/calendar/calendar';
+import FormCalendar from '../../components/calendar/formCalendar';
 import ProjectHeader from '../../components/projectHeader';
-import {
-  getAllProjectIds,
-  getProject as getProjectRequest,
-  setEvent as setEventRequest,
-  setProject as setProjectRequest,
-  addEvent as addEventRequest,
-  deleteEvent as deleteEventRequest,
-  groupProjectEvents,
-} from '../../requests/projectRequests';
+import { getAllProjectIds } from '../../requests/projectRequests';
 import styles from './project.module.scss';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import ProjectContext from '../../contexts/projectContext';
+import useProject from '../../components/hooks/useProject';
 
 export async function getStaticPaths() {
   const paths = await getAllProjectIds();
@@ -35,76 +27,6 @@ export async function getStaticProps({ params }) {
       id: params.id,
     },
   };
-}
-
-function useProject(id) {
-  const [project, setProject] = useState(null);
-
-  useEffect(() => {
-    async function requestProject() {
-      const project = await getProjectRequest(id);
-
-      setProject(project);
-    }
-
-    requestProject();
-  }, [id]);
-
-  async function editEvent(eventId, eventProps) {
-    let localProject = {
-      ...project,
-      events: project.events.map(event => {
-        if (event.id == eventId) return { ...event, ...eventProps };
-        return event;
-      }),
-    };
-    localProject = groupProjectEvents(localProject);
-    setProject(localProject);
-
-    const remoteProject = await setEventRequest(id, eventId, eventProps);
-    setProject(remoteProject);
-  }
-
-  async function editProject(id, projectProps) {
-    let localProject = {
-      ...project,
-      ...projectProps,
-    };
-    localProject = groupProjectEvents(localProject);
-    setProject(localProject);
-
-    const remoteProject = await setProjectRequest(id, projectProps);
-    setProject(remoteProject);
-  }
-
-  async function createEvent(event) {
-    let localProject = {
-      ...project,
-      events: [...project.events, event],
-    };
-    localProject.events = localProject.events.sort((event1, event2) =>
-      event1.date > event2.date ? 1 : -1
-    );
-    localProject = groupProjectEvents(localProject);
-    setProject(localProject);
-
-    const remoteProject = await addEventRequest(id, event);
-    setProject(remoteProject);
-  }
-
-  async function deleteEvent(eventId) {
-    let localProject = { ...project };
-    localProject.events = localProject.events.filter(
-      event => event.id != eventId
-    );
-    localProject = groupProjectEvents(localProject);
-    setProject(localProject);
-
-    const remoteProject = await deleteEventRequest(id, eventId);
-    setProject(remoteProject);
-  }
-
-  return [project, editProject, editEvent, createEvent, deleteEvent];
 }
 
 export default function Post(props) {
@@ -147,7 +69,7 @@ export default function Post(props) {
         </section>
         <section className={styles.timelineSection}>
           <h2 className={styles.timelineTitle}>Timeline</h2>
-          <Calendar events={events} projectId={id} />
+          <FormCalendar events={events} projectId={id} />
           {/* <Timeline events={groupedEvents} projectId={id} projectStart={projectDate} /> */}
         </section>
         <section className={styles.eventsSection}>
