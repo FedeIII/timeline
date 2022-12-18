@@ -219,33 +219,33 @@ export default function DayCell(props) {
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
-      <div className={styles.cellHeader}>
-        {format(new Date(date), 'EE')}{' '}
-        <span>{format(new Date(date), 'd')}</span>
-      </div>
+      <span className={styles.cellHeader}>
+        {format(new Date(date), 'EE')} {format(new Date(date), 'd')}
+      </span>
       {shouldShowEvent &&
         eventsAtDay.map((event, i) => {
           const setSelected = useCallback(setIsSelected(i), [setIsSelected]);
           return (
-            <div className={cellBodyClass}>
-              <OutsideAlerter
-                onClickOutside={onClickOutsideEvent}
-                enabled={isEditMode}
-                className={styles.event}
-                onClick={onEventSelect}
-                key={`${date}-${i}`}
-              >
-                {event && (
-                  <EventCell
-                    event={event}
-                    register={register}
-                    disabled={disabled}
-                    isEditMode={isEditMode}
-                    setIsSelected={setSelected}
-                    isSelected={areSelected[i]}
-                  />
-                )}
-              </OutsideAlerter>
+            <div className={cellBodyClass} key={`${date}-${i}`}>
+              {(event || isOngoingEvents[i]) && (
+                <OutsideAlerter
+                  onClickOutside={onClickOutsideEvent}
+                  enabled={isEditMode}
+                  className={styles.event}
+                  onClick={onEventSelect}
+                >
+                  {event && (
+                    <EventCell
+                      event={event}
+                      register={register}
+                      disabled={disabled}
+                      isEditMode={isEditMode}
+                      setIsSelected={setSelected}
+                      isSelected={areSelected[i]}
+                    />
+                  )}
+                </OutsideAlerter>
+              )}
             </div>
           );
         })}
