@@ -10,12 +10,13 @@ $cell-height-selected: 240px;
   overflow-x: scroll;
   text-align: center;
   white-space: nowrap;
+  padding: 16px 0;
 }
 
 .line {
   position: absolute;
   width: 100%;
-  top: 116px;
+  top: 132px;
   height: 4px;
   background: black;
   border-radius: 100px;
@@ -33,6 +34,7 @@ $cell-height-selected: 240px;
 
 .cell {
   display: inline-grid;
+  justify-items: center;
 
   &:hover {
     background-color: lightgray;
@@ -100,6 +102,7 @@ $cell-height-selected: 240px;
 
   &.withEvent {
     width: $cell-width;
+    align-items: center;
   }
 
   &.start {
@@ -167,6 +170,8 @@ $cell-height-selected: 240px;
   &.selected {
     width: $cell-width-selected;
     height: $cell-height-selected;
+    align-items: center;
+    margin-top: 8px;
 
     & .event {
       grid-template-columns: 50% 20% 30%;
@@ -181,6 +186,7 @@ $cell-height-selected: 240px;
       transform: scale(1.1);
       z-index: 1;
       cursor: initial;
+      width: calc(100% - 20px);
 
       & .eventInput {
         grid-area: title;

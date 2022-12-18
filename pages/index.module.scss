@@ -2,6 +2,11 @@
   display: flex;
   flex-direction: column;
   position: relative;
+
+  &,
+  & * {
+    transition: all 0.3s ease-out;
+  }
 }
 
 .days {
@@ -10,12 +15,14 @@
   overflow-x: scroll;
   text-align: center;
   white-space: nowrap;
+  padding: 16px 0;
+  margin: 0 0 16px;
 }
 
 .line {
   position: absolute;
   width: 100%;
-  top: 102px;
+  top: 118px;
   height: 4px;
   background: black;
   border-radius: 100px;

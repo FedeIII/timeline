@@ -110,37 +110,28 @@ function EventCell(props) {
   );
 }
 
-function useCellBodyClass(
-  eventsAtDay,
-  isAnyEventAtDay,
-  isAnyEventOngoing,
-  areSelected
-) {
+function useCellBodyClass(eventsAtDay, isAnyEventOngoing, areSelected) {
   return useMemo(() => {
-    let cellBodyClass = styles.cellBody;
+    return eventsAtDay.map((event, i) => {
+      let cellBodyClass = styles.cellBody;
 
-    if (isAnyEventAtDay && eventsAtDay.some(e => e && e.type === 'START')) {
-      cellBodyClass += ' ' + styles.start;
-    } else if (
-      isAnyEventAtDay &&
-      eventsAtDay.some(e => e && e.type === 'MIDDLE')
-    ) {
-      cellBodyClass += ' ' + styles.middle;
-    } else if (
-      isAnyEventAtDay &&
-      eventsAtDay.some(e => e && e.type === 'END')
-    ) {
-      cellBodyClass += ' ' + styles.end;
-    } else if (isAnyEventAtDay) {
-      cellBodyClass += ' ' + styles.withEvent;
-    } else if (isAnyEventOngoing) {
-      cellBodyClass += ' ' + styles.ongoing;
-    }
+      if (event && event.type === 'START') {
+        cellBodyClass += ' ' + styles.start;
+      } else if (event && event.type === 'MIDDLE') {
+        cellBodyClass += ' ' + styles.middle;
+      } else if (event && event.type === 'END') {
+        cellBodyClass += ' ' + styles.end;
+      } else if (event) {
+        cellBodyClass += ' ' + styles.withEvent;
+      } else if (isAnyEventOngoing) {
+        cellBodyClass += ' ' + styles.ongoing;
+      }
 
-    if (areSelected.some(e => e)) cellBodyClass += ' ' + styles.selected;
+      if (areSelected[i]) cellBodyClass += ' ' + styles.selected;
 
-    return cellBodyClass;
-  }, [eventsAtDay, isAnyEventAtDay, isAnyEventOngoing, areSelected]);
+      return cellBodyClass;
+    });
+  }, [eventsAtDay, isAnyEventOngoing, areSelected]);
 }
 
 export default function DayCell(props) {
@@ -161,33 +152,32 @@ export default function DayCell(props) {
     Array(eventsAtDay.length).fill(false)
   );
 
-  const setIsSelected = useCallback(
-    index => isSelected => {
-      const newAreSelected = [...areSelected];
-      newAreSelected[index] = isSelected;
-      setAreSelected([...areSelected]);
-    },
-    [...areSelected, setAreSelected]
+  const setIsSelected = useMemo(
+    () =>
+      areSelected.reduce((acc, _, i) => {
+        return {
+          ...acc,
+          [`at${i}`]: isSelected => {
+            const newAreSelected = [...areSelected];
+            newAreSelected[i] = isSelected;
+            setAreSelected([...newAreSelected]);
+          },
+        };
+      }, {}),
+    [areSelected]
   );
 
   useEffect(() => {
     if (!isAnyEventAtDay) {
-      setAreSelected(areSelected.fill(false));
+      setAreSelected([...areSelected.fill(false)]);
     }
   }, [isAnyEventAtDay, setAreSelected]);
-
-  const cellBodyClass = useCellBodyClass(
-    eventsAtDay,
-    isAnyEventAtDay,
-    isAnyEventOngoing,
-    areSelected
-  );
 
   const projectContext = useContext(ProjectContext);
 
   const onCellSelect = useCallback(
     e => {
-      if (isEditMode) {
+      if (isEditMode && projectContext && !isAnyEventAtDay) {
         e.preventDefault();
         e.stopPropagation();
         projectContext.createEvent({
@@ -202,20 +192,28 @@ export default function DayCell(props) {
   );
 
   const onEventSelect = useCallback(
-    e => {
-      if (isEditMode && isAnyEventAtDay) {
+    i => e => {
+      if (isEditMode && isAnyEventAtDay && !areSelected[i]) {
         e.stopPropagation();
         e.preventDefault();
 
-        setAreSelected(areSelected.fill(true));
+        setIsSelected[`at${i}`](true);
       }
     },
-    [isEditMode, isAnyEventAtDay, setAreSelected]
+    [isEditMode, isAnyEventAtDay, setIsSelected, areSelected]
   );
 
-  const onClickOutsideEvent = useCallback(() => {
-    setAreSelected(areSelected.fill(false));
-  }, [setAreSelected]);
+  const onClickOutsideEvent = useCallback(i => () => {
+    if (areSelected[i]) {
+      setIsSelected[`at${i}`](false);
+    }
+  }, [areSelected, setIsSelected]);
+
+  const cellBodyClasses = useCellBodyClass(
+    eventsAtDay,
+    isAnyEventOngoing,
+    areSelected
+  );
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
@@ -224,15 +222,14 @@ export default function DayCell(props) {
       </span>
       {shouldShowEvent &&
         eventsAtDay.map((event, i) => {
-          const setSelected = useCallback(setIsSelected(i), [setIsSelected]);
           return (
-            <div className={cellBodyClass} key={`${date}-${i}`}>
+            <div className={cellBodyClasses[i]} key={`${date}-${i}`}>
               {(event || isOngoingEvents[i]) && (
                 <OutsideAlerter
-                  onClickOutside={onClickOutsideEvent}
+                  onClickOutside={onClickOutsideEvent(i)}
                   enabled={isEditMode}
                   className={styles.event}
-                  onClick={onEventSelect}
+                  onClick={onEventSelect(i)}
                 >
                   {event && (
                     <EventCell
@@ -240,7 +237,7 @@ export default function DayCell(props) {
                       register={register}
                       disabled={disabled}
                       isEditMode={isEditMode}
-                      setIsSelected={setSelected}
+                      setIsSelected={setIsSelected[`at${i}`]}
                       isSelected={areSelected[i]}
                     />
                   )}
