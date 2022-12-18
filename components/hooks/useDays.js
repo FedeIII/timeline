@@ -207,12 +207,9 @@ export function getDays(projects = []) {
         if (event) {
           const eventDayIndex = days.findIndex(day => day.date === event.date);
           const eventDay = days[eventDayIndex];
-          // console.log('event', event);
-          // console.log('days', days);
 
           if (event.type === 'START') {
             eventDay.isOngoingEvents[projectIndex] = true;
-            // console.log('look for end event for', event, 'in', project.events);
             const endEvent = project.events.find(
               otherEvent =>
                 otherEvent.topic &&
@@ -225,7 +222,6 @@ export function getDays(projects = []) {
             days.slice(eventDayIndex, endEventDateIndex).forEach(day => {
               day.isOngoingEvents[projectIndex] = true;
             });
-            // console.log('days after process', days);
           } else if (event.type === 'END') {
             eventDay.isOngoingEvents[projectIndex] = true;
           } else {

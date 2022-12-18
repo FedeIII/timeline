@@ -42,80 +42,19 @@ function ImageInput(props) {
   );
 }
 
-function useCellBodyClass(eventType, eventId, isOngoingEvent, isSelected) {
-  return useMemo(() => {
-    let cellBodyClass = styles.cellBody;
-
-    if (eventType === 'START') {
-      cellBodyClass += ' ' + styles.start;
-    } else if (eventType === 'MIDDLE') {
-      cellBodyClass += ' ' + styles.middle;
-    } else if (eventType === 'END') {
-      cellBodyClass += ' ' + styles.end;
-    } else if (eventId) {
-      cellBodyClass += ' ' + styles.withEvent;
-    } else if (isOngoingEvent) {
-      cellBodyClass += ' ' + styles.ongoing;
-    }
-
-    if (isSelected) cellBodyClass += ' ' + styles.selected;
-
-    return cellBodyClass;
-  }, [eventType, eventId, isOngoingEvent, isSelected]);
-}
-
-export default function DayCell(props) {
+function EventCell(props) {
   const {
-    date,
-    eventsAtDay,
+    event = {},
     register = () => {},
-    isEditMode,
-    isOngoingEvent,
     disabled,
+    isEditMode,
+    setIsSelected,
+    isSelected,
   } = props;
-  const event = (eventsAtDay && eventsAtDay[0]) || {};
-  const { title, type, id, imgUrl, topic } = event;
-
-  const shouldShowEvent = isOngoingEvent || id;
-
-  const [isSelected, setIsSelected] = useState(false);
-
-  useEffect(() => {
-    if (!id) {
-      setIsSelected(false);
-    }
-  }, [id, setIsSelected]);
-
-  const cellBodyClass = useCellBodyClass(type, id, isOngoingEvent, isSelected);
+  const eventAtDay = event || {};
+  const { title, type, id, topic } = eventAtDay;
 
   const projectContext = useContext(ProjectContext);
-
-  const onCellSelect = useCallback(() => {
-    if (isEditMode) {
-      projectContext.createEvent({
-        id: uuid(),
-        title: date,
-        date,
-        type: 'PROMPT',
-      });
-    }
-  }, [isEditMode, projectContext && projectContext.createEvent]);
-
-  const onEventSelect = useCallback(
-    e => {
-      if (isEditMode && id) {
-        e.stopPropagation();
-        e.preventDefault();
-
-        setIsSelected(true);
-      }
-    },
-    [isEditMode, id, setIsSelected]
-  );
-
-  const onClickOutsideEvent = useCallback(() => {
-    setIsSelected(false);
-  }, [isSelected, setIsSelected]);
 
   const onDeleteClick = useCallback(() => {
     projectContext.deleteEvent(id);
@@ -123,65 +62,193 @@ export default function DayCell(props) {
   }, [projectContext && projectContext.deleteEvent, id, setIsSelected]);
 
   return (
+    <>
+      {id && (
+        <textarea
+          defaultValue={title}
+          {...register(`${id}#title`)}
+          className={styles.eventInput}
+          disabled={disabled || !isEditMode}
+        />
+      )}
+
+      {isSelected && (
+        <div className={styles.editMenu}>
+          <span onClick={onDeleteClick} className={styles.deleteEvent}>
+            x
+          </span>
+        </div>
+      )}
+
+      {isSelected && <Media {...eventAtDay} register={register} />}
+
+      {isSelected && (
+        <input
+          defaultValue={topic}
+          {...register(`${id}#topic`)}
+          className={styles.topic}
+          disabled={disabled || !isEditMode}
+        />
+      )}
+
+      {isSelected && (
+        <select
+          {...register(`${id}#type`)}
+          className={styles.type}
+          defaultValue={type}
+          disabled={disabled || !isEditMode}
+        >
+          <option value="START_PROJECT">Start Project</option>
+          <option value="PROMPT">Prompt</option>
+          <option value="START">Start</option>
+          <option value="MIDDLE">Middle</option>
+          <option value="END">End</option>
+          <option value="END_PROJECT">End Project</option>
+        </select>
+      )}
+    </>
+  );
+}
+
+function useCellBodyClass(
+  eventsAtDay,
+  isAnyEventAtDay,
+  isAnyEventOngoing,
+  areSelected
+) {
+  return useMemo(() => {
+    let cellBodyClass = styles.cellBody;
+
+    if (isAnyEventAtDay && eventsAtDay.some(e => e && e.type === 'START')) {
+      cellBodyClass += ' ' + styles.start;
+    } else if (
+      isAnyEventAtDay &&
+      eventsAtDay.some(e => e && e.type === 'MIDDLE')
+    ) {
+      cellBodyClass += ' ' + styles.middle;
+    } else if (
+      isAnyEventAtDay &&
+      eventsAtDay.some(e => e && e.type === 'END')
+    ) {
+      cellBodyClass += ' ' + styles.end;
+    } else if (isAnyEventAtDay) {
+      cellBodyClass += ' ' + styles.withEvent;
+    } else if (isAnyEventOngoing) {
+      cellBodyClass += ' ' + styles.ongoing;
+    }
+
+    if (areSelected.some(e => e)) cellBodyClass += ' ' + styles.selected;
+
+    return cellBodyClass;
+  }, [eventsAtDay, isAnyEventAtDay, isAnyEventOngoing, areSelected]);
+}
+
+export default function DayCell(props) {
+  const { date, eventsAtDay, register, isEditMode, isOngoingEvents, disabled } =
+    props;
+
+  const isAnyEventOngoing = useMemo(() => {
+    return isOngoingEvents.some(e => e);
+  }, [isOngoingEvents]);
+  const isAnyEventAtDay = useMemo(() => {
+    return eventsAtDay.some(e => e);
+  }, [eventsAtDay]);
+  const shouldShowEvent = useMemo(() => {
+    return isAnyEventOngoing || isAnyEventAtDay;
+  }, [isAnyEventOngoing, isAnyEventAtDay]);
+
+  const [areSelected, setAreSelected] = useState(
+    Array(eventsAtDay.length).fill(false)
+  );
+
+  const setIsSelected = useCallback(
+    index => isSelected => {
+      const newAreSelected = [...areSelected];
+      newAreSelected[index] = isSelected;
+      setAreSelected([...areSelected]);
+    },
+    [...areSelected, setAreSelected]
+  );
+
+  useEffect(() => {
+    if (!isAnyEventAtDay) {
+      setAreSelected(areSelected.fill(false));
+    }
+  }, [isAnyEventAtDay, setAreSelected]);
+
+  const cellBodyClass = useCellBodyClass(
+    eventsAtDay,
+    isAnyEventAtDay,
+    isAnyEventOngoing,
+    areSelected
+  );
+
+  const projectContext = useContext(ProjectContext);
+
+  const onCellSelect = useCallback(
+    e => {
+      if (isEditMode) {
+        e.preventDefault();
+        e.stopPropagation();
+        projectContext.createEvent({
+          id: uuid(),
+          title: date,
+          date,
+          type: 'PROMPT',
+        });
+      }
+    },
+    [isEditMode, projectContext && projectContext.createEvent]
+  );
+
+  const onEventSelect = useCallback(
+    e => {
+      if (isEditMode && isAnyEventAtDay) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        setAreSelected(areSelected.fill(true));
+      }
+    },
+    [isEditMode, isAnyEventAtDay, setAreSelected]
+  );
+
+  const onClickOutsideEvent = useCallback(() => {
+    setAreSelected(areSelected.fill(false));
+  }, [setAreSelected]);
+
+  return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
       <div className={styles.cellHeader}>
         {format(new Date(date), 'EE')}{' '}
         <span>{format(new Date(date), 'd')}</span>
       </div>
-      <div className={cellBodyClass}>
-        {shouldShowEvent && (
-          <OutsideAlerter
-            onClickOutside={onClickOutsideEvent}
-            enabled={isEditMode}
-            className={styles.event}
-            onClick={onEventSelect}
-          >
-            {id && (
-              <textarea
-                defaultValue={title}
-                {...register(`${id}#title`)}
-                className={styles.eventInput}
-                disabled={disabled || !isEditMode}
-              />
-            )}
-
-            {isSelected && (
-              <div className={styles.editMenu}>
-                <span onClick={onDeleteClick} className={styles.deleteEvent}>
-                  x
-                </span>
-              </div>
-            )}
-
-            {isSelected && <Media {...event} register={register} />}
-
-            {isSelected && (
-              <input
-                defaultValue={topic}
-                {...register(`${id}#topic`)}
-                className={styles.topic}
-                disabled={disabled || !isEditMode}
-              />
-            )}
-
-            {isSelected && (
-              <select
-                {...register(`${id}#type`)}
-                className={styles.type}
-                defaultValue={type}
-                disabled={disabled || !isEditMode}
+      {shouldShowEvent &&
+        eventsAtDay.map((event, i) => {
+          const setSelected = useCallback(setIsSelected(i), [setIsSelected]);
+          return (
+            <div className={cellBodyClass}>
+              <OutsideAlerter
+                onClickOutside={onClickOutsideEvent}
+                enabled={isEditMode}
+                className={styles.event}
+                onClick={onEventSelect}
+                key={`${date}-${i}`}
               >
-                <option value="START_PROJECT">Start Project</option>
-                <option value="PROMPT">Prompt</option>
-                <option value="START">Start</option>
-                <option value="MIDDLE">Middle</option>
-                <option value="END">End</option>
-                <option value="END_PROJECT">End Project</option>
-              </select>
-            )}
-          </OutsideAlerter>
-        )}
-      </div>
+                {event && (
+                  <EventCell
+                    event={event}
+                    register={register}
+                    disabled={disabled}
+                    isEditMode={isEditMode}
+                    setIsSelected={setSelected}
+                    isSelected={areSelected[i]}
+                  />
+                )}
+              </OutsideAlerter>
+            </div>
+          );
+        })}
     </div>
   );
 }

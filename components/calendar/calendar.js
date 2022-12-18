@@ -8,7 +8,7 @@ export default function Calendar(props) {
       {days.map(({ date, isOngoingEvents, events }) => (
         <DayCell
           date={date}
-          isOngoingEvent={isOngoingEvents[0]}
+          isOngoingEvents={isOngoingEvents}
           eventsAtDay={events}
           {...restProps}
           key={date}

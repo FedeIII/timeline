@@ -37,9 +37,10 @@ export default function Home(props) {
             return (
               <DayCell
                 date={date}
-                eventsAtDay={[events[1]]}
-                isOngoingEvent={isOngoingEvents[1]}
+                eventsAtDay={events}
+                isOngoingEvents={isOngoingEvents}
                 isEditMode
+                key={date}
               />
             );
           })}
