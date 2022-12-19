@@ -27,9 +27,10 @@ $cell-height-selected: 240px;
   position: absolute;
   width: 100%;
   top: 83px;
-  height: 3px;
-  background: gray;
-  border: none;
+  height: 5px;
+  margin-top: 8px;
+  background: lightgray;
+  border: 1px solid dimgray;
   border-left: none;
   border-right: none;
 }

@@ -1,6 +1,3 @@
-import { compareAsc } from 'date-fns';
-import add from 'date-fns/add';
-import format from 'date-fns/format';
 import styles from './calendar.module.scss';
 import { useCallback, useContext, useMemo } from 'react';
 import TogglableForm from '../HOCs/togglableForm';
@@ -12,6 +9,7 @@ export default function FormCalendar(props) {
   const { events, projectId } = props;
 
   const firstDate = events[0].date;
+  const lastDate = events[events.length - 1].date;
 
   const days = useDaysEvents(events);
 
@@ -51,6 +49,7 @@ export default function FormCalendar(props) {
               control={control}
               isEditMode={isEditMode}
               firstDates={[firstDate]}
+              lastDates={[lastDate]}
             />
           </>
         );

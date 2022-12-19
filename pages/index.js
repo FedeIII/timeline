@@ -23,12 +23,23 @@ function useFirstDates(projects) {
   }, [projects]);
 }
 
+function useLastDates(projects) {
+  return useMemo(() => {
+    return projects.map(
+      project =>
+        project.events[project.events.length - 1] &&
+        project.events[project.events.length - 1].date
+    );
+  }, [projects]);
+}
+
 export default function Home(props) {
   const { projects } = props;
 
   const days = useDaysProjects(projects);
 
   const firstDates = useFirstDates(projects);
+  const lastDates = useLastDates(projects);
 
   return (
     <Layout home>
@@ -61,6 +72,7 @@ export default function Home(props) {
                   isOngoingEvents={isOngoingEvents}
                   isEditMode
                   firstDates={firstDates}
+                  lastDates={lastDates}
                   key={date}
                 />
               );

@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
 import isBefore from 'date-fns/isBefore';
+import isAfter from 'date-fns/isAfter';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
@@ -143,6 +144,7 @@ export default function DayCell(props) {
     isEditMode,
     isOngoingEvents,
     firstDates,
+    lastDates,
     disabled,
   } = props;
 
@@ -232,13 +234,22 @@ export default function DayCell(props) {
         {format(new Date(date), 'EE')} {format(new Date(date), 'd')}
       </span>
       {eventsAtDay.map((_, i) => {
-        const lineStyles = {
+        let lineStyles = {
           // top: `${83 * (i + 1) + 12 * i}px`,
           top: `${95 * i + 83}px`,
         };
 
-        if (isBefore(new Date(date), new Date(firstDates[i]))) {
-          lineStyles['background-color'] = 'lightgray';
+        if (
+          isBefore(new Date(date), new Date(firstDates[i])) ||
+          isAfter(new Date(date), new Date(lastDates[i]))
+        ) {
+          lineStyles = {
+            ...lineStyles,
+            height: '3px',
+            border: 'none',
+            ['margin-top']: '0.5em',
+            ['background-color']: 'lightgray',
+          };
         }
 
         return <hr className={styles.projectLine} style={lineStyles} />;
