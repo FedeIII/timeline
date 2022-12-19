@@ -1,5 +1,4 @@
 import isAfter from 'date-fns/isAfter';
-import isBefore from 'date-fns/isBefore';
 import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import add from 'date-fns/add';
 import format from 'date-fns/format';

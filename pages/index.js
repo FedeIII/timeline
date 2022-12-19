@@ -7,6 +7,7 @@ import { getAllProjects } from '../requests/projectRequests';
 import { useDaysProjects } from '../components/hooks/useDays';
 import DayCell from '../components/calendar/dayCell';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 export async function getStaticProps() {
   const projects = await getAllProjects();
@@ -16,10 +17,18 @@ export async function getStaticProps() {
   };
 }
 
+function useFirstDates(projects) {
+  return useMemo(() => {
+    return projects.map(project => project.events[0] && project.events[0].date);
+  }, [projects]);
+}
+
 export default function Home(props) {
   const { projects } = props;
 
   const days = useDaysProjects(projects);
+
+  const firstDates = useFirstDates(projects);
 
   return (
     <Layout home>
@@ -51,6 +60,7 @@ export default function Home(props) {
                   eventsAtDay={events}
                   isOngoingEvents={isOngoingEvents}
                   isEditMode
+                  firstDates={firstDates}
                   key={date}
                 />
               );

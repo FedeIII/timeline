@@ -1,5 +1,6 @@
 import { v4 as uuid } from 'uuid';
 import format from 'date-fns/format';
+import isBefore from 'date-fns/isBefore';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
@@ -135,8 +136,15 @@ function useCellBodyClass(eventsAtDay, isAnyEventOngoing, areSelected) {
 }
 
 export default function DayCell(props) {
-  const { date, eventsAtDay, register, isEditMode, isOngoingEvents, disabled } =
-    props;
+  const {
+    date,
+    eventsAtDay,
+    register,
+    isEditMode,
+    isOngoingEvents,
+    firstDates,
+    disabled,
+  } = props;
 
   const isAnyEventOngoing = useMemo(() => {
     return isOngoingEvents.some(e => e);
@@ -228,6 +236,11 @@ export default function DayCell(props) {
           // top: `${83 * (i + 1) + 12 * i}px`,
           top: `${95 * i + 83}px`,
         };
+
+        if (isBefore(new Date(date), new Date(firstDates[i]))) {
+          lineStyles['background-color'] = 'lightgray';
+        }
+
         return <hr className={styles.projectLine} style={lineStyles} />;
       })}
       {shouldShowEvent &&

@@ -27,8 +27,11 @@ $cell-height-selected: 240px;
   position: absolute;
   width: 100%;
   top: 83px;
-  height: 4px;
-  background: lightgray;
+  height: 3px;
+  background: gray;
+  border: none;
+  border-left: none;
+  border-right: none;
 }
 
 .headerRow {

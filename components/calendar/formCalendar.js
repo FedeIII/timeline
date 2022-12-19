@@ -11,6 +11,8 @@ import { useDaysEvents } from '../hooks/useDays';
 export default function FormCalendar(props) {
   const { events, projectId } = props;
 
+  const firstDate = events[0].date;
+
   const days = useDaysEvents(events);
 
   const projectContext = useContext(ProjectContext);
@@ -48,6 +50,7 @@ export default function FormCalendar(props) {
               register={register}
               control={control}
               isEditMode={isEditMode}
+              firstDates={[firstDate]}
             />
           </>
         );
