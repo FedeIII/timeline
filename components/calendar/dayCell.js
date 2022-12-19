@@ -203,11 +203,14 @@ export default function DayCell(props) {
     [isEditMode, isAnyEventAtDay, setIsSelected, areSelected]
   );
 
-  const onClickOutsideEvent = useCallback(i => () => {
-    if (areSelected[i]) {
-      setIsSelected[`at${i}`](false);
-    }
-  }, [areSelected, setIsSelected]);
+  const onClickOutsideEvent = useCallback(
+    i => () => {
+      if (areSelected[i]) {
+        setIsSelected[`at${i}`](false);
+      }
+    },
+    [areSelected, setIsSelected]
+  );
 
   const cellBodyClasses = useCellBodyClass(
     eventsAtDay,
@@ -220,6 +223,13 @@ export default function DayCell(props) {
       <span className={styles.cellHeader}>
         {format(new Date(date), 'EE')} {format(new Date(date), 'd')}
       </span>
+      {eventsAtDay.map((_, i) => {
+        const lineStyles = {
+          // top: `${83 * (i + 1) + 12 * i}px`,
+          top: `${95 * i + 83}px`,
+        };
+        return <hr className={styles.projectLine} style={lineStyles} />;
+      })}
       {shouldShowEvent &&
         eventsAtDay.map((event, i) => {
           return (

@@ -23,6 +23,14 @@ $cell-height-selected: 240px;
   z-index: 1;
 }
 
+.projectLine {
+  position: absolute;
+  width: 100%;
+  top: 83px;
+  height: 4px;
+  background: lightgray;
+}
+
 .headerRow {
   display: block;
   white-space: nowrap;
@@ -33,6 +41,7 @@ $cell-height-selected: 240px;
 }
 
 .cell {
+  position: relative;
   display: inline-grid;
   justify-items: center;
 

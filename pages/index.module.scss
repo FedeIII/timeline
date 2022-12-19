@@ -9,9 +9,12 @@
   }
 }
 
+.calendar {
+  display: flex;
+}
+
 .days {
   width: 100%;
-  position: relative;
   overflow-x: scroll;
   text-align: center;
   white-space: nowrap;
@@ -19,12 +22,42 @@
   margin: 0 0 16px;
 }
 
+.projects {
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  text-align: center;
+  padding: 16px 8px;
+  justify-items: center;
+  border-right: 1px solid lightgray;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.projectsHeader {
+  display: inline-block;
+  width: 100%;
+  border-bottom: 1px solid lightgray;
+}
+
+.projectBody {
+  height: 95px;
+  margin: 0px 8px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  &:first-of-type {
+    margin-top: 16px;
+  }
+}
+
 .line {
   position: absolute;
-  width: 100%;
-  top: 118px;
+  left: 100px;
+  width: calc(100% - 100px);
   height: 4px;
-  background: black;
+  background: lightgray;
   border-radius: 100px;
-  z-index: 1;
 }

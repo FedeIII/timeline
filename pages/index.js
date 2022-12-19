@@ -29,21 +29,28 @@ export default function Home(props) {
       </Head>
       <section className={styles.timelines}>
         <h2 className={utilStyles.headingLg}>Timelines</h2>
-        <hr className={styles.line} />
-        <div className={styles.days}>
-          {days.map(day => {
-            const { date, events, isOngoingEvents } = day;
+        <div className={styles.calendar}>
+          <div className={styles.projects}>
+            <span className={styles.projectsHeader}>Projects</span>
+            {projects.map((project, i) => (
+              <div className={styles.projectBody}>{project.title}</div>
+            ))}
+          </div>
+          <div className={styles.days}>
+            {days.map(day => {
+              const { date, events, isOngoingEvents } = day;
 
-            return (
-              <DayCell
-                date={date}
-                eventsAtDay={events}
-                isOngoingEvents={isOngoingEvents}
-                isEditMode
-                key={date}
-              />
-            );
-          })}
+              return (
+                <DayCell
+                  date={date}
+                  eventsAtDay={events}
+                  isOngoingEvents={isOngoingEvents}
+                  isEditMode
+                  key={date}
+                />
+              );
+            })}
+          </div>
         </div>
       </section>
     </Layout>
