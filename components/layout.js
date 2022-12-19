@@ -7,7 +7,6 @@ import ImageGallery from './imageGallery';
 import GalleryContext from '../contexts/galleryContext';
 import { useCallback, useState } from 'react';
 
-const name = 'Timeline';
 export const siteTitle = 'Timeline';
 
 function useGallery() {

@@ -9,6 +9,10 @@ const ProjectOutput = `
   events { id, imgUrl, videoUrl, title, description, date, type, topic }
 `;
 
+/////////////
+// HELPERS //
+/////////////
+
 function groupEvents(events = []) {
   return events.reduce((groupedEvents, currentEvent) => {
     if (currentEvent.type == 'MIDDLE') {
@@ -48,6 +52,10 @@ export function groupProjectEvents(projectData) {
 
   return project;
 }
+
+/////////////
+// QUERIES //
+/////////////
 
 export async function getAllProjects() {
   const { data } = await client.query({
@@ -100,6 +108,25 @@ export async function getProject(id) {
   const project = groupProjectEvents(data.getProject);
 
   return project;
+}
+
+///////////////
+// MUTATIONS //
+///////////////
+
+export async function createProject(projectProps) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation CreateProject($input: ProjectInput!) {
+        createProject(input: $input) {
+          ${ProjectOutput}
+        }
+      }
+    `,
+    variables: { input: projectProps },
+  });
+
+  return data.createProject;
 }
 
 export async function setProject(id, projectProps) {
