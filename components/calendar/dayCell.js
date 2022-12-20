@@ -247,12 +247,12 @@ export default function DayCell(props) {
             ...lineStyles,
             height: '3px',
             border: 'none',
-            ['margin-top']: '0.5em',
-            ['background-color']: 'lightgray',
+            marginTop: '0.5em',
+            backgroundColor: 'lightgray',
           };
         }
 
-        return <hr className={styles.projectLine} style={lineStyles} />;
+        return <hr className={styles.projectLine} style={lineStyles} key={i} />;
       })}
       {shouldShowEvent &&
         eventsAtDay.map((event, i) => {
