@@ -40,18 +40,15 @@ export default function FormCalendar(props) {
         const { topLevelStyles, isEditMode, register, control } = props;
 
         return (
-          <>
-            <hr className={styles.line} />
-            <Calendar
-              className={topLevelStyles}
-              days={days}
-              register={register}
-              control={control}
-              isEditMode={isEditMode}
-              firstDates={[firstDate]}
-              lastDates={[lastDate]}
-            />
-          </>
+          <Calendar
+            className={topLevelStyles}
+            days={days}
+            register={register}
+            control={control}
+            isEditMode={isEditMode}
+            firstDates={[firstDate]}
+            lastDates={[lastDate]}
+          />
         );
       }}
     </TogglableForm>

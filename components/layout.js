@@ -21,7 +21,7 @@ function useGallery() {
 }
 
 export default function Layout(props) {
-  const { children, images = [], home } = props;
+  const { children, menuItems, images = [], home } = props;
 
   const [isGalleryOpen, openGallery, closeGallery] = useGallery();
 
@@ -47,7 +47,7 @@ export default function Layout(props) {
         value={{ isGalleryOpen, openGallery, closeGallery }}
       >
         <header className={styles.header}>
-          <Menu />
+          <Menu>{menuItems}</Menu>
         </header>
 
         <ImageGallery isOpen={isGalleryOpen} images={images} />

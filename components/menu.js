@@ -4,13 +4,8 @@ import Link from 'next/link';
 import SettingsIcon from './settings-icon';
 import utilStyles from '../styles/utils.module.scss';
 import styles from './menu.module.scss';
-import { useCallback } from 'react';
 
 export default function Menu({ children }) {
-  const onCreateClick = useCallback(() => {
-    
-  }, []);
-
   return (
     <>
       <Link href="/" className={styles.profileLink}>
@@ -28,9 +23,9 @@ export default function Menu({ children }) {
 
       <ul className={`${styles.menuItems}`}>
         <li>
-          <button className={styles.createButton} onClick={onCreateClick}>
+          <Link href="/create-project" className={styles.button}>
             Create Project
-          </button>
+          </Link>
         </li>
         <li>
           <Link href="/" className={utilStyles.colorInherit}>
