@@ -28,6 +28,8 @@ export default function FirstEvent(props) {
 
   const [media, setMedia] = useState('IMG');
 
+  if (!register) return;
+
   return (
     <div className={eventCardStyles.eventCard}>
       <div className={styles.firstEventMedia}>

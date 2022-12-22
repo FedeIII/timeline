@@ -9,6 +9,8 @@ function textareaCallback(textareaNode) {
 export default function Header(props) {
   const { register } = props;
 
+  if (!register) return;
+
   return (
     <div className={projectHeaderStyles.projectHeader}>
       <input
