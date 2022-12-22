@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import Layout, { siteTitle } from '../../components/layout';
@@ -17,10 +18,14 @@ function toSnakeCase(title) {
     .join('');
 }
 
-export default function CreateProject() {
-  const useFormProps = useForm();
+const noOp = () => {};
 
-  const { handleSubmit, register } = useFormProps;
+export default function CreateProject() {
+  const useFormProps = useRef();
+  useEffect(() => {
+    useFormProps.current = useForm();
+  }, []);
+  const { handleSubmi = noOp, register = noOp } = useFormProps.current;
 
   const submit = handleSubmit(data => {
     if (!data.title) return;
