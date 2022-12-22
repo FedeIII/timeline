@@ -21,11 +21,8 @@ function toSnakeCase(title) {
 const noOp = () => {};
 
 export default function CreateProject() {
-  const useFormProps = useRef({ handleSubmi: noOp, register: noOp });
-  useEffect(() => {
-    useFormProps.current = useForm();
-  }, []);
-  const { handleSubmi, register } = useFormProps.current;
+  const useFormProps = useRef(useForm());
+  const { handleSubmit = noOp, register = noOp } = useFormProps.current;
 
   const submit = handleSubmit(data => {
     if (!data.title) return;
