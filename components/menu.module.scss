@@ -1,5 +1,15 @@
+.profile {
+  display: flex;
+  align-items: center;
+}
+
 .profileLink {
   margin: 8px;
+}
+
+.userName {
+  margin-left: 16px;
+  font-size: 14px;
 }
 
 .menuItems {
