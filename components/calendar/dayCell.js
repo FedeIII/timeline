@@ -235,8 +235,8 @@ export default function DayCell(props) {
       </span>
       {eventsAtDay.map((_, i) => {
         let lineStyles = {
-          // top: `${83 * (i + 1) + 12 * i}px`,
-          top: `${95 * i + 83}px`,
+          // top: `${80 * (i + 1) + 12 * i}px`,
+          top: `${92 * i + 80}px`,
         };
 
         if (
