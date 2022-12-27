@@ -1,0 +1,46 @@
+.titleSection {
+  text-align: center;
+}
+
+.title {
+}
+
+.integrationsSection {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+  max-width: 500px;
+  border: 1px solid lightgray;
+  padding: 16px;
+}
+
+.integration {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.integrationLink {
+  padding: 8px 16px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  min-width: 150px;
+  text-align: center;
+}
+
+.check {
+  padding: 8px;
+  color: lawngreen;
+  background-color: gray;
+  font-weight: 900;
+  border-radius: 100%;
+  width: 32px;
+  height: 32px;
+  margin-top: 8px;
+  line-height: 16px;
+}
