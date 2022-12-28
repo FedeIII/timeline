@@ -115,18 +115,22 @@ export async function getProject(id) {
 ///////////////
 
 export async function createProject(projectProps) {
-  const { data } = await client.mutate({
-    mutation: gql`
-      mutation CreateProject($input: ProjectInput!) {
-        createProject(input: $input) {
-          ${ProjectOutput}
+  try {
+    const { data } = await client.mutate({
+      mutation: gql`
+        mutation CreateProject($input: ProjectInput!) {
+          createProject(input: $input) {
+            ${ProjectOutput}
+          }
         }
-      }
-    `,
-    variables: { input: projectProps },
-  });
+      `,
+      variables: { input: projectProps },
+    });
 
-  return data.createProject;
+    return data.createProject;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 export async function setProject(id, projectProps) {

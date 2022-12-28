@@ -49,3 +49,26 @@
     color: white;
   }
 }
+
+.projectCreated {
+  display: flex;
+  justify-content: center;
+  padding: 32px;
+  margin: 32px auto;
+  border: 1px solid lightgray;
+  width: 80%;
+  max-width: 500px;
+}
+
+.errors {
+  display: flex;
+  justify-content: center;
+  padding: 16px 32px;
+  border: 1px solid lightgray;
+  margin: 16px auto;
+  width: 80%;
+  max-width: 500px;
+  color: red;
+  font-size: 15px;
+  flex-direction: column;
+}
