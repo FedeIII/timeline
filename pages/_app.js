@@ -24,6 +24,20 @@ export default function App(props) {
 
   const envVars = useEnvVars();
   const [user, setUser] = useState(null);
+  const { ME_URL } = envVars;
+
+  useEffect(() => {
+    (async function () {
+      try {
+        if (!ME_URL) return;
+        const response = await fetch(ME_URL, { credentials: 'include' });
+        const user = await response.json();
+        if (user) setUser(user);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [ME_URL]);
 
   return (
     <UserContext.Provider value={[user, setUser]}>

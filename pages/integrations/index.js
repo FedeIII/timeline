@@ -1,13 +1,12 @@
 import Head from 'next/head';
 
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 
 import styles from './integrations.module.scss';
 import EnvContext from '../../contexts/envContext';
 import UserContext from '../../contexts/userContext';
 import Layout from '../../components/layout';
 import Link from 'next/link';
-import { it } from 'date-fns/locale';
 
 function useTwitterOauthUrl(redirect_uri, client_id) {
   return useMemo(() => {
@@ -25,7 +24,7 @@ function useTwitterOauthUrl(redirect_uri, client_id) {
 }
 
 export default function Post(props) {
-  const { TWITTER_REDIRECT_URI, TWITTER_CLIENT_ID, ME_URL } =
+  const { TWITTER_REDIRECT_URI, TWITTER_CLIENT_ID } =
     useContext(EnvContext);
   const twitterOauthUrl = useTwitterOauthUrl(
     TWITTER_REDIRECT_URI,
@@ -33,18 +32,6 @@ export default function Post(props) {
   );
 
   const [user, setUser] = useContext(UserContext);
-  useEffect(() => {
-    (async function () {
-      try {
-        if (!ME_URL) return;
-        const response = await fetch(ME_URL, { credentials: 'include' });
-        const user = await response.json();
-        if (user) setUser(user);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [ME_URL]);
 
   const isLoggedWithTwitter = !!(
     user &&
