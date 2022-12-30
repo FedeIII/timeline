@@ -10,27 +10,29 @@ import ProjectImage from '../projectImage';
 import ProjectVideo from '../projectVideo';
 
 function Media(props) {
-  const { imgUrl, videoUrl } = props;
+  const { event } = props;
+  const { imgUrl, videoUrl } = event;
 
   if (videoUrl)
     return (
       <ProjectVideo
-        className={styles.calendarVideo}
+        className={styles.calendarMedia}
         videoWidth="100%"
         videoHeight="100%"
-        {...props}
+        {...event}
       />
     );
   else return <ImageInput {...props} />;
 }
 
 function ImageInput(props) {
-  const { title, id, imgUrl, register } = props;
+  const { event, register } = props;
+  const { title, id, imgUrl } = event;
 
   if (imgUrl)
     return (
       <ProjectImage
-        className={styles.calendarImage}
+        className={styles.calendarMedia}
         imgUrl={imgUrl}
         alt={title}
       />
@@ -40,6 +42,32 @@ function ImageInput(props) {
     <div className={styles.noImage}>
       <span className={styles.imgUrlTag}>Image URL:</span>
       <input {...register(`${id}#imgUrl`)} className={styles.imgUrlInput} />
+    </div>
+  );
+}
+
+function MiddleRow(props) {
+  const { event, disabled, isEditMode, register } = props;
+  const { description, id, imgUrl, videoUrl } = event;
+
+  const [isMediaSelected, setIsMediaSelected] = useState(
+    !!(imgUrl || videoUrl)
+  );
+
+  let className = styles.middleRow;
+  if (isMediaSelected) className += ' ' + styles.mediaSelected;
+
+  return (
+    <div className={className}>
+      <Media {...props} />
+      <textarea
+        defaultValue={description}
+        {...register(`${id}#description`)}
+        className={styles.eventDescription}
+        disabled={disabled || !isEditMode}
+        onFocus={() => setIsMediaSelected(false)}
+        onBlur={() => setIsMediaSelected(true)}
+      />
     </div>
   );
 }
@@ -54,7 +82,7 @@ function EventCell(props) {
     isSelected,
   } = props;
   const eventAtDay = event || {};
-  const { title, type, id, topic } = eventAtDay;
+  const { title, type, id, topic, imgUrl, videoUrl, description } = eventAtDay;
 
   const projectContext = useContext(ProjectContext);
 
@@ -82,7 +110,14 @@ function EventCell(props) {
         </div>
       )}
 
-      {isSelected && <Media {...eventAtDay} register={register} />}
+      {isSelected && (
+        <MiddleRow
+          event={eventAtDay}
+          register={register}
+          disabled={disabled}
+          isEditMode={isEditMode}
+        />
+      )}
 
       {isSelected && (
         <input

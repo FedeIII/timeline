@@ -8,7 +8,9 @@ export default function ProjectImage(props) {
 
   const { openGallery } = useContext(GalleryContext);
 
-  const onImageClick = useCallback(() => openGallery(), [openGallery]);
+  const onImageClick = useCallback(() => {
+    // openGallery();
+  }, [openGallery]);
 
   return (
     <div

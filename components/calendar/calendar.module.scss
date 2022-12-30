@@ -177,11 +177,11 @@ $cell-height-selected: 240px;
     margin-top: 8px;
 
     & .event {
-      grid-template-columns: 50% 20% 30%;
-      grid-template-rows: 20% 63% 15%;
+      grid-template-columns: 49% 19% 29%;
+      grid-template-rows: 19% 62% 14%;
       grid-template-areas:
         'title title edit'
-        'img img edit'
+        'img img img'
         'topic type type';
       column-gap: 4px;
       row-gap: 4px;
@@ -224,16 +224,48 @@ $cell-height-selected: 240px;
   }
 }
 
-.calendarVideo {
+.middleRow {
   grid-area: img;
+  display: flex;
+  justify-content: space-between;
+
+  &.mediaSelected {
+    .eventDescription {
+      flex-basis: 32%;
+    }
+    .calendarMedia {
+      flex-basis: 65%;
+    }
+  }
 }
 
-.calendarImage {
-  grid-area: img;
+.eventDescription {
+  flex-basis: 65%;
+  width: 100%;
+  height: 100%;
+  font-size: 10px;
+  text-align: left;
+  border: none;
+  background: none;
+  box-shadow: none;
+  resize: none;
+  font-family: inherit;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: white;
+  }
+}
+
+.calendarMedia {
+  flex-basis: 32%;
 }
 
 .noImage {
-  grid-area: img;
   width: 100%;
   height: 100%;
   display: flex;
@@ -248,7 +280,6 @@ $cell-height-selected: 240px;
 }
 
 .imgUrlInput {
-  grid-area: img;
   font-size: 10px;
   justify-self: start;
   border: none;
