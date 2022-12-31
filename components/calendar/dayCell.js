@@ -252,8 +252,6 @@ export default function DayCell(props) {
     }
   }, []);
 
-  // const projectContext = useContext(ProjectContext);
-
   const onCellSelect = useCallback(
     e => {
       if (isEditMode && !isAnyEventAtDay) {
@@ -273,22 +271,6 @@ export default function DayCell(props) {
     },
     [isEditMode, isAnyEventAtDay, date, eventsAtDay]
   );
-
-  // const onCellSelect = useCallback(
-  //   e => {
-  //     if (isEditMode && projectContext && !isAnyEventAtDay) {
-  //       e.preventDefault();
-  //       e.stopPropagation();
-  //       projectContext.createEvent({
-  //         id: uuid(),
-  //         title: date,
-  //         date,
-  //         type: 'PROMPT',
-  //       });
-  //     }
-  //   },
-  //   [isEditMode, projectContext && projectContext.createEvent]
-  // );
 
   const onEventSelect = useCallback(
     i => e => {
