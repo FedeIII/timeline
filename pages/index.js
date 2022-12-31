@@ -68,7 +68,7 @@ export default function Home(props) {
               return (
                 <DayCell
                   date={date}
-                  eventsAtDay={events}
+                  events={events}
                   isOngoingEvents={isOngoingEvents}
                   isEditMode
                   firstDates={firstDates}

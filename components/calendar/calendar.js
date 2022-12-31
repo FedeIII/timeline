@@ -9,7 +9,7 @@ export default function Calendar(props) {
         <DayCell
           date={date}
           isOngoingEvents={isOngoingEvents}
-          eventsAtDay={events}
+          events={events}
           {...restProps}
           key={date}
         />

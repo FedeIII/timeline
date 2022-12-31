@@ -80,16 +80,43 @@ function EventCell(props) {
     isEditMode,
     setIsSelected,
     isSelected,
+    onDelete,
+    onCreate,
   } = props;
   const eventAtDay = event || {};
-  const { title, type, id, topic, imgUrl, videoUrl, description } = eventAtDay;
+  const {
+    title,
+    type,
+    id,
+    topic,
+    date,
+    imgUrl,
+    videoUrl,
+    description,
+    _local,
+  } = eventAtDay;
 
   const projectContext = useContext(ProjectContext);
 
   const onDeleteClick = useCallback(() => {
     projectContext.deleteEvent(id);
     setIsSelected(false);
+    onDelete();
   }, [projectContext && projectContext.deleteEvent, id, setIsSelected]);
+
+  const onCreateClick = () => {
+    projectContext.createEvent({
+      id,
+      imgUrl,
+      videoUrl,
+      title,
+      description,
+      date,
+      type,
+      topic,
+    });
+    onCreate();
+  };
 
   return (
     <>
@@ -104,6 +131,11 @@ function EventCell(props) {
 
       {isSelected && (
         <div className={styles.editMenu}>
+          {_local && (
+            <span onClick={onCreateClick} className={styles.createEvent}>
+              ✓
+            </span>
+          )}
           <span onClick={onDeleteClick} className={styles.deleteEvent}>
             x
           </span>
@@ -174,7 +206,7 @@ function useCellBodyClass(eventsAtDay, isAnyEventOngoing, areSelected) {
 export default function DayCell(props) {
   const {
     date,
-    eventsAtDay,
+    events,
     register,
     isEditMode,
     isOngoingEvents,
@@ -182,6 +214,8 @@ export default function DayCell(props) {
     lastDates,
     disabled,
   } = props;
+
+  const [eventsAtDay, setEventsAtDay] = useState(events);
 
   const isAnyEventOngoing = useMemo(() => {
     return isOngoingEvents.some(e => e);
@@ -209,32 +243,52 @@ export default function DayCell(props) {
           },
         };
       }, {}),
-    [areSelected]
+    [areSelected, setAreSelected]
   );
 
   useEffect(() => {
     if (!isAnyEventAtDay) {
       setAreSelected([...areSelected.fill(false)]);
     }
-  }, [isAnyEventAtDay, setAreSelected]);
+  }, []);
 
-  const projectContext = useContext(ProjectContext);
+  // const projectContext = useContext(ProjectContext);
 
   const onCellSelect = useCallback(
     e => {
-      if (isEditMode && projectContext && !isAnyEventAtDay) {
+      if (isEditMode && !isAnyEventAtDay) {
         e.preventDefault();
         e.stopPropagation();
-        projectContext.createEvent({
-          id: uuid(),
-          title: date,
-          date,
-          type: 'PROMPT',
-        });
+        setEventsAtDay([
+          ...eventsAtDay.filter(e => e),
+          {
+            id: uuid(),
+            title: date,
+            date,
+            type: 'PROMPT',
+            _local: true,
+          },
+        ]);
       }
     },
-    [isEditMode, projectContext && projectContext.createEvent]
+    [isEditMode, isAnyEventAtDay, date, eventsAtDay]
   );
+
+  // const onCellSelect = useCallback(
+  //   e => {
+  //     if (isEditMode && projectContext && !isAnyEventAtDay) {
+  //       e.preventDefault();
+  //       e.stopPropagation();
+  //       projectContext.createEvent({
+  //         id: uuid(),
+  //         title: date,
+  //         date,
+  //         type: 'PROMPT',
+  //       });
+  //     }
+  //   },
+  //   [isEditMode, projectContext && projectContext.createEvent]
+  // );
 
   const onEventSelect = useCallback(
     i => e => {
@@ -245,7 +299,7 @@ export default function DayCell(props) {
         setIsSelected[`at${i}`](true);
       }
     },
-    [isEditMode, isAnyEventAtDay, setIsSelected, areSelected]
+    [isEditMode, isAnyEventAtDay, areSelected]
   );
 
   const onClickOutsideEvent = useCallback(
@@ -254,7 +308,7 @@ export default function DayCell(props) {
         setIsSelected[`at${i}`](false);
       }
     },
-    [areSelected, setIsSelected]
+    [areSelected]
   );
 
   const cellBodyClasses = useCellBodyClass(
@@ -262,6 +316,16 @@ export default function DayCell(props) {
     isAnyEventOngoing,
     areSelected
   );
+
+  const onDelete = useCallback(() => {
+    setEventsAtDay([null]);
+  }, []);
+
+  const onCreate = useCallback(() => {
+    const event = eventsAtDay[0];
+    event._local = false;
+    setEventsAtDay([event]);
+  }, [eventsAtDay]);
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
@@ -308,6 +372,8 @@ export default function DayCell(props) {
                       isEditMode={isEditMode}
                       setIsSelected={setIsSelected[`at${i}`]}
                       isSelected={areSelected[i]}
+                      onDelete={onDelete}
+                      onCreate={onCreate}
                     />
                   )}
                 </OutsideAlerter>
