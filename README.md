@@ -5,16 +5,19 @@
 - Twitter integration
   - ~~Thread for ongoing events: next ongoing events continue the ongoing thread~~
   - ~~Use event title in tweet~~
-  - Date at project creation only if it is in the past.
-  - Final tweet
+  - ~~Date at project creation only if it is in the past.~~
+  - ~~Final tweet~~
   - Twit images (twitter API v2 still doesn't support uploading media)
-- Link to project and timelines from new project created screen
+- ~~Link to project and timelines from new project created screen~~
+- Add years to calendar
 - Create event with video
+- Delete event confirmation screen
 - Random project intros
 - Random event intros
-- Instagram integration
 - Optimistic rendering
+- Instagram integration
 - UI revamp
+  - Zoom in/out in timeline
 
 - Bugs:
   - on creating new event, the description sometimes is not set

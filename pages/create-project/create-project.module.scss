@@ -52,12 +52,32 @@
 
 .projectCreated {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 32px;
   margin: 32px auto;
   border: 1px solid lightgray;
   width: 80%;
   max-width: 500px;
+}
+
+.projectCreatedTitle {
+  padding: 16px 32px;
+  margin-bottom: 16px;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 14px;
+}
+
+.actionButton {
+  border: 1px solid gray;
+  padding: 8px;
+  border-radius: 20px;
 }
 
 .errors {

@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
@@ -23,7 +24,7 @@ function toSnakeCase(title) {
 
 const noOp = () => {};
 
-function useProcessForm(setCreatedProject, setError) {
+function useProcessForm(setProjectCreated, setError) {
   return async function processForm(data) {
     const project = { events: [{ id: uuid() }] };
     Object.entries(data).forEach(([field, value]) => {
@@ -42,49 +43,75 @@ function useProcessForm(setCreatedProject, setError) {
     console.log('submitting', project);
     try {
       const createdProject = await createProject(project);
-      setCreatedProject(createdProject.title);
+      setProjectCreated(createdProject);
       setError(null);
     } catch (error) {
-      setCreatedProject(null);
+      setProjectCreated(null);
       setError(error.message);
     }
   };
+}
+
+function ProjectCreated(props) {
+  const { project } = props;
+
+  return (
+    <section className={styles.projectCreated}>
+      <div className={styles.projectCreatedTitle}>
+        Project "{project.title}" created
+      </div>
+      <div className={styles.actions}>
+        <Link href={`/projects/${project.id}`} className={styles.actionButton}>
+          {project.title} timeline
+        </Link>
+        <Link href="/" className={styles.actionButton}>
+          All timelines
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function CreateProjectMenu(props) {
+  const { register, error, submit } = props;
+
+  return (
+    <form>
+      <section className={styles.headerSection}>
+        <Header register={register} />
+      </section>
+      <section className={styles.firstEvent}>
+        <h2>First Event</h2>
+        <FirstEvent register={register} />
+      </section>
+      {error && <section className={styles.errors}>{error}</section>}
+      <div className={styles.buttons}>
+        <button className={styles.createButton} onClick={submit}>
+          Create project
+        </button>
+      </div>
+    </form>
+  );
 }
 
 export default function CreateProject() {
   const useFormProps = useRef(useForm());
   const { handleSubmit = noOp, register = noOp } = useFormProps.current;
 
-  const [createdProject, setCreatedProject] = useState(null);
+  const [projectCreated, setProjectCreated] = useState(null);
   const [error, setError] = useState(null);
 
-  const submit = handleSubmit(useProcessForm(setCreatedProject, setError));
+  const submit = handleSubmit(useProcessForm(setProjectCreated, setError));
 
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      {createdProject ? (
-        <section className={styles.projectCreated}>
-          Project {createdProject} created
-        </section>
+      {projectCreated ? (
+        <ProjectCreated project={projectCreated} />
       ) : (
-        <form>
-          <section className={styles.headerSection}>
-            <Header register={register} />
-          </section>
-          <section className={styles.firstEvent}>
-            <h2>First Event</h2>
-            <FirstEvent register={register} />
-          </section>
-          {error && <section className={styles.errors}>{error}</section>}
-          <div className={styles.buttons}>
-            <button className={styles.createButton} onClick={submit}>
-              Create project
-            </button>
-          </div>
-        </form>
+        <CreateProjectMenu register={register} error={error} submit={submit} />
       )}
     </Layout>
   );
