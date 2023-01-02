@@ -4,7 +4,8 @@
 - ~~Delete project~~
 - Twitter integration
   - ~~Thread for ongoing events: next ongoing events continue the ongoing thread~~
-  - Use event title in tweet
+  - ~~Use event title in tweet~~
+  - Date at project creation only if it is in the past.
   - Final tweet
   - Twit images (twitter API v2 still doesn't support uploading media)
 - Link to project and timelines from new project created screen
