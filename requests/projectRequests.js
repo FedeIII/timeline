@@ -201,3 +201,16 @@ export async function deleteEvent(projectId, eventId) {
 
   return project;
 }
+
+export async function deleteProject(id) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation DeleteProject($id: String!) {
+        deleteProject(id: $id)
+      }
+    `,
+    variables: { id },
+  });
+
+  return data.deleteProject;
+}

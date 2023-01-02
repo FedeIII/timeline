@@ -8,6 +8,7 @@ import { useDaysProjects } from '../components/hooks/useDays';
 import DayCell from '../components/calendar/dayCell';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import EditProjects from '../components/index/editProjects';
 
 export async function getStaticProps() {
   const projects = await getAllProjects();
@@ -61,6 +62,7 @@ export default function Home(props) {
               </Link>
             ))}
           </div>
+
           <div className={styles.days}>
             {days.map(day => {
               const { date, events, isOngoingEvents } = day;
@@ -78,6 +80,8 @@ export default function Home(props) {
               );
             })}
           </div>
+
+          <EditProjects projects={projects} />
         </div>
       </section>
     </Layout>

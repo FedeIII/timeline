@@ -20,7 +20,7 @@ $footer-height: 5rem;
 }
 
 .content {
-  width: 64rem;
+  width: 90%;
   min-height: calc(100vh - $footer-height - $header-height);
   padding: 0 1rem;
   margin: 0 auto calc($footer-height + 32px);
