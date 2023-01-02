@@ -3,15 +3,18 @@ import format from 'date-fns/format';
 import isBefore from 'date-fns/isBefore';
 import isAfter from 'date-fns/isAfter';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import ProjectContext from '../../contexts/projectContext';
 import styles from './calendar.module.scss';
 import OutsideAlerter from '../HOCs/outsideAlerter';
 import ProjectImage from '../projectImage';
 import ProjectVideo from '../projectVideo';
 
+const noOp = () => {};
+
 function Media(props) {
   const { event } = props;
-  const { imgUrl, videoUrl } = event;
+  const { videoUrl } = event;
 
   if (videoUrl)
     return (
@@ -47,8 +50,18 @@ function ImageInput(props) {
 }
 
 function MiddleRow(props) {
-  const { event, disabled, isEditMode, register } = props;
-  const { description, id, imgUrl, videoUrl } = event;
+  const {
+    disabled,
+    isEditMode,
+    register,
+    id,
+    description,
+    imgUrl,
+    videoUrl,
+    _local,
+    setInputValues,
+    inputValues,
+  } = props;
 
   const [isMediaSelected, setIsMediaSelected] = useState(
     !!(imgUrl || videoUrl)
@@ -56,6 +69,31 @@ function MiddleRow(props) {
 
   let className = styles.middleRow;
   if (isMediaSelected) className += ' ' + styles.mediaSelected;
+
+  if (_local)
+    return (
+      <div className={className}>
+        <div className={styles.noImage}>
+          <span className={styles.imgUrlTag}>Image URL:</span>
+          <input
+            value={imgUrl}
+            onChange={e =>
+              setInputValues({ ...inputValues, imgUrl: e.target.value })
+            }
+            className={styles.imgUrlInput}
+          />
+        </div>
+        <textarea
+          value={description}
+          onChange={e =>
+            setInputValues({ ...inputValues, description: e.target.value })
+          }
+          className={styles.eventDescription}
+          onFocus={() => setIsMediaSelected(false)}
+          onBlur={() => setIsMediaSelected(true)}
+        />
+      </div>
+    );
 
   return (
     <div className={className}>
@@ -72,51 +110,109 @@ function MiddleRow(props) {
   );
 }
 
-function EventCell(props) {
-  const {
-    event = {},
-    register = () => {},
-    disabled,
-    isEditMode,
-    setIsSelected,
-    isSelected,
-    onDelete,
-    onCreate,
-  } = props;
+function ControlledInputs(props) {
+  const { event = {}, isSelected, onCreate, onDeleteClick } = props;
+
   const eventAtDay = event || {};
-  const {
+
+  const { title, date, description, imgUrl, videoUrl, topic, type, _local } =
+    eventAtDay;
+
+  const [inputValues, setInputValues] = useState({
     title,
-    type,
-    id,
-    topic,
-    date,
+    description,
     imgUrl,
     videoUrl,
-    description,
-    _local,
-  } = eventAtDay;
+    topic,
+    type,
+  });
 
   const projectContext = useContext(ProjectContext);
-
-  const onDeleteClick = useCallback(() => {
-    projectContext.deleteEvent(id);
-    setIsSelected(false);
-    onDelete();
-  }, [projectContext && projectContext.deleteEvent, id, setIsSelected]);
-
   const onCreateClick = () => {
     projectContext.createEvent({
-      id,
-      imgUrl,
-      videoUrl,
-      title,
-      description,
+      title: inputValues.title,
       date,
-      type,
-      topic,
+      description: inputValues.description,
+      imgUrl: inputValues.imgUrl,
+      videoUrl: inputValues.videoUrl,
+      topic: inputValues.topic,
+      type: inputValues.type,
     });
     onCreate();
   };
+
+  return (
+    <>
+      <textarea
+        value={inputValues.title}
+        onChange={e =>
+          setInputValues({ ...inputValues, title: e.target.value })
+        }
+        className={styles.eventInput}
+      />
+
+      {isSelected && (
+        <>
+          <div className={styles.editMenu}>
+            <span onClick={onCreateClick} className={styles.createEvent}>
+              ✓
+            </span>
+            <span onClick={onDeleteClick} className={styles.deleteEvent}>
+              x
+            </span>
+          </div>
+
+          <MiddleRow
+            id={inputValues.id}
+            description={inputValues.description}
+            imgUrl={inputValues.imgUrl}
+            videoUrl={inputValues.videoUrl}
+            _local={_local}
+            setInputValues={setInputValues}
+            inputValues={inputValues}
+          />
+
+          <input
+            value={topic}
+            onChange={e =>
+              setInputValues({ ...inputValues, topic: e.target.value })
+            }
+            className={styles.topic}
+          />
+
+          <select
+            value={type}
+            onChange={e =>
+              setInputValues({ ...inputValues, type: e.target.value })
+            }
+            className={styles.type}
+          >
+            <option value="START_PROJECT">Start Project</option>
+            <option value="PROMPT">Prompt</option>
+            <option value="START">Start</option>
+            <option value="MIDDLE">Middle</option>
+            <option value="END">End</option>
+            <option value="END_PROJECT">End Project</option>
+          </select>
+        </>
+      )}
+    </>
+  );
+}
+
+function UncontrolledInputs(props) {
+  const {
+    event = {},
+    disabled,
+    isEditMode,
+    isSelected,
+    onDeleteClick,
+    register = noOp,
+  } = props;
+
+  const eventAtDay = event || {};
+
+  const { id, title, topic, type } = eventAtDay;
 
   return (
     <>
@@ -131,11 +227,6 @@ function EventCell(props) {
 
       {isSelected && (
         <div className={styles.editMenu}>
-          {_local && (
-            <span onClick={onCreateClick} className={styles.createEvent}>
-              ✓
-            </span>
-          )}
           <span onClick={onDeleteClick} className={styles.deleteEvent}>
             x
           </span>
@@ -179,6 +270,30 @@ function EventCell(props) {
   );
 }
 
+function EventCell(props) {
+  const { event = {}, setIsSelected, onDelete, onCreate } = props;
+  const eventAtDay = event || {};
+  const { id, _local } = eventAtDay;
+
+  const projectContext = useContext(ProjectContext);
+
+  const onDeleteClick = useCallback(() => {
+    projectContext.deleteEvent(id);
+    setIsSelected(false);
+    onDelete();
+  }, [projectContext && projectContext.deleteEvent, id, setIsSelected]);
+
+  if (_local)
+    return (
+      <ControlledInputs
+        {...props}
+        onCreate={onCreate}
+        onDeleteClick={onDeleteClick}
+      />
+    );
+  else return <UncontrolledInputs {...props} onDeleteClick={onDeleteClick} />;
+}
+
 function useCellBodyClass(eventsAtDay, isAnyEventOngoing, areSelected) {
   return useMemo(() => {
     return eventsAtDay.map((event, i) => {
@@ -197,6 +312,8 @@ function useCellBodyClass(eventsAtDay, isAnyEventOngoing, areSelected) {
       }
 
       if (areSelected[i]) cellBodyClass += ' ' + styles.selected;
+      if (eventsAtDay[i] && eventsAtDay[i]._local)
+        cellBodyClass += ' ' + styles.create;
 
       return cellBodyClass;
     });
@@ -243,7 +360,7 @@ export default function DayCell(props) {
           },
         };
       }, {}),
-    [areSelected, setAreSelected]
+    [areSelected]
   );
 
   useEffect(() => {
@@ -267,6 +384,7 @@ export default function DayCell(props) {
             _local: true,
           },
         ]);
+        setIsSelected.at0(true);
       }
     },
     [isEditMode, isAnyEventAtDay, date, eventsAtDay]

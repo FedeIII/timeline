@@ -196,6 +196,12 @@ $cell-height-selected: 240px;
       }
     }
   }
+
+  &.create {
+    & .event {
+      background-color: darkgray;
+    }
+  }
 }
 
 .editMenu {
