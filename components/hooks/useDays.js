@@ -215,9 +215,9 @@ export function getDays(projects = []) {
                 otherEvent.topic === event.topic &&
                 otherEvent.type === 'END'
             );
-            const endEventDateIndex = days.findIndex(
+            const endEventDateIndex = endEvent && days.findIndex(
               day => day.date === endEvent.date
-            );
+            ) || days.length - 1;
             days.slice(eventDayIndex, endEventDateIndex).forEach(day => {
               day.isOngoingEvents[projectIndex] = true;
             });

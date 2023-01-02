@@ -76,7 +76,7 @@ function MiddleRow(props) {
         <div className={styles.noImage}>
           <span className={styles.imgUrlTag}>Image URL:</span>
           <input
-            value={imgUrl}
+            value={inputValues.imgUrl}
             onChange={e =>
               setInputValues({ ...inputValues, imgUrl: e.target.value })
             }
@@ -84,7 +84,7 @@ function MiddleRow(props) {
           />
         </div>
         <textarea
-          value={description}
+          value={inputValues.description}
           onChange={e =>
             setInputValues({ ...inputValues, description: e.target.value })
           }
@@ -173,7 +173,7 @@ function ControlledInputs(props) {
           />
 
           <input
-            value={topic}
+            value={inputValues.topic}
             onChange={e =>
               setInputValues({ ...inputValues, topic: e.target.value })
             }
@@ -181,7 +181,7 @@ function ControlledInputs(props) {
           />
 
           <select
-            value={type}
+            value={inputValues.type}
             onChange={e =>
               setInputValues({ ...inputValues, type: e.target.value })
             }
@@ -212,7 +212,7 @@ function UncontrolledInputs(props) {
 
   const eventAtDay = event || {};
 
-  const { id, title, topic, type } = eventAtDay;
+  const { id, title, topic, type, description, imgUrl, videoUrl } = eventAtDay;
 
   return (
     <>
@@ -235,6 +235,10 @@ function UncontrolledInputs(props) {
 
       {isSelected && (
         <MiddleRow
+          id={id}
+          description={description}
+          imgUrl={imgUrl}
+          videoUrl={videoUrl}
           event={eventAtDay}
           register={register}
           disabled={disabled}

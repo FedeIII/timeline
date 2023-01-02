@@ -29,7 +29,7 @@ export async function getStaticProps({ params }) {
   };
 }
 
-export default function Post(props) {
+export default function Project(props) {
   // const { id, title, description, date, tags = [], events = [], groupedEvents = [] } = props;
   const { id } = props;
 

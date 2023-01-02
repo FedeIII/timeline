@@ -7,7 +7,7 @@ const ProjectOutput = `
   description
   tags { label, type }
   events { id, imgUrl, videoUrl, title, description, date, type, topic }
-  twitter { firstTweetId, lastTweetId }
+  twitter { mainThreadId, subThreadId }
 `;
 
 /////////////
