@@ -1,6 +1,6 @@
 $cell-width: 110px;
 $cell-height: 95px;
-$cell-width-no-event: 40px;
+$cell-width-no-event: 70px;
 $cell-width-ongoing: 72px;
 $cell-width-selected: 240px;
 $cell-height-selected: 240px;
@@ -18,7 +18,7 @@ $cell-height-selected: 240px;
   width: 100%;
   top: 82px;
   height: 8px;
-  margin-top: 8px;
+  margin-top: 5px;
   background: lightgray;
   border: 1px solid dimgray;
   border-left: none;
@@ -38,6 +38,8 @@ $cell-height-selected: 240px;
   position: relative;
   display: inline-grid;
   justify-items: center;
+  font-size: 14px;
+  min-width: $cell-width-no-event;
 
   &:hover {
     background-color: lightgray;
@@ -55,7 +57,7 @@ $cell-height-selected: 240px;
 .cellHeader {
   display: inline-block;
   width: calc(100% - 20px);
-  margin: 0 10px;
+  margin: 0 10px 16px;
   border-bottom: 1px solid lightgray;
 }
 
@@ -174,6 +176,7 @@ $cell-height-selected: 240px;
     width: $cell-width-selected;
     height: $cell-height-selected;
     align-items: center;
+    justify-content: flex-start;
     margin-top: 8px;
 
     & .event {

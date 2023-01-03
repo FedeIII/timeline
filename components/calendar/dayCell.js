@@ -433,13 +433,13 @@ export default function DayCell(props) {
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
-      <span className={styles.cellHeader}>
+      <div className={styles.cellHeader}>
         {format(new Date(date), 'EE')} {format(new Date(date), 'd')}
-      </span>
+      </div>
       {eventsAtDay.map((_, i) => {
         let lineStyles = {
-          // top: `${80 * (i + 1) + 12 * i}px`,
-          top: `${92 * i + 80}px`,
+          // top: `${18 + 16 + 95/2 + 95 * i}px`,
+          top: `${95 * i + 82}px`,
         };
 
         if (
@@ -450,7 +450,6 @@ export default function DayCell(props) {
             ...lineStyles,
             height: '3px',
             border: 'none',
-            marginTop: '0.5em',
             backgroundColor: 'lightgray',
           };
         }
