@@ -202,6 +202,21 @@ export async function deleteEvent(projectId, eventId) {
   return project;
 }
 
+export async function deleteTag(projectId, tagLabel) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation DeleteTag($projectId: String!, $tagLabel: String!) {
+        deleteTag(projectId: $projectId, tagLabel: $tagLabel) {
+          ${ProjectOutput}
+        }
+      }
+    `,
+    variables: { projectId, tagLabel },
+  });
+
+  return data.deleteTag;
+}
+
 export async function deleteProject(id) {
   const { data } = await client.mutate({
     mutation: gql`

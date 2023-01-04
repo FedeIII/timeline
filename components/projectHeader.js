@@ -16,16 +16,12 @@ export default function ProjectHeader(props) {
   const { editProject } = useContext(ProjectContext);
 
   const onFormEdit = useCallback(data => {
-    let updateData = { tags: [] };
+    let updateData = {};
 
     Object.entries(data).forEach(([fieldName, fieldValue]) => {
       if (typeof fieldValue !== 'undefined') {
-        if (fieldName.indexOf('tag') === 0) {
-          const tagIndex = fieldName.split('-')[1];
-          updateData.tags.push({
-            type: tags[tagIndex].type,
-            label: fieldValue,
-          });
+        if (fieldName === 'tags') {
+          updateData.tags = fieldValue;
         } else {
           updateData[fieldName] = fieldValue;
         }
@@ -42,7 +38,7 @@ export default function ProjectHeader(props) {
   return (
     <TogglableForm onFormEdit={onFormEdit} className={styles.projectHeader}>
       {props => {
-        const { topLevelStyles, isEditMode, register } = props;
+        const { topLevelStyles, isEditMode, register, control } = props;
 
         return (
           <div className={topLevelStyles}>
@@ -69,11 +65,11 @@ export default function ProjectHeader(props) {
                   className={styles.date}
                   disabled={!isEditMode}
                 />
-                {isEditMode ?
-                  <EditableTags tags={tags} register={register} />
-                  :
+                {isEditMode ? (
+                  <EditableTags tags={tags} control={control} />
+                ) : (
                   <Tags tags={tags} />
-                }
+                )}
               </div>
             </div>
           </div>

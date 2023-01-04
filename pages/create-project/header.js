@@ -1,5 +1,5 @@
 import projectHeaderStyles from '../../components/projectHeader.module.scss';
-// import { EditableTags } from '../../components/tags';
+import { EditableTags } from '../../components/tags';
 
 function textareaCallback(textareaNode) {
   textareaNode.target.style.height = '';
@@ -7,9 +7,9 @@ function textareaCallback(textareaNode) {
 }
 
 export default function Header(props) {
-  const { register } = props;
+  const { register, control } = props;
 
-  if (!register) return;
+  if (!register || !control) return;
 
   return (
     <div className={projectHeaderStyles.projectHeader}>
@@ -28,7 +28,7 @@ export default function Header(props) {
           />
         </div>
         <div className={projectHeaderStyles.otherInfo}>
-          {/* <EditableTags tags={tags} register={register} /> */}
+          <EditableTags control={control} />
         </div>
       </div>
     </div>

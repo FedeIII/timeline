@@ -73,12 +73,12 @@ function ProjectCreated(props) {
 }
 
 function CreateProjectMenu(props) {
-  const { register, error, submit } = props;
+  const { register, control, error, submit } = props;
 
   return (
     <form>
       <section className={styles.headerSection}>
-        <Header register={register} />
+        <Header register={register} control={control} />
       </section>
       <section className={styles.firstEvent}>
         <h2>First Event</h2>
@@ -96,7 +96,11 @@ function CreateProjectMenu(props) {
 
 export default function CreateProject() {
   const useFormProps = useRef(useForm());
-  const { handleSubmit = noOp, register = noOp } = useFormProps.current;
+  const {
+    handleSubmit = noOp,
+    register = noOp,
+    control = noOp,
+  } = useFormProps.current;
 
   const [projectCreated, setProjectCreated] = useState(null);
   const [error, setError] = useState(null);
@@ -111,7 +115,12 @@ export default function CreateProject() {
       {projectCreated ? (
         <ProjectCreated project={projectCreated} />
       ) : (
-        <CreateProjectMenu register={register} error={error} submit={submit} />
+        <CreateProjectMenu
+          register={register}
+          control={control}
+          error={error}
+          submit={submit}
+        />
       )}
     </Layout>
   );

@@ -1,7 +1,7 @@
 .projectHeader {
   display: flex;
   justify-content: flex-start;
-  
+
   &:hover {
     background-color: transparent;
   }
@@ -68,7 +68,7 @@
 .otherInfo {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 16px;
 }
 
@@ -77,6 +77,12 @@
   color: gray;
   border: none;
   outline: none;
+  margin-right: auto;
+  flex-shrink: 0;
+  flex-grow: 0;
+  
+  max-width: 100px;
+
 
   &:focus {
     outline: none;

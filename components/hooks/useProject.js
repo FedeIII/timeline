@@ -5,6 +5,7 @@ import {
   setProject as setProjectRequest,
   addEvent as addEventRequest,
   deleteEvent as deleteEventRequest,
+  deleteTag as deleteTagRequest,
   groupProjectEvents,
 } from '../../requests/projectRequests';
 
@@ -75,5 +76,17 @@ export default function useProject(id) {
     setProject(remoteProject);
   }
 
-  return [project, editProject, editEvent, createEvent, deleteEvent];
+  async function deleteTag(tagLabel) {
+    let localProject = { ...project };
+    localProject.tags = localProject.events.filter(
+      tag => tag.label != tagLabel
+    );
+
+    setProject(localProject);
+
+    const remoteProject = await deleteTagRequest(id, tagLabel);
+    setProject(remoteProject);
+  }
+
+  return [project, editProject, editEvent, createEvent, deleteEvent, deleteTag];
 }

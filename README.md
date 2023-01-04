@@ -11,7 +11,8 @@
   - Tweet images (twitter API v2 still doesn't support uploading media)
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
-- Create project with tags
+- ~~Create project with tags~~
+- Edit tag labels and types
 - Create event with video
 - Delete event confirmation screen
 - ~~Random project intros~~
@@ -19,6 +20,8 @@
 - Optimistic rendering
 - Instagram integration
 - User page vs Projects page
+- OpenAi
+  - Suggestions for next events
 - UI v2
   - timeline calendar as a grid
 - UI v3
@@ -29,3 +32,4 @@
   - on creating new event, the description sometimes is not set
   - after creating an event, the attributes are not set correct locally
   - after creating an ongoing event start, styles don't match
+  - edit project date

@@ -1,26 +1,46 @@
+.tagsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-grow: 1;
+}
+
 .tags {
+  margin: 0 0 0 28px;
   list-style: none;
-  margin: 0;
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
 
-  & li {
-    font-size: 0.7em;
-    background-color: lightgray;
-    border-radius: 20px;
-    padding: 2px 16px;
-    margin-right: 8px;
-  }
+.editTags {
+  flex-wrap: wrap;
+  margin-left: 0;
 }
 
 .tag {
-  font-size: 0.7em;
+  position: relative;
   background-color: lightgray;
-  border-radius: 20px;
-  padding: 2px 16px;
-  margin-right: 8px;
   border: none;
+  font-size: 0.7em;
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin: 0 8px 8px 0;
   line-height: 1.6;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 0;
+}
+
+.tagInput {
+  background-color: lightgray;
+  border: none;
+  text-align: left;
+  width: 100%;
 
   &:focus {
     outline: none;
@@ -29,5 +49,47 @@
   &:disabled {
     background-color: transparent;
     color: inherit;
+  }
+}
+
+.addTagButton {
+  border: 1px solid gray;
+  border-radius: 10px;
+  flex-basis: 20px;
+  height: 20px;
+  font-size: 11px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+  margin: 0 8px 8px 0;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+}
+
+.removeTagButton {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  border: 1px solid gray;
+  border-radius: 10px;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+  margin: 0;
+  flex-shrink: 0;
+  line-height: 14px;
+
+  &:hover {
+    background-color: black;
+    color: white;
   }
 }

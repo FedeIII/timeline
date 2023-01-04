@@ -33,7 +33,7 @@ export default function Project(props) {
   // const { id, title, description, date, tags = [], events = [], groupedEvents = [] } = props;
   const { id } = props;
 
-  const [project, editProject, editEvent, createEvent, deleteEvent] =
+  const [project, editProject, editEvent, createEvent, deleteEvent, deleteTag] =
     useProject(id);
 
   if (!project) return <div>loading...</div>;
@@ -59,6 +59,7 @@ export default function Project(props) {
           editEvent,
           createEvent,
           deleteEvent,
+          deleteTag,
         }}
       >
         <Head>
