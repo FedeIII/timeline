@@ -11,9 +11,10 @@
   - Tweet images (twitter API v2 still doesn't support uploading media)
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
+- Create project with tags
 - Create event with video
 - Delete event confirmation screen
-- Random project intros
+- ~~Random project intros~~
 - Random event intros
 - Optimistic rendering
 - Instagram integration

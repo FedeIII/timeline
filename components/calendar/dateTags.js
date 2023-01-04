@@ -50,6 +50,7 @@ export function DateTags(props) {
               <div
                 className={styles.dateTagContainer}
                 style={{ width: width + 'px' }}
+                key={date}
               >
                 <span className={styles.dateTag}>
                   {format(new Date(date), 'yyyy')}
@@ -82,6 +83,7 @@ export function DateTags(props) {
               <div
                 className={styles.dateTagContainer}
                 style={{ width: width + 'px' }}
+                key={date}
               >
                 <span className={styles.dateTag}>
                   {format(new Date(date), 'MMMM')}
