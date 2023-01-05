@@ -7,7 +7,8 @@
   - ~~Use event title in tweet~~
   - ~~Date at project creation only if it is in the past.~~
   - ~~Final tweet~~
-  - Support events without description
+  - ~~Support events without description~~
+  - Support other title separators like "!"
   - Tweet images (twitter API v2 still doesn't support uploading media)
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
@@ -15,9 +16,12 @@
 - Edit tag labels and types
 - Create event with video
 - Delete event confirmation screen
+- Delete project confirmation screen
 - ~~Random project intros~~
-- Random event intros
+- ~~Random event intros~~
 - Optimistic rendering
+  - Project
+  - Tags
 - Instagram integration
 - User page vs Projects page
 - OpenAi
