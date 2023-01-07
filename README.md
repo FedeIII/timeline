@@ -8,13 +8,13 @@
   - ~~Date at project creation only if it is in the past.~~
   - ~~Final tweet~~
   - ~~Support events without description~~
-  - Support other title separators like "!"
+  - ~~Support other title separators like "!"~~
   - Tweet images (twitter API v2 still doesn't support uploading media)
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
 - ~~Create project with tags~~
 - ~~Edit tag labels and types~~
-- Create event with video
+- ~~Create event with video~~
 - Delete event confirmation screen
 - Delete project confirmation screen
 - ~~Random project intros~~

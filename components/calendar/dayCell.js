@@ -29,7 +29,7 @@ function Media(props) {
 }
 
 function ImageInput(props) {
-  const { event, register } = props;
+  const { event, register, media, setMedia } = props;
   const { title, id, imgUrl } = event;
 
   if (imgUrl)
@@ -43,8 +43,28 @@ function ImageInput(props) {
 
   return (
     <div className={styles.noImage}>
-      <span className={styles.imgUrlTag}>Image URL:</span>
-      <input {...register(`${id}#imgUrl`)} className={styles.imgUrlInput} />
+      <select
+        className={styles.mediaSelect}
+        value={media}
+        onChange={e => setMedia(e.target.value)}
+      >
+        <option value="IMG">Image</option>
+        <option value="VIDEO">Video</option>
+      </select>
+      {media === 'IMG' ? (
+        <>
+          <span className={styles.imgUrlTag}>Image URL:</span>
+          <input {...register(`${id}#imgUrl`)} className={styles.imgUrlInput} />
+        </>
+      ) : (
+        <>
+          <span className={styles.imgUrlTag}>Video URL:</span>
+          <input
+            {...register(`${id}#videoUrl`)}
+            className={styles.imgUrlInput}
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -67,6 +87,8 @@ function MiddleRow(props) {
     !!(imgUrl || videoUrl)
   );
 
+  const [media, setMedia] = useState('IMG');
+
   let className = styles.middleRow;
   if (isMediaSelected) className += ' ' + styles.mediaSelected;
 
@@ -74,14 +96,37 @@ function MiddleRow(props) {
     return (
       <div className={className}>
         <div className={styles.noImage}>
-          <span className={styles.imgUrlTag}>Image URL:</span>
-          <input
-            value={inputValues.imgUrl}
-            onChange={e =>
-              setInputValues({ ...inputValues, imgUrl: e.target.value })
-            }
-            className={styles.imgUrlInput}
-          />
+          <select
+            className={styles.mediaSelect}
+            value={media}
+            onChange={e => setMedia(e.target.value)}
+          >
+            <option value="IMG">Image</option>
+            <option value="VIDEO">Video</option>
+          </select>
+          {media === 'IMG' ? (
+            <>
+              <span className={styles.imgUrlTag}>Image URL:</span>
+              <input
+                value={inputValues.imgUrl}
+                onChange={e =>
+                  setInputValues({ ...inputValues, imgUrl: e.target.value })
+                }
+                className={styles.imgUrlInput}
+              />
+            </>
+          ) : (
+            <>
+              <span className={styles.imgUrlTag}>Video URL:</span>
+              <input
+                value={inputValues.videoUrl}
+                onChange={e =>
+                  setInputValues({ ...inputValues, videoUrl: e.target.value })
+                }
+                className={styles.imgUrlInput}
+              />
+            </>
+          )}
         </div>
         <textarea
           value={inputValues.description}
@@ -97,7 +142,7 @@ function MiddleRow(props) {
 
   return (
     <div className={className}>
-      <Media {...props} />
+      <Media {...props} media={media} setMedia={setMedia} />
       <textarea
         defaultValue={description}
         {...register(`${id}#description`)}
