@@ -16,7 +16,7 @@
 }
 
 .editTags {
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-left: 0;
 }
 
@@ -31,25 +31,14 @@
   line-height: 1.6;
   text-align: center;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
   flex-grow: 0;
 }
 
-.tagInput {
-  background-color: lightgray;
-  border: none;
-  text-align: left;
-  width: 100%;
-
-  &:focus {
-    outline: none;
-  }
-
-  &:disabled {
-    background-color: transparent;
-    color: inherit;
-  }
+.selectedTag {
+  color: gray;
+  padding-right: 22px;
 }
 
 .addTagButton {
@@ -87,9 +76,46 @@
   margin: 0;
   flex-shrink: 0;
   line-height: 14px;
+  z-index: 2;
 
   &:hover {
     background-color: black;
     color: white;
+  }
+}
+
+.editTagModal {
+  position: absolute;
+  top: 30px;
+  left: -30%;
+  background-color: lightgray;
+  width: 200%;
+  max-width: 200px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  border-radius: 15px;
+  padding: 4px;
+}
+
+.editTagType {
+  border: 1px solid lightgray;
+}
+
+.tagInput {
+  background-color: white;
+  border: none;
+  text-align: left;
+  margin: 4px;
+  border-radius: 20px;
+  padding: 4px 16px;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: inherit;
   }
 }

@@ -1,10 +1,11 @@
 import { useContext, useMemo, useState } from 'react';
 import { useController } from 'react-hook-form';
 import ProjectContext from '../contexts/projectContext';
+import OutsideAlerter from './HOCs/outsideAlerter';
 import styles from './tags.module.scss';
 
 export function EditableTags(props) {
-  const { tags = [], control } = props;
+  const { tags = [], control, enableClickOutside, disableClickOutside } = props;
 
   const { field } = useController({
     control,
@@ -14,9 +15,27 @@ export function EditableTags(props) {
   const [localTags, setLocalTags] = useState(
     tags.map(t => ({ label: t.label, type: t.type }))
   );
+  const [selectedTag, setSelectedTag] = useState(null);
 
   function onAddTagClick() {
-    setLocalTags([...localTags, { label: '', type: null }]);
+    setLocalTags([...localTags, { label: '', type: '' }]);
+  }
+
+  function onTagClick(i) {
+    return () => {
+      setSelectedTag(i);
+      disableClickOutside();
+    };
+  }
+
+  function onClickOutsideTagEdit() {
+    setSelectedTag(null);
+    enableClickOutside();
+  }
+
+  function onClickInsideTagEdit(event) {
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   const projectContext = useContext(ProjectContext);
@@ -30,33 +49,61 @@ export function EditableTags(props) {
       </span>
       <div className={`${styles.tags} ${styles.editTags}`}>
         {localTags.map((tag, i) => {
-          function onRemoveTagClick() {
+          function onRemoveTagClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
             setLocalTags(localTags.slice(0, i).concat(localTags.slice(i + 1)));
+            setSelectedTag(null);
             projectContext.deleteTag(tag.label);
           }
 
           return (
             <div
               key={i}
-              className={styles.tag}
+              className={`${styles.tag} ${
+                selectedTag === i && styles.selectedTag
+              }`}
               style={{ flexBasis: `${width}%` }}
+              onClick={onTagClick(i)}
             >
-              <input
-                onChange={e => {
-                  const newTags = [...localTags];
-                  newTags[i].label = e.target.value;
-                  field.onChange(newTags);
-                  setLocalTags(newTags);
-                }}
-                value={tag.label}
-                className={styles.tagInput}
-              />
-              <span
-                className={styles.removeTagButton}
-                onClick={onRemoveTagClick}
-              >
-                -
-              </span>
+              {tag.label}
+              {selectedTag === i && (
+                <OutsideAlerter
+                  onClick={onClickInsideTagEdit}
+                  onClickOutside={onClickOutsideTagEdit}
+                  className={styles.editTagModal}
+                  enabled
+                >
+                  <span
+                    className={styles.removeTagButton}
+                    onClick={onRemoveTagClick}
+                  >
+                    -
+                  </span>
+                  Label
+                  <input
+                    onChange={e => {
+                      const newTags = [...localTags];
+                      newTags[i].label = e.target.value;
+                      field.onChange(newTags);
+                      setLocalTags(newTags);
+                    }}
+                    value={tag.label}
+                    className={styles.tagInput}
+                  />
+                  Type
+                  <input
+                    onChange={e => {
+                      const newTags = [...localTags];
+                      newTags[i].type = e.target.value;
+                      field.onChange(newTags);
+                      setLocalTags(newTags);
+                    }}
+                    value={tag.type || ''}
+                    className={styles.tagInput}
+                  />
+                </OutsideAlerter>
+              )}
             </div>
           );
         })}

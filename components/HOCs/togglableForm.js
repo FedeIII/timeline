@@ -11,6 +11,10 @@ export default function TogglableForm(props) {
   const [isExitingEditMode, setExitingEditMode] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isClickOutsideActive, setIsClickOutsideActive] = useState(true);
+  const enableClickOutside = () => setIsClickOutsideActive(true);
+  const disableClickOutside = () => setIsClickOutsideActive(false);
+
   const useFormProps = useForm();
   const { handleSubmit, reset } = useFormProps;
 
@@ -27,9 +31,11 @@ export default function TogglableForm(props) {
   }, [setEditMode, isExitingEditMode]);
 
   const onClickOutside = useCallback(() => {
-    setExitingEditMode(false);
-    submit();
-  }, [setExitingEditMode]);
+    if (isClickOutsideActive) {
+      setExitingEditMode(false);
+      submit();
+    }
+  }, [setExitingEditMode, isClickOutsideActive]);
 
   const onFormClick = useCallback(() => {
     setExitingEditMode(true);
@@ -53,6 +59,8 @@ export default function TogglableForm(props) {
         {children({
           topLevelStyles,
           isEditMode,
+          enableClickOutside,
+          disableClickOutside,
           ...useFormProps,
         })}
       </form>

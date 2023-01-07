@@ -13,7 +13,7 @@
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
 - ~~Create project with tags~~
-- Edit tag labels and types
+- ~~Edit tag labels and types~~
 - Create event with video
 - Delete event confirmation screen
 - Delete project confirmation screen
@@ -28,6 +28,7 @@
   - Suggestions for next events
 - UI v2
   - timeline calendar as a grid
+  - simpler timelines calendar (zoomed out) that turn intro single timeline calendar on focus (zooming into the first event)
 - UI v3
   - Zoom in/out in timeline
   - Ongoing event relations in event cards

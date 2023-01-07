@@ -38,7 +38,14 @@ export default function ProjectHeader(props) {
   return (
     <TogglableForm onFormEdit={onFormEdit} className={styles.projectHeader}>
       {props => {
-        const { topLevelStyles, isEditMode, register, control } = props;
+        const {
+          topLevelStyles,
+          isEditMode,
+          register,
+          control,
+          enableClickOutside,
+          disableClickOutside,
+        } = props;
 
         return (
           <div className={topLevelStyles}>
@@ -66,7 +73,12 @@ export default function ProjectHeader(props) {
                   disabled={!isEditMode}
                 />
                 {isEditMode ? (
-                  <EditableTags tags={tags} control={control} />
+                  <EditableTags
+                    tags={tags}
+                    control={control}
+                    enableClickOutside={enableClickOutside}
+                    disableClickOutside={disableClickOutside}
+                  />
                 ) : (
                   <Tags tags={tags} />
                 )}
