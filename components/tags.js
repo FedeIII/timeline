@@ -24,13 +24,13 @@ export function EditableTags(props) {
   function onTagClick(i) {
     return () => {
       setSelectedTag(i);
-      disableClickOutside();
+      if (disableClickOutside) disableClickOutside();
     };
   }
 
   function onClickOutsideTagEdit() {
     setSelectedTag(null);
-    enableClickOutside();
+    if (enableClickOutside) enableClickOutside();
   }
 
   function onClickInsideTagEdit(event) {

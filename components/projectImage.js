@@ -9,7 +9,7 @@ export default function ProjectImage(props) {
   const { openGallery } = useContext(GalleryContext);
 
   const onImageClick = useCallback(() => {
-    // openGallery();
+    openGallery();
   }, [openGallery]);
 
   return (

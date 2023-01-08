@@ -1,12 +1,12 @@
+import Image from 'next/image';
 import { useContext, useState } from 'react';
-import Gallery from 'react-image-gallery';
 import GalleryContext from '../contexts/galleryContext';
 import styles from './imageGallery.module.scss';
 
 export default function ImageGallery(props) {
   const { images, initialImage, isOpen } = props;
 
-  const [selectedImage, setSelectedImage] = useState(initialImage);
+  const { closeGallery } = useContext(GalleryContext);
 
   const items = images.map(url => ({
     original: url,
@@ -15,10 +15,19 @@ export default function ImageGallery(props) {
   if (!isOpen) return '';
 
   return (
-    <div className={styles.galleryContainer}>
-      <div className={styles.galleryOverlay} />
-      <div className={styles.galleryContent}>
-        <Gallery items={items} />
+    <div className={styles.modalContainer}>
+      <div className={styles.modalOverlay} onClick={closeGallery} />
+      <div className={styles.galleryContainer}>
+        <div
+          className={styles.galleryContent}
+          style={{ width: `calc(100% * ${items.length})` }}
+        >
+          {items.map((item, i) => (
+            <div className={styles.imageContainer}>
+              <img src={item.original} className={styles.image} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
