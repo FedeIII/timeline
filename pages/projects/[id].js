@@ -66,7 +66,7 @@ export default function Project(props) {
           <title>{title}</title>
         </Head>
         <section className={styles.headerSection}>
-          <ProjectHeader {...project} date={projectDate} />
+          <ProjectHeader date={projectDate} />
         </section>
         <section className={styles.timelineSection}>
           <h2 className={styles.timelineTitle}>Timeline</h2>

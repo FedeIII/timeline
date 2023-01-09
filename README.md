@@ -29,7 +29,7 @@ https://www.youtube.com/embed/nmiP2hAYVWc
 - Optimistic rendering
   - ~~Events~~
   - ~~Projects~~
-  - Tags
+  - ~~Tags~~
 - Next.js cache invalidation on delete Object
 - Instagram integration
 - User page vs Projects page

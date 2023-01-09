@@ -11,9 +11,10 @@ function textareaCallback(textareaNode) {
 }
 
 export default function ProjectHeader(props) {
-  const { id, title, description, date, tags } = props;
+  const { date } = props;
 
-  const { editProject } = useContext(ProjectContext);
+  const { project, editProject } = useContext(ProjectContext);
+  const { id, title, description, tags } = project;
 
   const onFormEdit = useCallback(data => {
     let updateData = {};

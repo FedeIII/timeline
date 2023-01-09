@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useController } from 'react-hook-form';
 import ProjectContext from '../contexts/projectContext';
 import OutsideAlerter from './HOCs/outsideAlerter';
@@ -15,6 +15,11 @@ export function EditableTags(props) {
   const [localTags, setLocalTags] = useState(
     tags.map(t => ({ label: t.label, type: t.type }))
   );
+
+  useEffect(() => {
+    setLocalTags(tags.map(t => ({ label: t.label, type: t.type })));
+  }, [tags.length]);
+
   const [selectedTag, setSelectedTag] = useState(null);
 
   function onAddTagClick() {
@@ -66,7 +71,7 @@ export function EditableTags(props) {
               style={{ flexBasis: `${width}%` }}
               onClick={onTagClick(i)}
             >
-              {tag.label}
+              <span className={styles.tagLabel}>{tag.label}</span>
               {selectedTag === i && (
                 <OutsideAlerter
                   onClick={onClickInsideTagEdit}
