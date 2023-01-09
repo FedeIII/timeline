@@ -79,6 +79,7 @@ $cell-height-selected: 240px;
   width: 83%;
   height: 83%;
   padding: 4px 8px;
+  position: relative;
 }
 
 .eventInput {
@@ -397,5 +398,44 @@ $cell-height-selected: 240px;
 
   &:disabled {
     background-color: white;
+  }
+}
+
+.editModal {
+  position: absolute;
+  top: -40px;
+  left: 150px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  background-color: lightgray;
+  padding: 8px;
+  border-radius: 10px;
+  max-width: 250px;
+  min-width: 200px;
+  white-space: normal;
+  z-index: 1;
+}
+
+.modalOptions {
+  display: flex;
+  flex-direction: row;
+  margin: 16px 0 8px 0;
+  justify-content: space-evenly;
+}
+
+.modalOption {
+  border: 1px solid gray;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+  padding: 2px 4px;
+
+  &:hover {
+    background-color: coral;
+    color: red;
   }
 }

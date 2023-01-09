@@ -1,11 +1,7 @@
 # Timeline
 
-https://youtu.be/nmiP2hAYVWc
-https://www.youtube.com/embed/nmiP2hAYVWc
-
-1611675620446019584
-
 ## Roadmap
+
 - [x] Delete project
 - [ ] Twitter integration
   - [x] Thread for ongoing events: next ongoing events continue the ongoing thread
@@ -22,7 +18,7 @@ https://www.youtube.com/embed/nmiP2hAYVWc
 - [x] Edit tag labels and types
 - [x] Create event with video
 - [x] Image gallery
-- [ ] Delete event confirmation screen
+- [x] Delete event confirmation screen
 - [x] Delete project confirmation screen
 - [x] Random project intros
 - [x] Random event intros
@@ -38,6 +34,7 @@ https://www.youtube.com/embed/nmiP2hAYVWc
   - [ ] login with twitter
   - [ ] login with google
 - [ ] OpenAi
+  - [x] Project and event intros
   - [ ] Suggestions for next events
 - [ ] UI v2
   - [ ] timeline calendar as a grid
@@ -46,6 +43,10 @@ https://www.youtube.com/embed/nmiP2hAYVWc
 - [ ] UI v3
   - [ ] Zoom in/out in timeline
   - [ ] Ongoing event relations in event cards
+
+- Refactors:
+  - [ ] EventCell
+  - [ ] Exctact EditModal from EventCell and EditProject
 
 - Bugs:
   - [ ] on creating new event, the description sometimes is not set
