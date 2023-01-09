@@ -15,7 +15,7 @@ https://www.youtube.com/embed/nmiP2hAYVWc
   - ~~Support events without description~~
   - ~~Support other title separators like "!"~~
   - Tweet images (twitter API v2 still doesn't support uploading media)
-  - Tweet videos
+  - ~~Tweet videos~~
 - ~~Link to project and timelines from new project created screen~~
 - ~~Add years to calendar~~
 - ~~Create project with tags~~
@@ -27,7 +27,8 @@ https://www.youtube.com/embed/nmiP2hAYVWc
 - ~~Random project intros~~
 - ~~Random event intros~~
 - Optimistic rendering
-  - Project
+  - ~~Events~~
+  - Projects
   - Tags
 - Instagram integration
 - User page vs Projects page

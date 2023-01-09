@@ -174,7 +174,7 @@ function ControlledInputs(props) {
 
   const projectContext = useContext(ProjectContext);
   const onCreateClick = () => {
-    projectContext.createEvent({
+    const newEvent = {
       title: inputValues.title,
       date,
       description: inputValues.description,
@@ -182,8 +182,9 @@ function ControlledInputs(props) {
       videoUrl: inputValues.videoUrl,
       topic: inputValues.topic,
       type: inputValues.type,
-    });
-    onCreate();
+    };
+    projectContext.createEvent(newEvent);
+    onCreate({ ...newEvent, _local: false });
   };
 
   return (
@@ -261,7 +262,7 @@ function UncontrolledInputs(props) {
 
   return (
     <>
-      {id && (
+      {title && (
         <textarea
           defaultValue={title}
           {...register(`${id}#title`)}
@@ -383,6 +384,12 @@ export default function DayCell(props) {
 
   const [eventsAtDay, setEventsAtDay] = useState(events);
 
+  useEffect(() => {
+    if (events[0] && events[0].id) {
+      setEventsAtDay([events[0]]);
+    }
+  }, [events[0] && events[0].id]);
+
   const isAnyEventOngoing = useMemo(() => {
     return isOngoingEvents.some(e => e);
   }, [isOngoingEvents]);
@@ -470,11 +477,12 @@ export default function DayCell(props) {
     setEventsAtDay([null]);
   }, []);
 
-  const onCreate = useCallback(() => {
-    const event = eventsAtDay[0];
-    event._local = false;
-    setEventsAtDay([event]);
-  }, [eventsAtDay]);
+  const onCreate = useCallback(
+    newEvent => {
+      setEventsAtDay([newEvent]);
+    },
+    [eventsAtDay]
+  );
 
   return (
     <div className={styles.cell} disabled={!isEditMode} onClick={onCellSelect}>
