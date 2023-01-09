@@ -385,6 +385,12 @@ export default function DayCell(props) {
   const [eventsAtDay, setEventsAtDay] = useState(events);
 
   useEffect(() => {
+    // on project delete
+    setEventsAtDay(events);
+  }, [events.length]);
+
+  useEffect(() => {
+    // on create event response
     if (events[0] && events[0].id) {
       setEventsAtDay([events[0]]);
     }

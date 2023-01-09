@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import Layout, { siteTitle } from '../components/layout';
 import utilStyles from '../styles/utils.module.scss';
@@ -36,7 +36,9 @@ function useLastDates(projects) {
 }
 
 export default function Home(props) {
-  const { projects } = props;
+  const { projects: initProjects } = props;
+
+  const [projects, setProjects] = useState(initProjects);
 
   const days = useDaysProjects(projects);
 
@@ -67,7 +69,7 @@ export default function Home(props) {
           <div className={styles.days}>
             <DateTags days={days} />
             <div className={styles.cells}>
-              {days.map((day, index) => {
+              {days.map(day => {
                 const { date, events, isOngoingEvents } = day;
 
                 return (
@@ -85,7 +87,7 @@ export default function Home(props) {
             </div>
           </div>
 
-          <EditProjects projects={projects} />
+          <EditProjects projects={projects} setProjects={setProjects} />
         </div>
       </section>
     </Layout>

@@ -23,13 +23,14 @@ https://www.youtube.com/embed/nmiP2hAYVWc
 - ~~Create event with video~~
 - ~~Image gallery~~
 - Delete event confirmation screen
-- Delete project confirmation screen
+- ~~Delete project confirmation screen~~
 - ~~Random project intros~~
 - ~~Random event intros~~
 - Optimistic rendering
   - ~~Events~~
-  - Projects
+  - ~~Projects~~
   - Tags
+- Next.js cache invalidation on delete Object
 - Instagram integration
 - User page vs Projects page
   - create user page
