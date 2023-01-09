@@ -3,7 +3,7 @@ import { useCallback, useContext } from 'react';
 import GalleryContext from '../contexts/galleryContext';
 import styles from './projectImage.module.scss';
 
-export default function ProjectImage(props) {
+export function ProjectImage(props) {
   const { className, imgUrl, alt } = props;
 
   const { openGallery } = useContext(GalleryContext);

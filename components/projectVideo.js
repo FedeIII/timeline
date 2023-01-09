@@ -1,4 +1,4 @@
-export default function ProjectVideo(props) {
+export function ProjectVideo(props) {
   const { className, title, videoUrl, videoWidth, videoHeight } = props;
 
   const width = videoWidth || '560';

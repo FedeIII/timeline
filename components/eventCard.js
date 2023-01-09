@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
 import ProjectContext from '../contexts/projectContext';
-import ProjectImage from './projectImage';
-import ProjectVideo from './projectVideo';
+import { ProjectImage } from './projectImage';
+import { ProjectVideo } from './projectVideo';
 import styles from './eventCard.module.scss';
 import TogglableForm from './HOCs/togglableForm';
 
