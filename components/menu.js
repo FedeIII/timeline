@@ -8,7 +8,8 @@ import { useContext } from 'react';
 import UserContext from '../contexts/userContext';
 
 export default function Menu({ children }) {
-  const [user, setUser] = useContext(UserContext);
+  const userContext = useContext(UserContext) || [];
+  const [user, setUser] = userContext;
 
   return (
     <>
@@ -39,7 +40,7 @@ export default function Menu({ children }) {
           </Link>
         </li>
         <li>
-          <Link href="/" className={utilStyles.colorInherit}>
+          <Link href="/projects" className={utilStyles.colorInherit}>
             Timeline
           </Link>
         </li>

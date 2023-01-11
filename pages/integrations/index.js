@@ -23,15 +23,16 @@ function useTwitterOauthUrl(redirect_uri, client_id) {
   }, [redirect_uri, client_id]);
 }
 
-export default function ProjectList(props) {
-  const { TWITTER_REDIRECT_URI, TWITTER_CLIENT_ID } =
-    useContext(EnvContext);
+export default function Integrations(props) {
+  const envContext = useContext(EnvContext) || {};
+  const { TWITTER_REDIRECT_URI, TWITTER_CLIENT_ID } = envContext;
   const twitterOauthUrl = useTwitterOauthUrl(
     TWITTER_REDIRECT_URI,
     TWITTER_CLIENT_ID
   );
 
-  const [user, setUser] = useContext(UserContext);
+  const userContext = useContext(UserContext) || [];
+  const [user, setUser] = userContext;
 
   const isLoggedWithTwitter = !!(
     user &&

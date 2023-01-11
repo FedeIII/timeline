@@ -29,10 +29,12 @@
 - [ ] Next.js cache invalidation on delete Object
 - [ ] Instagram integration
 - [ ] User page vs Projects page
+  - [ ] require authentication
   - [ ] create user page
   - [ ] login page
   - [ ] login with twitter
   - [ ] login with google
+  - [ ] login with instagram
 - [ ] OpenAi
   - [x] Project and event intros
   - [ ] Suggestions for next events

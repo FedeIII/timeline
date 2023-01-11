@@ -2,7 +2,7 @@ import format from 'date-fns/format';
 import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
 import isSameMonth from 'date-fns/isSameMonth';
 import isSameYear from 'date-fns/isSameYear';
-import styles from '../../pages/index.module.scss';
+import styles from '../../pages/projects/index.module.scss';
 
 function getCellWidth(events) {
   let isAnyEvent = false;

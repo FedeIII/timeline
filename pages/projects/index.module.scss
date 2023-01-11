@@ -1,0 +1,92 @@
+.timelines {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &,
+  & * {
+    transition: all 0.3s ease-out;
+  }
+}
+
+.calendar {
+  display: flex;
+}
+
+.days {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow-x: scroll;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0;
+  margin: 8px 0 16px;
+}
+
+.years {
+  display: flex;
+  font-size: 12px;
+}
+
+.months {
+  display: flex;
+  font-size: 12px;
+}
+
+.dateTagContainer {
+  text-align: start;
+  padding: 0 8px;
+}
+
+.dateTag {
+  position: sticky;
+  left: 0;
+  width: 0;
+}
+
+.cells {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.projects {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  padding: 0px 8px;
+  justify-items: center;
+  border-right: 1px solid lightgray;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.projectsHeader {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  border-bottom: 1px solid lightgray;
+  height: 70px;
+  margin-bottom: 16px;
+}
+
+.projectBody {
+  height: 95px;
+  margin: 0px 8px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.line {
+  position: absolute;
+  left: 100px;
+  width: calc(100% - 100px);
+  height: 4px;
+  background: lightgray;
+  border-radius: 100px;
+}
