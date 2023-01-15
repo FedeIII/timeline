@@ -9,18 +9,18 @@ import {
   groupProjectEvents,
 } from '../../requests/projectRequests';
 
-export default function useProject(id) {
-  const [project, setProject] = useState(null);
+export default function useProject(initProject, initId) {
+  const [project, setProject] = useState(initProject);
 
   useEffect(() => {
     async function requestProject() {
-      const project = await getProjectRequest(id);
+      const project = await getProjectRequest(initId);
 
       setProject(project);
     }
 
-    requestProject();
-  }, [id]);
+    if (!project) requestProject();
+  }, [initId]);
 
   async function editEvent(eventId, eventProps) {
     let localProject = {

@@ -3,6 +3,7 @@ import client from '../apollo-client';
 
 const ProjectOutput = `
   id
+  userId
   title
   description
   tags { label, type }
@@ -58,29 +59,31 @@ export function groupProjectEvents(projectData) {
 // QUERIES //
 /////////////
 
-export async function getAllProjects() {
+export async function getAllProjects(userId) {
   const { data } = await client.query({
     query: gql`
-      query GetAllProjects {
-        getAllProjects {
+      query GetAllProjects($userId: String!) {
+        getAllProjects(userId: $userId) {
           ${ProjectOutput}
         }
       }
     `,
+    variables: { userId },
   });
 
   return data.getAllProjects;
 }
 
-export async function getAllProjectIds() {
+export async function getAllProjectIds(userId) {
   const { data } = await client.query({
     query: gql`
-      query GetAllProjects {
-        getAllProjects {
+      query GetAllProjects($userId: String!) {
+        getAllProjects(userId: $userId) {
           id
         }
       }
     `,
+    variables: { userId },
   });
 
   const paths = data.getAllProjects.map(project => {

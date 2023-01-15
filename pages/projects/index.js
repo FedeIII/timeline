@@ -10,9 +10,17 @@ import { useDaysProjects } from '../../components/hooks/useDays';
 import DayCell from '../../components/calendar/dayCell';
 import EditProjects from '../../components/index/editProjects';
 import { DateTags } from '../../components/calendar/dateTags';
+import { getUser } from '../../requests/userRequests';
 
-export async function getStaticProps() {
-  const projects = await getAllProjects();
+export async function getServerSideProps(context) {
+  let projects;
+  try {
+    const user = await getUser(context.req.cookies);
+    projects = await getAllProjects(user.id);
+  } catch (error) {
+    console.log('Error getting projects', error);
+    projects = [];
+  }
 
   return {
     props: { projects },

@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import Layout, { siteTitle } from '../../components/layout';
+import UserContext from '../../contexts/userContext';
 import { createProject } from '../../requests/projectRequests';
 import styles from './create-project.module.scss';
 import FirstEvent from './firstEvent';
@@ -25,6 +26,9 @@ function toSnakeCase(title) {
 const noOp = () => {};
 
 function useProcessForm(setProjectCreated, setError) {
+  const userContext = useContext(UserContext);
+  const [user] = userContext;
+
   return async function processForm(data) {
     const project = { events: [{ id: uuid() }] };
     Object.entries(data).forEach(([field, value]) => {
@@ -42,7 +46,10 @@ function useProcessForm(setProjectCreated, setError) {
 
     console.log('submitting', project);
     try {
-      const createdProject = await createProject(project);
+      const createdProject = await createProject({
+        ...project,
+        userId: user.id,
+      });
       setProjectCreated(createdProject);
       setError(null);
     } catch (error) {
@@ -64,7 +71,7 @@ function ProjectCreated(props) {
         <Link href={`/projects/${project.id}`} className={styles.actionButton}>
           {project.title} timeline
         </Link>
-        <Link href="/" className={styles.actionButton}>
+        <Link href="/projects" className={styles.actionButton}>
           All timelines
         </Link>
       </div>

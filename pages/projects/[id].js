@@ -7,38 +7,37 @@ import EventCard from '../../components/eventCard';
 import Timeline from '../../components/timeline/timeline';
 import FormCalendar from '../../components/calendar/formCalendar';
 import ProjectHeader from '../../components/projectHeader';
-import { getAllProjectIds } from '../../requests/projectRequests';
+import { getAllProjectIds, getProject } from '../../requests/projectRequests';
 import styles from './project.module.scss';
 import ProjectContext from '../../contexts/projectContext';
 import useProject from '../../components/hooks/useProject';
+import { getUser } from '../../requests/userRequests';
 
-export async function getStaticPaths() {
-  const paths = await getAllProjectIds();
+export async function getServerSideProps(context) {
+  const id = context.params.id;
+  let project;
+  try {
+    project = await getProject(id);
+  } catch (error) {
+    console.log('Error getting project', id, error);
+    project = null;
+  }
 
   return {
-    paths,
-    fallback: false,
-  };
-}
-
-export async function getStaticProps({ params }) {
-  return {
-    props: {
-      id: params.id,
-    },
+    props: { project, id },
   };
 }
 
 export default function Project(props) {
-  // const { id, title, description, date, tags = [], events = [], groupedEvents = [] } = props;
-  const { id } = props;
+  const { project: initProject, id: initId } = props;
 
   const [project, editProject, editEvent, createEvent, deleteEvent, deleteTag] =
-    useProject(id);
+    useProject(initProject, initId);
 
   if (!project) return <div>loading...</div>;
 
   const {
+    id,
     title,
     description,
     tags = [],

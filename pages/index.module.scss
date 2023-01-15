@@ -1,8 +1,37 @@
-.main {
+.header {
 }
 
 .title {
 }
 
-.description {
+.content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.integrations {
+}
+
+.sectionTitle {
+}
+
+.projectList {
+  list-style: none;
+}
+
+.projects {
+}
+
+.projectsContainer {
+}
+
+.project {
+}
+
+.projectLink {
+  &:hover {
+    text-decoration: none;
+  }
 }

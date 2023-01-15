@@ -29,10 +29,10 @@
 - [ ] Next.js cache invalidation on delete Object
 - [ ] Instagram integration
 - [ ] User page vs Projects page
-  - [ ] require authentication
-  - [ ] create user page
+  - [x] require authentication
+  - [x] create user page
   - [ ] login page
-  - [ ] login with twitter
+  - [x] login with twitter
   - [ ] login with google
   - [ ] login with instagram
 - [ ] OpenAi
@@ -55,3 +55,4 @@
   - [ ] after creating an event, the attributes are not set correct locally
   - [ ] after creating an ongoing event start, styles don't match
   - [ ] edit project date
+  - [ ] after deleting a project, if user reloads page, it appears again
