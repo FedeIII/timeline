@@ -137,6 +137,25 @@ export async function createProject(projectProps) {
   }
 }
 
+export async function createProjectPublic(projectProps) {
+  try {
+    const { data } = await client.mutate({
+      mutation: gql`
+        mutation CreateProjectPublic($input: ProjectInput!) {
+          createProjectPublic(input: $input) {
+            ${ProjectOutput}
+          }
+        }
+      `,
+      variables: { input: projectProps },
+    });
+
+    return data.createProjectPublic;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 export async function setProject(id, projectProps) {
   const { data } = await client.mutate({
     mutation: gql`
@@ -184,6 +203,23 @@ export async function addEvent(projectId, event) {
   });
 
   const project = groupProjectEvents(data.addEvent);
+
+  return project;
+}
+
+export async function addEventPublic(projectId, event) {
+  const { data } = await client.mutate({
+    mutation: gql`
+      mutation AddEventPublic($projectId: String!, $event: EventInput!) {
+        addEventPublic(projectId: $projectId, event: $event) {
+          ${ProjectOutput}
+        }
+      }
+    `,
+    variables: { projectId, event },
+  });
+
+  const project = groupProjectEvents(data.addEventPublic);
 
   return project;
 }

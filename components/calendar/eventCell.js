@@ -150,19 +150,46 @@ function MiddleRow(props) {
   );
 }
 
-function EditModal(props) {
-  const { event, deleteEvent, isOpen, setIsModalOpen } = props;
+function ConfirmPublic(props) {
+  const { event, setModalContent, createEventAction } = props;
+  const { title } = event;
+
+  const createEventAndTweet = useCallback(() => {
+    createEventAction(true);
+    setModalContent(null);
+  }, [createEventAction]);
+
+  const createEventAndNotTweet = useCallback(() => {
+    createEventAction(false);
+    setModalContent(null);
+  }, [createEventAction]);
+
+  return (
+    <>
+      Tweet about "{title}"?
+      <div className={styles.modalOptions}>
+        <span className={styles.modalOption} onClick={createEventAndTweet}>
+          Tweet
+        </span>
+        <span className={styles.modalOption} onClick={createEventAndNotTweet}>
+          Don't
+        </span>
+      </div>
+    </>
+  );
+}
+
+function ConfirmDeleteEvent(props) {
+  const { event, deleteEvent, setModalContent } = props;
   const { title } = event;
 
   const onDeleteClick = useCallback(() => {
     deleteEvent();
-    setIsModalOpen(false);
+    setModalContent(null);
   }, [deleteEvent]);
 
-  if (!isOpen) return;
-
   return (
-    <div className={styles.editModal}>
+    <>
       Permanently delete the event "{title}"?
       <div className={styles.modalOptions}>
         <span className={styles.modalOption} onClick={onDeleteClick}>
@@ -170,13 +197,21 @@ function EditModal(props) {
         </span>
         <span
           className={styles.modalOption}
-          onClick={() => setIsModalOpen(false)}
+          onClick={() => setModalContent(null)}
         >
           Cancel
         </span>
       </div>
-    </div>
+    </>
   );
+}
+
+function EditModal(props) {
+  const { isOpen, render } = props;
+
+  if (!isOpen) return;
+
+  return <div className={styles.editModal}>{render(props)}</div>;
 }
 
 function ControlledInputs(props) {
@@ -197,7 +232,7 @@ function ControlledInputs(props) {
   });
 
   const projectContext = useContext(ProjectContext);
-  const onCreateClick = () => {
+  const createEventAction = isPublic => {
     const newEvent = {
       title: inputValues.title,
       date,
@@ -207,11 +242,11 @@ function ControlledInputs(props) {
       topic: inputValues.topic,
       type: inputValues.type,
     };
-    projectContext.createEvent(newEvent);
+    projectContext.createEvent(newEvent, isPublic);
     onCreate({ ...newEvent, _local: false });
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
   return (
     <>
@@ -226,11 +261,25 @@ function ControlledInputs(props) {
       {isSelected && (
         <>
           <div className={styles.editMenu}>
-            <span onClick={onCreateClick} className={styles.createEvent}>
+            <span
+              onClick={() =>
+                setModalContent(() => props => (
+                  <ConfirmPublic
+                    {...props}
+                    createEventAction={createEventAction}
+                  />
+                ))
+              }
+              className={styles.createEvent}
+            >
               ✓
             </span>
             <span
-              onClick={() => setIsModalOpen(true)}
+              onClick={() =>
+                setModalContent(() => props => (
+                  <ConfirmDeleteEvent {...props} />
+                ))
+              }
               className={styles.deleteEvent}
             >
               x
@@ -240,8 +289,9 @@ function ControlledInputs(props) {
           <EditModal
             event={eventAtDay}
             deleteEvent={deleteEvent}
-            isOpen={isModalOpen}
-            setIsModalOpen={setIsModalOpen}
+            isOpen={!!modalContent}
+            setModalContent={setModalContent}
+            render={modalContent}
           />
 
           <MiddleRow
@@ -296,7 +346,7 @@ function UncontrolledInputs(props) {
 
   const { id, title, topic, type, description, imgUrl, videoUrl } = eventAtDay;
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
 
   return (
     <>
@@ -312,7 +362,9 @@ function UncontrolledInputs(props) {
       {isSelected && (
         <div className={styles.editMenu}>
           <span
-            onClick={() => setIsModalOpen(true)}
+            onClick={() =>
+              setModalContent(() => props => <ConfirmDeleteEvent {...props} />)
+            }
             className={styles.deleteEvent}
           >
             x
@@ -323,8 +375,9 @@ function UncontrolledInputs(props) {
       <EditModal
         event={eventAtDay}
         deleteEvent={deleteEvent}
-        isOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        isOpen={!!modalContent}
+        setModalContent={setModalContent}
+        render={modalContent}
       />
 
       {isSelected && (

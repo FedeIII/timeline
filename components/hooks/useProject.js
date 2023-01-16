@@ -4,6 +4,7 @@ import {
   setEvent as setEventRequest,
   setProject as setProjectRequest,
   addEvent as addEventRequest,
+  addEventPublic,
   deleteEvent as deleteEventRequest,
   deleteTag as deleteTagRequest,
   groupProjectEvents,
@@ -11,6 +12,7 @@ import {
 
 export default function useProject(initProject, initId) {
   const [project, setProject] = useState(initProject);
+  const { id } = project || {};
 
   useEffect(() => {
     async function requestProject() {
@@ -49,7 +51,7 @@ export default function useProject(initProject, initId) {
     setProject(remoteProject);
   }
 
-  async function createEvent(event) {
+  async function createEvent(event, isPublic) {
     let localProject = {
       ...project,
       events: [...project.events, event],
@@ -60,7 +62,12 @@ export default function useProject(initProject, initId) {
     localProject = groupProjectEvents(localProject);
     setProject(localProject);
 
-    const remoteProject = await addEventRequest(id, event);
+    let remoteProject;
+    if (isPublic) {
+      remoteProject = await addEventPublic(id, event);
+    } else {
+      remoteProject = await addEventRequest(id, event);
+    }
     setProject(remoteProject);
   }
 

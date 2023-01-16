@@ -11,7 +11,10 @@
   - [x] Support events without description
   - [x] Support other title separators like "!"
   - [ ] Tweet images (twitter API v2 still doesn't support uploading media)
+  - [x] Tweet link to image
   - [x] Tweet videos
+  - [x] Confirm before tweet event
+  - [ ] Confirm before tweet project
 - [x] Link to project and timelines from new project created screen
 - [x] Add years to calendar
 - [x] Create project with tags
