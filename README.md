@@ -14,7 +14,7 @@
   - [x] Tweet link to image
   - [x] Tweet videos
   - [x] Confirm before tweet event
-  - [ ] Confirm before tweet project
+  - [x] Confirm before tweet project
 - [x] Link to project and timelines from new project created screen
 - [x] Add years to calendar
 - [x] Create project with tags
@@ -51,7 +51,7 @@
 
 - Refactors:
   - [ ] EventCell
-  - [ ] Exctact EditModal from EventCell and EditProject
+  - [ ] Extract EditModal from EventCell and EditProject
 
 - Bugs:
   - [ ] on creating new event, the description sometimes is not set

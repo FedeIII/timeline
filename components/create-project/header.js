@@ -1,5 +1,5 @@
-import projectHeaderStyles from '../../components/projectHeader.module.scss';
-import { EditableTags } from '../../components/tags';
+import projectHeaderStyles from '../projectHeader.module.scss';
+import { EditableTags } from '../tags';
 
 function textareaCallback(textareaNode) {
   textareaNode.target.style.height = '';

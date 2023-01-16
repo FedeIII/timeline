@@ -2,7 +2,7 @@ import Head from 'next/head';
 
 import styles from './integrations.module.scss';
 import Layout from '../../components/layout';
-import { TwitterIntegration } from './twitterIntegration';
+import { TwitterIntegration } from '../../components/integrations/twitterIntegration';
 
 export default function Integrations(props) {
   return (

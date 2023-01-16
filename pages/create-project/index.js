@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useContext, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
+
 import Layout, { siteTitle } from '../../components/layout';
 import UserContext from '../../contexts/userContext';
 import {
@@ -10,8 +11,8 @@ import {
   createProjectPublic,
 } from '../../requests/projectRequests';
 import styles from './create-project.module.scss';
-import FirstEvent from './firstEvent';
-import Header from './header';
+import FirstEvent from '../../components/create-project/firstEvent';
+import Header from '../../components/create-project/header';
 
 function toSnakeCase(title) {
   return (

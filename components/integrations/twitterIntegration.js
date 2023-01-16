@@ -1,8 +1,9 @@
 import { useContext, useMemo } from 'react';
-import styles from './integrations.module.scss';
+import Link from 'next/link';
+
+import styles from '../../pages/integrations/integrations.module.scss';
 import EnvContext from '../../contexts/envContext';
 import UserContext from '../../contexts/userContext';
-import Link from 'next/link';
 
 function useTwitterOauthUrl(redirect_uri, client_id) {
   return useMemo(() => {

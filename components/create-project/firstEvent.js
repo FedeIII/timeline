@@ -1,8 +1,8 @@
 import format from 'date-fns/format';
 import { useState } from 'react';
-import eventCardStyles from '../../components/eventCard.module.scss';
-import projectImageStyles from '../../components/projectImage.module.scss';
-import styles from './create-project.module.scss';
+import eventCardStyles from '../eventCard.module.scss';
+import projectImageStyles from '../projectImage.module.scss';
+import styles from '../../pages/create-project/create-project.module.scss';
 
 function textareaCallback(textareaNode) {
   textareaNode.target.style.height = '';
