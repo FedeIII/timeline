@@ -3,7 +3,7 @@ import { useContext } from 'react';
 
 import Layout, { siteTitle } from '../components/layout';
 import UserContext from '../contexts/userContext';
-import { TwitterIntegration } from './integrations/twitterIntegration';
+import { TwitterIntegration } from '../components/integrations/twitterIntegration';
 import styles from './index.module.scss';
 import { getAllProjects } from '../requests/projectRequests';
 import Link from 'next/link';
