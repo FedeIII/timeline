@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form';
 import { v4 as uuid } from 'uuid';
 import Layout, { siteTitle } from '../../components/layout';
 import UserContext from '../../contexts/userContext';
-import { createProject } from '../../requests/projectRequests';
+import {
+  createProject,
+  createProjectPublic,
+} from '../../requests/projectRequests';
 import styles from './create-project.module.scss';
 import FirstEvent from './firstEvent';
 import Header from './header';
@@ -25,7 +28,7 @@ function toSnakeCase(title) {
 
 const noOp = () => {};
 
-function useProcessForm(setProjectCreated, setError) {
+function useProcessForm(setProjectCreated, setError, isPublic) {
   const userContext = useContext(UserContext);
   const [user] = userContext;
 
@@ -46,10 +49,18 @@ function useProcessForm(setProjectCreated, setError) {
 
     console.log('submitting', project);
     try {
-      const createdProject = await createProject({
-        ...project,
-        userId: user.id,
-      });
+      let createdProject;
+      if (isPublic) {
+        createdProject = await createProjectPublic({
+          ...project,
+          userId: user.id,
+        });
+      } else {
+        createdProject = await createProject({
+          ...project,
+          userId: user.id,
+        });
+      }
       setProjectCreated(createdProject);
       setError(null);
     } catch (error) {
@@ -80,7 +91,8 @@ function ProjectCreated(props) {
 }
 
 function CreateProjectMenu(props) {
-  const { register, control, error, submit } = props;
+  const { register, control, error, submitWithTweet, submitWithoutTweet } =
+    props;
 
   return (
     <form>
@@ -93,7 +105,10 @@ function CreateProjectMenu(props) {
       </section>
       {error && <section className={styles.errors}>{error}</section>}
       <div className={styles.buttons}>
-        <button className={styles.createButton} onClick={submit}>
+        <button className={styles.createButton} onClick={submitWithTweet}>
+          Create project and Tweet
+        </button>
+        <button className={styles.createButton} onClick={submitWithoutTweet}>
           Create project
         </button>
       </div>
@@ -112,7 +127,12 @@ export default function CreateProject() {
   const [projectCreated, setProjectCreated] = useState(null);
   const [error, setError] = useState(null);
 
-  const submit = handleSubmit(useProcessForm(setProjectCreated, setError));
+  const submitWithTweet = handleSubmit(
+    useProcessForm(setProjectCreated, setError, true)
+  );
+  const submitWithoutTweet = handleSubmit(
+    useProcessForm(setProjectCreated, setError, false)
+  );
 
   return (
     <Layout home>
@@ -126,7 +146,8 @@ export default function CreateProject() {
           register={register}
           control={control}
           error={error}
-          submit={submit}
+          submitWithTweet={submitWithTweet}
+          submitWithoutTweet={submitWithoutTweet}
         />
       )}
     </Layout>
