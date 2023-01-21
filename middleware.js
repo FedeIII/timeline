@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 function isAuthenticated(request) {
-  const oauth2_token = request.cookies.get('oauth2_token')?.value;
+  const oauth2_token = request.cookies.get(process.env.OAUTH_COOKIE)?.value;
   return !!oauth2_token;
 }
 

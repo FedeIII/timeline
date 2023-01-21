@@ -52,6 +52,7 @@
 - Refactors:
   - [ ] EventCell
   - [ ] Extract EditModal from EventCell and EditProject
+  - [ ] Clean env vars and how env vars are used in frontend
 
 - Bugs:
   - [ ] on creating new event, the description sometimes is not set

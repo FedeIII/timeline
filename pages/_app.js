@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import EnvContext from '../contexts/envContext';
 import UserContext from '../contexts/userContext';
+import { handshakeRequest } from '../requests/handshakeRequest';
 import '../styles/global.scss';
 
 async function fetchEnvVars(setEnvVars) {
-  const response = await fetch('https://timeline-service.herokuapp.com/handshake');
-  // const response = await fetch('http://127.0.0.1:8080/handshake');
-  setEnvVars(await response.json());
+  const envVars = await handshakeRequest();
+  setEnvVars(envVars);
 }
 
 function useEnvVars() {
