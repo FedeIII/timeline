@@ -24,14 +24,21 @@ export default function App(props) {
 
   const envVars = useEnvVars();
   const [user, setUser] = useState(null);
-  const { ME_URL } = envVars;
+  const { ME_URL, OAUTH_COOKIE } = envVars;
 
   useEffect(() => {
     (async function () {
       try {
         if (!ME_URL) return;
-        const response = await fetch(ME_URL, { credentials: 'include' });
-        const user = await response.json();
+        const userReq = await fetch(
+          ME_URL +
+            '?' +
+            new URLSearchParams({
+              token: cookies[OAUTH_COOKIE],
+            }),
+          { credentials: 'include' }
+        );
+        const user = await userReq.json();
         if (user) setUser(user);
       } catch (error) {
         console.log(error);
