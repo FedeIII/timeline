@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import EnvContext from '../contexts/envContext';
 import UserContext from '../contexts/userContext';
 import { handshakeRequest } from '../requests/handshakeRequest';
+import Cookies from 'js-cookie';
 import '../styles/global.scss';
 
 async function fetchEnvVars(setEnvVars) {
@@ -34,7 +35,7 @@ export default function App(props) {
           ME_URL +
             '?' +
             new URLSearchParams({
-              token: cookies[OAUTH_COOKIE],
+              token: Cookies.get(OAUTH_COOKIE),
             }),
           { credentials: 'include' }
         );
