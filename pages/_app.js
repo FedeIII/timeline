@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import EnvContext from '../contexts/envContext';
 import UserContext from '../contexts/userContext';
 import { handshakeRequest } from '../requests/handshakeRequest';
-import Cookies from 'js-cookie';
 import '../styles/global.scss';
 
 async function fetchEnvVars(setEnvVars) {
@@ -31,14 +31,13 @@ export default function App(props) {
     (async function () {
       try {
         if (!ME_URL) return;
-        const userReq = await fetch(
+        const url =
           ME_URL +
-            '?' +
-            new URLSearchParams({
-              token: Cookies.get(OAUTH_COOKIE),
-            }),
-          { credentials: 'include' }
-        );
+          '?' +
+          new URLSearchParams({
+            token: Cookies.get(OAUTH_COOKIE),
+          });
+        const userReq = await fetch(url, { credentials: 'include' });
         const user = await userReq.json();
         if (user) setUser(user);
       } catch (error) {

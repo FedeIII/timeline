@@ -60,7 +60,6 @@ function getAuthCookie(user, accessToken) {
   );
 
   return serialize(process.env.OAUTH_COOKIE, token, {
-    httpOnly: true,
     secure: true,
     sameSite: 'none',
     path: '/',
