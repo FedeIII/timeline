@@ -60,3 +60,6 @@
   - [ ] after creating an ongoing event start, styles don't match
   - [ ] edit project date
   - [ ] after deleting a project, if user reloads page, it appears again
+  - [ ] imgs in gallery are not seen (not using next/imag)
+  - [ ] double image url on tweets
+  - [ ] event title doesn't updates on the message to confirm tweet

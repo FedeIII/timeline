@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import Cookies from 'js-cookie';
 import client from '../apollo-client';
 
 const ProjectOutput = `
@@ -148,6 +149,12 @@ export async function createProjectPublic(projectProps) {
         }
       `,
       variables: { input: projectProps },
+      context: {
+        headers: {
+          // TO DO: get "oauth2_token" from env vars
+          oauth2_token: Cookies.get('oauth2_token'),
+        },
+      },
     });
 
     return data.createProjectPublic;
@@ -217,6 +224,12 @@ export async function addEventPublic(projectId, event) {
       }
     `,
     variables: { projectId, event },
+    context: {
+      headers: {
+        // TO DO: get "oauth2_token" from env vars
+        oauth2_token: Cookies.get('oauth2_token'),
+      },
+    },
   });
 
   const project = groupProjectEvents(data.addEventPublic);
