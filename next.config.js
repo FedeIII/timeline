@@ -23,7 +23,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'i.imgur.com/',
+        hostname: 'i.imgur.com',
       },
     ],
   },
