@@ -49,7 +49,7 @@ async function getTwitterUser(accessToken) {
   }
 }
 
-function getAuthCookie(user, accessToken) {
+function getAuthCookie(user, accessToken, domain) {
   const { id } = user;
   const token = jwt.sign(
     {
@@ -62,6 +62,7 @@ function getAuthCookie(user, accessToken) {
   return serialize(process.env.OAUTH_COOKIE, token, {
     secure: true,
     sameSite: 'none',
+    domain,
     path: '/',
     expires: new Date(Date.now() + 7200 * 1000),
   });
@@ -95,7 +96,15 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Set-Cookie',
-    getAuthCookie(user, twitterOAuthToken.access_token)
+    getAuthCookie(
+      user,
+      twitterOAuthToken.access_token,
+      process.env.FRONTEND_URL
+    )
+  );
+  res.setHeader(
+    'Set-Cookie',
+    getAuthCookie(user, twitterOAuthToken.access_token, process.env.BACKEND_URL)
   );
 
   res.setHeader('x-test', 'test');
