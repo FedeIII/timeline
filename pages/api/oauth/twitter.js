@@ -59,11 +59,13 @@ function getAuthCookie(user, accessToken) {
     process.env.JWT_SECRET
   );
 
+  const aDayInMilliseconds = 1000 * 60 * 60 * 24;
+
   return serialize(process.env.OAUTH_COOKIE, token, {
     secure: true,
     sameSite: 'none',
     path: '/',
-    expires: new Date(Date.now() + 7200 * 1000),
+    expires: new Date(Date.now() + aDayInMilliseconds),
   });
 }
 

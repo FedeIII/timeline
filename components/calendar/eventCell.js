@@ -1,4 +1,5 @@
 import { useCallback, useContext, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import styles from './calendar.module.scss';
 import ProjectContext from '../../contexts/projectContext';
@@ -151,8 +152,7 @@ function MiddleRow(props) {
 }
 
 function ConfirmPublic(props) {
-  const { event, setModalContent, createEventAction } = props;
-  const { title } = event;
+  const { title, setModalContent, createEventAction } = props;
 
   const createEventAndTweet = useCallback(() => {
     createEventAction(true);
@@ -234,6 +234,7 @@ function ControlledInputs(props) {
   const projectContext = useContext(ProjectContext);
   const createEventAction = isPublic => {
     const newEvent = {
+      id: uuid(),
       title: inputValues.title,
       date,
       description: inputValues.description,
@@ -265,7 +266,8 @@ function ControlledInputs(props) {
               onClick={() =>
                 setModalContent(() => props => (
                   <ConfirmPublic
-                    {...props}
+                    title={inputValues.title}
+                    setModalContent={setModalContent}
                     createEventAction={createEventAction}
                   />
                 ))
