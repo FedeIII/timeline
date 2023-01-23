@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import GalleryContext from '../contexts/galleryContext';
 import styles from './imageGallery.module.scss';
 
@@ -22,9 +22,14 @@ export default function ImageGallery(props) {
           className={styles.galleryContent}
           style={{ width: `calc(100% * ${items.length})` }}
         >
-          {items.map((item, i) => (
-            <div className={styles.imageContainer}>
-              <img src={item.original} className={styles.image} />
+          {items.map(item => (
+            <div className={styles.imageContainer} key={item.original}>
+              <Image
+                priority
+                src={item.original}
+                fill
+                className={styles.image}
+              />
             </div>
           ))}
         </div>

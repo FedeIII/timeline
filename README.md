@@ -60,7 +60,7 @@
   - [ ] after creating an ongoing event start, styles don't match
   - [ ] edit project date
   - [ ] after deleting a project, if user reloads page, it appears again
-  - [ ] imgs in gallery are not seen (not using next/imag)
+  - [x] imgs in gallery are not seen (not using next/imag)
   - [x] double image url on tweets
   - [x] event title doesn't update on the message to confirm tweet
   - [ ] after creating a project, if you click on create project again at the top bar, the state is preserved and you are not directed into a new project creation screen
